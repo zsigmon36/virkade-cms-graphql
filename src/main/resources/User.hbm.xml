@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 17, 2018 4:20:16 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.virkade.cms.model.User" table="USER">
+        <id name="userId" type="long">
+            <column name="USERID" />
+            <generator class="increment" />
+        </id>
+        <property name="typeId" type="long">
+            <column name="TYPEID" />
+        </property>
+        <property name="addressId" type="long">
+            <column name="ADDRESSID" />
+        </property>
+        <property name="statusId" type="long">
+            <column name="STATUSID" />
+        </property>
+        <property name="emailAddress" type="java.lang.String">
+            <column name="EMAILADDRESS" />
+        </property>
+        <property name="userName" type="java.lang.String">
+            <column name="USERNAME" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" />
+        </property>
+        <property name="firstName" type="java.lang.String">
+            <column name="FIRSTNAME" />
+        </property>
+        <property name="lastName" type="java.lang.String">
+            <column name="LASTNAME" />
+        </property>
+        <property name="gender" type="java.lang.String">
+            <column name="GENDER" />
+        </property>
+        <property name="age" type="int">
+            <column name="AGE" />
+        </property>
+        <property name="height" type="int">
+            <column name="HEIGHT" />
+        </property>
+        <property name="weight" type="int">
+            <column name="WEIGHT" />
+        </property>
+        <property name="idp" type="float">
+            <column name="IDP" />
+        </property>
+        <property name="tcAgree" type="boolean">
+            <column name="TCAGREE" />
+        </property>
+        <property name="liabilityAgree" type="boolean">
+            <column name="LIABILITYAGREE" />
+        </property>
+        <property name="emailVerified" type="boolean">
+            <column name="EMAILVERIFIED" />
+        </property>
+        <property name="playedBefore" type="boolean">
+            <column name="PLAYEDBEFORE" />
+        </property>
+        <property name="lastLogin" type="java.util.Date">
+            <column name="LASTLOGIN" />
+        </property>
+        <property name="reServices" type="boolean">
+            <column name="RESERVICES" />
+        </property>
+        <property name="canContact" type="boolean" access="field">
+            <column name="CANCONTACT" />
+        </property>
+        <property name="createdAt" type="java.util.Date">
+            <column name="CREATEDAT" />
+        </property>
+        <property name="updatedAt" type="java.util.Date">
+            <column name="UPDATEDAT" />
+        </property>
+        <property name="createdBy" type="java.lang.String">
+            <column name="CREATEDBY" />
+        </property>
+        <property name="updatedBy" type="java.lang.String">
+            <column name="UPDATEDBY" />
+        </property>
+    </class>
+</hibernate-mapping>
