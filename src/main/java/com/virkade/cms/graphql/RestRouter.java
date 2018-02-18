@@ -6,42 +6,15 @@ import java.util.Random;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.User;
 
-import graphql.schema.GraphQLSchema;
-import graphql.servlet.SimpleGraphQLServlet;
-
 @RestController
-public class RestRouter extends SimpleGraphQLServlet {
+public class RestRouter {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 465489113L;
-
-	public RestRouter() {
-		super(buildSchema());
-	}
-
-	private static GraphQLSchema buildSchema() {
-		return SchemaParser.newParser()
-				.resolvers(new Query())
-				.file("schema.virkade.graphql") // parse the schema file created earlier
-				.build().makeExecutableSchema();
-	}
-	
-	@RequestMapping("/graphql")
-		String graphQl() {
-		return "";
-	}
-	
-
-	@RequestMapping("/addTestUser")
+		
 	String addTestUser() {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -57,7 +30,6 @@ public class RestRouter extends SimpleGraphQLServlet {
 				+ "</p>";
 	}
 
-	@RequestMapping("/users")
 	String getUsers() {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
