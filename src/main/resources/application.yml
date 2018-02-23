@@ -1,6 +1,6 @@
 server: 
-  port: 443
-  ssl:
-    key-store: C:/Program Files/Java/jdk1.8.0_151/jre/lib/security/cacerts
-    key-store-password: changeit
-    key-password: Reid.Zac36
+  port: 8080
+ # ssl:
+ #   key-store: C:/Program Files/Java/jdk1.8.0_151/jre/lib/security/cacerts
+ #   key-store-password: changeit
+ #   key-password: Reid.Zac36

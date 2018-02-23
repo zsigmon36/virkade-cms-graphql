@@ -1,12 +1,46 @@
 type User {
-  firstName: String!
-  lastName: String!
+    userId: Long!
+    typeId: Int!
+	addressId: Int
+	statusId: Int!
+	emailAddress: String!
+	userName: String!
+	password: String !
+    firstName: String!
+    lastName: String!
+	gender: String
+	age: Int
+	height: Int
+	weight: Int
+	idp: Float
+	tcAgree: Boolean!
+	liabilityAgree: Boolean!
+	emailVerified: Boolean!
+	playedBefore: Boolean!
+	lastLogin: Date
+	reServices: Boolean!
+	canContact: Boolean!
+	createdAt: Date!
+	updatedAt: Date!
+	createdBy: String!
+	updatedBy: String!
 }
 
 type Query {
   allUsers: [User]
+  getUserByUsername(username: String!): [User]
+  getUser(userId: Long!): [User]
+  getUserByEmailAddress(emailAddress: String!): [User]
+}
+
+type Mutation {
+  createUser(firstName: String!, lastName: String!, username: String!, password: String, emailAddress: String): User
 }
 
 schema {
   query: Query
+  mutation: Mutation
 }
+
+scalar Date
+scalar Long

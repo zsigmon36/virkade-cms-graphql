@@ -7,6 +7,7 @@ public class User {
 	private long typeId;
 	private long addressId;
 	private long statusId;
+	
 	private String emailAddress;
 	private String userName;
 	private String password;

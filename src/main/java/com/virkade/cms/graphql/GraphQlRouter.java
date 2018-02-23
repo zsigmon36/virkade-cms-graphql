@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
+import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.SimpleGraphQLServlet;
@@ -23,11 +24,19 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 
 	public GraphQlRouter() {
 		super(buildSchema());
+		HibernateUtilities.getSessionFactory();
 	}
 
 	private static GraphQLSchema buildSchema() {
 		return SchemaParser.newParser()
-				.resolvers(new Query())
+				.resolvers(
+						new Query(),
+						new Mutation()
+						)
+				.scalars(
+						Scalars.date, 
+						Scalars.Long
+						)
 				.file("schema.virkade.graphqls") // parse the schema file created earlier
 				.build().makeExecutableSchema();
 	}
