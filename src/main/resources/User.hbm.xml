@@ -68,17 +68,25 @@
         <property name="canContact" type="boolean" access="field">
             <column name="CANCONTACT" />
         </property>
-        <property name="createdAt" type="java.util.Date">
-            <column name="CREATEDAT" />
-        </property>
-        <property name="updatedAt" type="java.util.Date">
-            <column name="UPDATEDAT" />
-        </property>
-        <property name="createdBy" type="java.lang.String">
-            <column name="CREATEDBY" />
-        </property>
-        <property name="updatedBy" type="java.lang.String">
-            <column name="UPDATEDBY" />
-        </property>
+        <component name="audit">
+	        <property name="createdAt" type="java.util.Date">
+	            <column name="CREATEDAT" />
+	        </property>
+	        <property name="updatedAt" type="java.util.Date">
+	            <column name="UPDATEDAT" />
+	        </property>
+	        <property name="createdBy" type="java.lang.String">
+	            <column name="CREATEDBY" />
+	        </property>
+	        <property name="updatedBy" type="java.lang.String">
+	            <column name="UPDATEDBY" />
+	        </property>
+        </component>
+        <list name="session" table="SESSION" inverse="true" cascade="save-update">
+        	<key column="USERID" />
+        	<list-index column="SESSIONID"/>
+        	<one-to-many class="com.virkade.cms.model.PlaySession"/>
+        </list>
+        
     </class>
 </hibernate-mapping>

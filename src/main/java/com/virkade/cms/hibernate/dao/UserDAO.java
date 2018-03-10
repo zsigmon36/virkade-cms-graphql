@@ -16,4 +16,15 @@ public class UserDAO {
 		hs.getTransaction().commit();
 		hs.close();
 	}
+
+	public static User getUser(User user) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		hs.beginTransaction();
+		hs.get(user.getClass(), user.getUserName());
+		hs.getTransaction().commit();
+		hs.close();
+		return user;
+		
+	}
 }

@@ -1,7 +1,5 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
-
 public class Address {
 	private long addressId;
 	private long countryId;
@@ -13,10 +11,8 @@ public class Address {
 	private char apt;
 	private String city;
 	private int postalCode;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
+	private Audit audit;
+	
 	/**
 	 * @return the addressId
 	 */
@@ -126,55 +122,20 @@ public class Address {
 		this.postalCode = postalCode;
 	}
 	/**
-	 * @return the createdAt
+	 * @return the audit
 	 */
-	public Date getCreatedAt() {
-		return createdAt;
+	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
+		return audit;
 	}
 	/**
-	 * @param createdAt the createdAt to set
+	 * @param audit the audit to set
 	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
-	/**
-	 * @return the updatedAt
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-	/**
-	 * @param updatedAt the updatedAt to set
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	
-	
 	
 	
 }

@@ -1,13 +1,14 @@
 package com.virkade.cms.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class User {
 	private long userId;
 	private long typeId;
 	private long addressId;
 	private long statusId;
-	
+	private List<PlaySession> session;
 	private String emailAddress;
 	private String userName;
 	private String password;
@@ -25,11 +26,7 @@ public class User {
 	private Date lastLogin;
 	private boolean reServices;
 	private boolean canContact;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
-
+	private Audit audit;
 	/**
 	 * @return the userId
 	 */
@@ -88,6 +85,20 @@ public class User {
 	 */
 	public void setStatusId(long statusId) {
 		this.statusId = statusId;
+	}
+
+	/**
+	 * @return the session
+	 */
+	public List<PlaySession> getSession() {
+		return session;
+	}
+
+	/**
+	 * @param session the session to set
+	 */
+	public void setSession(List<PlaySession> session) {
+		this.session = session;
 	}
 
 	/**
@@ -346,65 +357,21 @@ public class User {
 	}
 
 	/**
-	 * @return the createdAt
+	 * @return the audit
 	 */
-	public Date getCreatedAt() {
-		return createdAt;
+	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
+		return audit;
 	}
-
 	/**
-	 * @param createdAt
-	 *            the createdAt to set
+	 * @param audit the audit to set
 	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
-
-	/**
-	 * @return the updatedAt
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	/**
-	 * @param updatedAt
-	 *            the updatedAt to set
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	/**
-	 * @param createdBy
-	 *            the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	/**
-	 * @param updatedBy
-	 *            the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -416,7 +383,8 @@ public class User {
 				+ ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", tcAgree=" + tcAgree
 				+ ", liabilityAgree=" + liabilityAgree + ", emailVerified=" + emailVerified + ", playedBefore="
 				+ playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact="
-				+ canContact + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", createdBy=" + createdBy
-				+ ", updatedBy=" + updatedBy + "]";
+				+ canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt() + ", createdBy=" + audit.getCreatedBy()
+				+ ", updatedBy=" + audit.getUpdatedBy() + "]";
 	}
+
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
+import com.virkade.cms.model.Audit;
 
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.SimpleGraphQLServlet;
@@ -32,10 +33,12 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 				.resolvers(
 						new Query(),
 						new Mutation()
+						//new Audit()
 						)
 				.scalars(
-						Scalars.date, 
+						Scalars.Date, 
 						Scalars.Long
+						//Scalars.Audit
 						)
 				.file("schema.virkade.graphqls") // parse the schema file created earlier
 				.build().makeExecutableSchema();
