@@ -3,6 +3,8 @@ package com.virkade.cms.model;
 import java.util.Date;
 import java.util.List;
 
+import com.virkade.cms.auth.AuthData;
+
 public class User {
 	private long userId;
 	private long typeId;
@@ -27,6 +29,15 @@ public class User {
 	private boolean reServices;
 	private boolean canContact;
 	private Audit audit;
+	
+	public User() {
+	}
+	
+	public User(AuthData authData) {
+		this.userName = authData.getUserName();
+		this.password = authData.getPassword();
+	}
+	
 	/**
 	 * @return the userId
 	 */

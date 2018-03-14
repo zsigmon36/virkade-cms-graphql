@@ -16,7 +16,7 @@ public class DateCoercing implements Coercing<Object, String> {
 	@Override
 	public String serialize(Object input) {
 		// serialize the ZonedDateTime into string on the way out
-		return new Date(((Timestamp) input).getTime()).toString();
+		return ((Date)input).toString();
 	}
 
 	@Override
@@ -29,6 +29,8 @@ public class DateCoercing implements Coercing<Object, String> {
 		// parse the string values coming in
 		if (input instanceof Timestamp) {
 			return new Date(((Timestamp) input).getTime());
+		} else if (input instanceof Date) {
+			return ((Date)input);
 		} else {
 			return null;
 		}

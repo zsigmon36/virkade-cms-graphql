@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
-import com.virkade.cms.model.Audit;
 
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.SimpleGraphQLServlet;
@@ -20,7 +19,7 @@ import graphql.servlet.SimpleGraphQLServlet;
 @RestController
 @RequestMapping("/service")
 public class GraphQlRouter extends SimpleGraphQLServlet {
-	
+
 	private static final long serialVersionUID = 465489113L;
 
 	public GraphQlRouter() {
@@ -29,25 +28,14 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 	}
 
 	private static GraphQLSchema buildSchema() {
-		return SchemaParser.newParser()
-				.resolvers(
-						new Query(),
-						new Mutation()
-						//new Audit()
-						)
-				.scalars(
-						Scalars.Date, 
-						Scalars.Long
-						//Scalars.Audit
-						)
-				.file("schema.virkade.graphqls") // parse the schema file created earlier
-				.build().makeExecutableSchema();
+		return SchemaParser.newParser().resolvers(new Query(), new Mutation()).scalars(Scalars.Date, Scalars.Long)
+				.file("schema.virkade.graphqls").build().makeExecutableSchema();
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
-	void graphqlServlet(HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
+	void graphqlServlet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.doPost(req, resp);
-		
+
 	}
 
 }

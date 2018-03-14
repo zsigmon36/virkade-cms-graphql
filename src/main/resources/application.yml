@@ -4,3 +4,12 @@ server:
  #   key-store: C:/Program Files/Java/jdk1.8.0_151/jre/lib/security/cacerts
  #   key-store-password: changeit
  #   key-password: Reid.Zac36
+ 
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.virkade: DEBUG
+    org.hibernate: INFO
+    
+    

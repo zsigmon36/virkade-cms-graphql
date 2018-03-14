@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.User;
@@ -22,6 +23,10 @@ public class Query implements GraphQLRootResolver {
 		hs.getTransaction().commit();
 		hs.close();
 		return users;
+	}
+	
+	public User getUser(String userName) throws Exception {
+		return UserDAO.lookupUser(userName);
 	}
 	
 	public List<PlaySession> getUserSessions(String username) throws Exception {

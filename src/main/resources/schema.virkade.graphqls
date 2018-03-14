@@ -1,10 +1,10 @@
 type User {
+	userId: Long!
     typeId: Long!
 	addressId: Long
 	statusId: Long!
 	emailAddress: String!
 	userName: String!
-	password: String!
     firstName: String!
     lastName: String!
 	gender: String
@@ -12,22 +12,13 @@ type User {
 	height: Long
 	weight: Long
 	idp: Float
-	tcAgree: Boolean
-	liabilityAgree: Boolean
-	emailVerified: Boolean
-	playedBefore: Boolean
+	tcAgree: Boolean!
+	liabilityAgree: Boolean!
+	emailVerified: Boolean!
+	playedBefore: Boolean!
 	lastLogin: Date
-	reServices: Boolean
-	canContact: Boolean
-	audit: Audit
-}
-
-type PlaySession {
-	sessionId: Long!
-	user: User!
-	locationId: Long!
-	startDate: Date!
-	endDate: Date!
+	reServices: Boolean!
+	canContact: Boolean!
 	audit: Audit
 }
 
@@ -38,18 +29,24 @@ type Audit {
     updatedBy: String!
 }
 
+input AuthData {
+	userName: String!
+	password: String!
+}
+
+type AuthToken {
+	userName: String!
+	token: String!
+	createdDate: Date!
+}
+
 type Query {
   allUsers: [User]
-  getUserByUsername(username: String!): [User]
-  getUser(userId: Long!): [User]
-  getUserByEmailAddress(emailAddress: String!): [User]
-  getUserSessions(username: String!): [PlaySession]
 }
 
 type Mutation {
-  createUser(user: User, requestor: String!): User
-  updateUser(user: User, requestor: String!): User
-  createSessions(username: String!, startDate: Date!, endDate: Date!, locationId: Long!): PlaySession
+  createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!, requestor: String!): User
+  signIn(authData: AuthData!) : AuthToken
 }
 
 schema {
@@ -59,4 +56,3 @@ schema {
 
 scalar Date
 scalar Long
-#scalar Audit
