@@ -1,33 +1,35 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.virkade.cms.model.Type" table="TYPE">
-        <id name="typeId" type="long">
-            <column name="TYPEID" />
-            <generator class="increment" />
-        </id>
-        <property name="name" type="java.lang.String">
-            <column name="NAME" />
-        </property>
-        <property name="description" type="java.lang.String">
-            <column name="DESCRIPTION" />
-        </property>
-        <property name="code" type="java.lang.String">
-            <column name="CODE" />
-        </property>
-        <property name="createdAt" type="java.util.Date">
-            <column name="CREATEDAT" />
-        </property>
-        <property name="updatedAt" type="java.util.Date">
-            <column name="UPDATEDAT" />
-        </property>
-        <property name="createdBy" type="java.lang.String">
-            <column name="CREATEDBY" />
-        </property>
-        <property name="updatedBy" type="java.lang.String">
-            <column name="UPDATEDBY" />
-        </property>
-    </class>
+	<class name="com.virkade.cms.model.Type" table="TYPE">
+		<id name="typeId" type="long">
+			<column name="TYPEID" />
+			<generator class="increment" />
+		</id>
+		<property name="name" type="java.lang.String">
+			<column name="NAME" />
+		</property>
+		<property name="description" type="java.lang.String">
+			<column name="DESCRIPTION" />
+		</property>
+		<property name="code" type="java.lang.String">
+			<column name="CODE" />
+		</property>
+		<component name="audit">
+			<property name="createdAt" type="java.util.Date">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.util.Date">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" />
+			</property>
+		</component>
+	</class>
 </hibernate-mapping>

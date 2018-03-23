@@ -6,8 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
 -->
 <!DOCTYPE html>
-<html>
+<html >
   <head>
+  <meta charset="UTF-8">
     <style>
       body {
         height: 100%;
@@ -114,6 +115,8 @@
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer md572dd9590289b606e6c3cb825a4cb893d',
+            'UserName': 'Virkade Experience'
           },
           body: JSON.stringify(graphQLParams),
           credentials: 'include',

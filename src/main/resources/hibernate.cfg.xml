@@ -11,6 +11,7 @@
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.hbm2ddl.auto">create-drop</property>
   <property name="hibernate.default_schema">virkade</property>
+  <property name="hibernate.connection.characterEncoding">utf8</property>
   <mapping resource="User.hbm.xml"/>
   <mapping resource="Address.hbm.xml"/>
   <mapping resource="Country.hbm.xml"/>

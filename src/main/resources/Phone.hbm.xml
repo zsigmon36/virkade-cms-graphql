@@ -1,36 +1,41 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.virkade.cms.model.Phone" table="PHONE">
-        <id name="phoneId" type="long">
-            <column name="PHONEID" />
-            <generator class="increment" />
-        </id>
-        <property name="userId" type="long">
-            <column name="USERID" />
-        </property>
-        <property name="typeId" type="long">
-            <column name="TYPEID" />
-        </property>
-        <property name="number" type="int">
-            <column name="NUMBER" />
-        </property>
-        <property name="countryCode" type="int">
-            <column name="COUNTRYCODE" />
-        </property>
-        <property name="createdAt" type="java.util.Date">
-            <column name="CREATEDAT" />
-        </property>
-        <property name="updatedAt" type="java.util.Date">
-            <column name="UPDATEDAT" />
-        </property>
-        <property name="createdBy" type="java.lang.String">
-            <column name="CREATEDBY" />
-        </property>
-        <property name="updatedBy" type="java.lang.String">
-            <column name="UPDATEDBY" />
-        </property>
-    </class>
+	<class name="com.virkade.cms.model.Phone" table="PHONE">
+		<id name="phoneId" type="long">
+			<column name="PHONEID" />
+			<generator class="increment" />
+		</id>
+
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
+			<column name="USERID" />
+		</many-to-one>
+
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+			<column name="TYPEID" />
+		</many-to-one>
+		
+		<property name="number" type="int">
+			<column name="NUMBER" />
+		</property>
+		<property name="countryCode" type="int">
+			<column name="COUNTRYCODE" />
+		</property>
+		<component name="audit">
+			<property name="createdAt" type="java.util.Date">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.util.Date">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" />
+			</property>
+		</component>
+	</class>
 </hibernate-mapping>

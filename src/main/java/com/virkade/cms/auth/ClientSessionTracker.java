@@ -1,4 +1,4 @@
-package com.virkade.cms.graphql;
+package com.virkade.cms.auth;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -9,8 +9,6 @@ import javax.crypto.SecretKey;
 
 import org.apache.log4j.Logger;
 
-import com.virkade.cms.auth.AuthData;
-import com.virkade.cms.auth.AuthToken;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.User;
 
@@ -21,7 +19,7 @@ public class ClientSessionTracker {
 	private ClientSessionTracker() {	
 	}
 	
-	public static Map<String, AuthToken> getClientSessionTracker() {
+	protected static Map<String, AuthToken> getClientSessionTracker() {
 		if (activeClientSessions == null) {
 			activeClientSessions = new HashMap<String, AuthToken>();
 		}
@@ -38,7 +36,7 @@ public class ClientSessionTracker {
 			throw new Exception("no active session found with userName="+userName);
 		}
 		getClientSessionTracker().remove(userName);
-		LOG.info("active session removed for userName"+userName+" with authToken="+activeSession);
+		LOG.info("active session removed for userName="+userName+" with authToken="+activeSession);
 		
 	}
 	
@@ -46,14 +44,14 @@ public class ClientSessionTracker {
 		boolean results = false;
 		AuthToken activeSession = getClientSessionTracker().get(userName);
 		if (activeSession == null) {
-			LOG.info("no active session found for userName"+userName);
+			LOG.info("no active session found for userName="+userName);
 			return results;
 		}
-		LOG.info("active session found for userName"+userName+" the authToken on record is="+activeSession);
-		if (activeSession.equals(authToken)) {
+		LOG.info("active session found for userName="+userName+" the authToken on record is="+activeSession);
+		if (activeSession.getToken().equals(authToken)) {
 			results = true;
 		} else {
-			LOG.info("active session found for userName"+userName+" with authToken="+activeSession+" does not match the authToken="+authToken+" given by the client request");
+			LOG.info("active session found for userName="+userName+" with authToken="+activeSession+" does not match the authToken="+authToken+" given by the client request");
 		}
 		return results;
 	}
@@ -70,35 +68,34 @@ public class ClientSessionTracker {
 			}
 			return authToken;
 		}else {
-			LOG.info("active session found for userName "+authData.getUserName()+" the authToken on record is="+ activeSessionToken.toString());
+			LOG.info("active session found for userName="+authData.getUserName()+" the authToken on record is="+ activeSessionToken.getToken());
 			return activeSessionToken;
 		}
 
 	}
 		
 	private static AuthToken createSession(String userName, String password) {
-		User user;
+		User user = new User();
+		user.setUserName(userName);
 		AuthToken authToken = null;
 		try {
-			user = UserDAO.lookupUser(userName);
-			if (user.getPassword().equals(password)) {
+			user = UserDAO.fetchUser(user);
+			LOG.debug("Checking "+user.getUserName()+"'s encoded password in the database matches the client provided password");
+			if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {
 				String token = createSessionToken();
 				authToken = new AuthToken(userName , token);
 				addNewActiveSession(user.getUserName(), authToken);
+				LOG.debug("Session token created and added to system");
 			} else {
 				throw new Exception("Incorrect passord given for userName="+userName);
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			LOG.error("Counld not create the session for the userId="+user.getUserId(),e);
 		}
 		return authToken;
 	}
 
 	private static String createSessionToken() throws NoSuchAlgorithmException {
-		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-		keyGenerator.init(256);
-		SecretKey rawKey = keyGenerator.generateKey();
-		String key = rawKey.getEncoded().toString();
-		return key;
+		return VirkadeEncryptor.createRandomToken();
 	}
 }

@@ -11,5 +11,8 @@ logging:
     org.springframework: INFO
     com.virkade: DEBUG
     org.hibernate: INFO
-    
+   
+security:
+  basic:
+    enabled: false
     

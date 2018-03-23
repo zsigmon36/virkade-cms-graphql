@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.virkade.cms.model.Comment" table="COMMENT">
@@ -8,12 +8,15 @@
             <column name="COMMENTID" />
             <generator class="increment" />
         </id>
-        <property name="userId" type="long">
+       
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
             <column name="USERID" />
-        </property>
-        <property name="typeId" type="long">
+        </many-to-one>
+        
+        <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
             <column name="TYPEID" />
-        </property>
+        </many-to-one>
+        
         <property name="commentContent" type="java.lang.String">
             <column name="COMMENTCONTENT" />
         </property>

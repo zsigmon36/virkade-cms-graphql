@@ -26,7 +26,9 @@ public class Query implements GraphQLRootResolver {
 	}
 	
 	public User getUser(String userName) throws Exception {
-		return UserDAO.lookupUser(userName);
+		User user = new User();
+		user.setUserName(userName);
+		return UserDAO.fetchUser(user);
 	}
 	
 	public List<PlaySession> getUserSessions(String username) throws Exception {
@@ -48,37 +50,13 @@ public class Query implements GraphQLRootResolver {
 	}
 	
 	public List<User> getUserByEmailAddress(String emailAddress) {
-		SessionFactory hsf = HibernateUtilities.getSessionFactory();
-		Session hs = hsf.openSession();
-		hs.beginTransaction();
-
-		org.hibernate.Query query = hs.createQuery("from user where emailAddress = :emailAddress").setString("emailAddress", emailAddress);
-		List<User> users = query.list();
-		hs.getTransaction().commit();
-		hs.close();
-		return users;
+		return UserDAO.fetchUsers(emailAddress);
 	}
 	
-	public List<User> getUserByUsername(String username){
-		SessionFactory hsf = HibernateUtilities.getSessionFactory();
-		Session hs = hsf.openSession();
-		hs.beginTransaction();
-
-		org.hibernate.Query query = hs.createQuery("from user where username = :username").setString("username", username);
-		List<User> users = query.list();
-		hs.getTransaction().commit();
-		hs.close();
-		return users;
-	}
-	public List<User> getUser(Long userId){
-		SessionFactory hsf = HibernateUtilities.getSessionFactory();
-		Session hs = hsf.openSession();
-		hs.beginTransaction();
-
-		org.hibernate.Query query = hs.createQuery("from user where userId = :userId").setLong("userId", userId);
-		List<User> users = query.list();
-		hs.getTransaction().commit();
-		hs.close();
-		return users;
+	public User getUserById(Long userId){
+		User user = new User();
+		user.setUserId(userId);
+		user = UserDAO.fetchUser(user);
+		return user;
 	}
 }

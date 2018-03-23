@@ -2,11 +2,35 @@ package com.virkade.cms.model;
 
 public class Comment {
 	private long commentId;
-	private long userId;
-	private long typeId;
-	
+	private User user;
+	private Type type;
 	private String commentContent;
 	private Audit audit;
+	
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+	/**
+	 * @return the type
+	 */
+	public Type getType() {
+		return type;
+	}
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(Type type) {
+		this.type = type;
+	}
 	/**
 	 * @return the commentId
 	 */
@@ -18,30 +42,6 @@ public class Comment {
 	 */
 	public void setCommentId(long commentId) {
 		this.commentId = commentId;
-	}
-	/**
-	 * @return the userId
-	 */
-	public long getUserId() {
-		return userId;
-	}
-	/**
-	 * @param userId the userId to set
-	 */
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
-	/**
-	 * @return the typeId
-	 */
-	public long getTypeId() {
-		return typeId;
-	}
-	/**
-	 * @param typeId the typeId to set
-	 */
-	public void setTypeId(long typeId) {
-		this.typeId = typeId;
 	}
 	/**
 	 * @return the commentContent

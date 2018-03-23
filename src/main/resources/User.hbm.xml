@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 17, 2018 4:20:16 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.virkade.cms.model.User" table="USER">
@@ -8,28 +8,37 @@
             <column name="USERID" />
             <generator class="increment" />
         </id>
-        <property name="typeId" type="long">
+        <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
             <column name="TYPEID" />
-        </property>
-        <property name="addressId" type="long">
+        </many-to-one>
+        
+        <many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join">
             <column name="ADDRESSID" />
-        </property>
-        <property name="statusId" type="long">
+        </many-to-one>
+        
+        <many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join">
             <column name="STATUSID" />
-        </property>
-        <property name="emailAddress" type="java.lang.String">
+       	</many-to-one>
+       
+        <property name="emailAddress" type="java.lang.String" not-null="true">
             <column name="EMAILADDRESS" />
         </property>
-        <property name="userName" type="java.lang.String">
+        <property name="userName" type="java.lang.String" not-null="true" unique="true">
             <column name="USERNAME" />
         </property>
-        <property name="password" type="java.lang.String">
+        <property name="password" type="java.lang.String" not-null="true" >
             <column name="PASSWORD" />
         </property>
-        <property name="firstName" type="java.lang.String">
+          <property name="securityQuestion" type="java.lang.String">
+            <column name="SECURITYQ" />
+        </property>
+          <property name="securityAnswer" type="java.lang.String">
+            <column name="SECURITYA" />
+        </property>
+        <property name="firstName" type="java.lang.String" not-null="true">
             <column name="FIRSTNAME" />
         </property>
-        <property name="lastName" type="java.lang.String">
+        <property name="lastName" type="java.lang.String" not-null="true">
             <column name="LASTNAME" />
         </property>
         <property name="gender" type="java.lang.String">
@@ -82,6 +91,7 @@
 	            <column name="UPDATEDBY" />
 	        </property>
         </component>
+        
         <list name="session" table="SESSION" inverse="true" cascade="save-update">
         	<key column="USERID" />
         	<list-index column="SESSIONID"/>

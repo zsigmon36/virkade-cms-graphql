@@ -1,6 +1,7 @@
 package com.virkade.cms.graphql;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
+import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
+import com.virkade.cms.hibernate.utilities.CMSSeeds;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 
 import graphql.schema.GraphQLSchema;
+import graphql.servlet.DefaultExecutionStrategyProvider;
+import graphql.servlet.GraphQLContext;
 import graphql.servlet.SimpleGraphQLServlet;
 
 @RestController
@@ -21,10 +26,13 @@ import graphql.servlet.SimpleGraphQLServlet;
 public class GraphQlRouter extends SimpleGraphQLServlet {
 
 	private static final long serialVersionUID = 465489113L;
-
+	
 	public GraphQlRouter() {
-		super(buildSchema());
-		HibernateUtilities.getSessionFactory();
+		super(buildSchema(), new DefaultExecutionStrategyProvider(), null, null, new CustomGraphQLErrorHandler(), null);
+		CMSSeeds.createDefaultTypes();
+		CMSSeeds.createDefaultStatus();
+		CMSSeeds.createDefaultUsers();
+		
 	}
 
 	private static GraphQLSchema buildSchema() {
@@ -37,5 +45,21 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		super.doPost(req, resp);
 
 	}
+	
+	@Override
+	protected GraphQLContext createContext(Optional<HttpServletRequest> request, Optional<HttpServletResponse> response) {
+		String authToken = request
+		        .map(req -> req.getHeader("Authorization"))
+		        .filter(id -> !id.isEmpty())
+		        .map(id -> id.replace("Bearer ", ""))
+		        .orElse(null);
+		String userName = request
+		        .map(req -> req.getHeader("UserName"))
+		        .filter(id -> !id.isEmpty())
+		        .orElse(null);
 
+		
+		return new AuthContext(userName, authToken, request, response);
+	}
+	
 }

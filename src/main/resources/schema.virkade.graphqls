@@ -1,10 +1,11 @@
 type User {
-	userId: Long!
-    typeId: Long!
-	addressId: Long
-	statusId: Long!
+	userId: Long
+    type: Type!
+	address: Address
+	status: Status!
 	emailAddress: String!
 	userName: String!
+	securityQuestion: String
     firstName: String!
     lastName: String!
 	gender: String
@@ -22,6 +23,89 @@ type User {
 	audit: Audit
 }
 
+input InputUser {
+    typeCode: String
+	addressId: Long
+	statusId: Long
+	emailAddress: String
+	userName: String!
+	password: String
+	securityQuestion: String
+	securityAnswer: String
+    firstName: String
+    lastName: String
+	gender: String
+	age: Long
+	height: Long
+	weight: Long
+	idp: Float
+	tcAgree: Boolean!
+	liabilityAgree: Boolean!
+	emailVerified: Boolean!
+	playedBefore: Boolean!
+	reServices: Boolean!
+	canContact: Boolean!
+}
+
+type Legal {
+	legalDocId: Long
+	user: User
+	type: Type
+	name: String
+	description: String
+	content: String
+	activeDate: Date
+	expireDate: Date
+	enabled: Boolean
+	audit: Audit
+}
+
+type Status {
+	statusId: Long
+	name: String
+	description: String
+	code: String
+	audit: Audit
+}
+
+type Comment {
+	commentId: Long
+	user: User
+	type: Type
+	commentContent: String
+	audit: Audit
+}
+
+type Phone {
+	phoneId: Long
+	user: User
+	type: Type
+	number: Int
+	countryCode: Int
+	audit: Audit
+}
+
+type PlaySession {
+	user: User!
+	locationId: Long!
+	startDate: Date!
+	endDate: Date!
+	audit: Audit!
+}
+
+type Address {
+	addressId: Long
+	countryId: Long
+	stateId: Long
+	typeId: Long
+	street: String
+	unit: String
+	apt: String
+	city: String
+	postalCode: Int
+	audit: Audit
+}
+
 type Audit {
 	createdAt: Date!
 	updatedAt: Date!
@@ -29,9 +113,19 @@ type Audit {
     updatedBy: String!
 }
 
+type Type {
+	typeId: Long
+	name: String
+	description: String
+	code: String
+	audit: Audit
+}
+
 input AuthData {
 	userName: String!
 	password: String!
+	securityQuestion: String
+	securityAnswer: String
 }
 
 type AuthToken {
@@ -42,11 +136,16 @@ type AuthToken {
 
 type Query {
   allUsers: [User]
+  getUserByEmailAddress(emailAddress: String!): [User]
+  getUserById(userId: Long!): User
+  getUserSessions(userName: String!): [PlaySession]
+  getUser(userName: String): User
 }
 
 type Mutation {
-  createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!, requestor: String!): User
+  createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
   signIn(authData: AuthData!) : AuthToken
+  updateUser(inputUser: InputUser!): User
 }
 
 schema {

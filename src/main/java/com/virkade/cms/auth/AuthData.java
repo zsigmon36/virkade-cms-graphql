@@ -3,6 +3,8 @@ package com.virkade.cms.auth;
 public class AuthData {
 	private String userName;
 	private String password;
+	private String securityQuestion;
+	private String securityAnswer;
 	
 	public AuthData() {
 		
@@ -39,5 +41,33 @@ public class AuthData {
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * @return the securityQuestion
+	 */
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+
+	/**
+	 * @param securityQuestion the securityQuestion to set
+	 */
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+
+	/**
+	 * @return the securityAnswer
+	 */
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+
+	/**
+	 * @param securityAnswer the securityAnswer to set
+	 */
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
 	}
 }

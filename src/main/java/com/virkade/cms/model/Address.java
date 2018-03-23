@@ -7,8 +7,8 @@ public class Address {
 	private long typeId;
 	
 	private String street;
-	private char unit;
-	private char apt;
+	private String unit;
+	private String apt;
 	private String city;
 	private int postalCode;
 	private Audit audit;
@@ -76,25 +76,25 @@ public class Address {
 	/**
 	 * @return the unit
 	 */
-	public char getUnit() {
+	public String getUnit() {
 		return unit;
 	}
 	/**
 	 * @param unit the unit to set
 	 */
-	public void setUnit(char unit) {
+	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 	/**
 	 * @return the apt
 	 */
-	public char getApt() {
+	public String getApt() {
 		return apt;
 	}
 	/**
 	 * @param apt the apt to set
 	 */
-	public void setApt(char apt) {
+	public void setApt(String apt) {
 		this.apt = apt;
 	}
 	/**
