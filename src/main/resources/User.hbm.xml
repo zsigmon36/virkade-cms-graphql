@@ -92,7 +92,7 @@
 	        </property>
         </component>
         
-        <list name="session" table="SESSION" inverse="true" cascade="save-update">
+        <list name="sessions" table="SESSION" inverse="true" cascade="save-update" fetch="join">
         	<key column="USERID" />
         	<list-index column="SESSIONID"/>
         	<one-to-many class="com.virkade.cms.model.PlaySession"/>

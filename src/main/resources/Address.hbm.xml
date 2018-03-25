@@ -8,15 +8,15 @@
 			<column name="ADDRESSID" />
 			<generator class="increment" />
 		</id>
-		<property name="countryId" type="long">
-			<column name="COUNTRYID" />
-		</property>
-		<property name="stateId" type="long">
+
+		<many-to-one name="state" class="com.virkade.cms.model.State" not-null="true" fetch="join">
 			<column name="STATEID" />
-		</property>
-		<property name="typeId" type="long">
+		</many-to-one>
+
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
 			<column name="TYPEID" />
-		</property>
+		</many-to-one>
+
 		<property name="street" type="java.lang.String">
 			<column name="STREET" />
 		</property>

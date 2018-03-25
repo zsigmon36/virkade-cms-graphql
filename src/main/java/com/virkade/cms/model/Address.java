@@ -2,10 +2,8 @@ package com.virkade.cms.model;
 
 public class Address {
 	private long addressId;
-	private long countryId;
-	private long stateId;
-	private long typeId;
-	
+	private State state;
+	private Type type;
 	private String street;
 	private String unit;
 	private String apt;
@@ -26,40 +24,28 @@ public class Address {
 		this.addressId = addressId;
 	}
 	/**
-	 * @return the countryId
+	 * @return the state
 	 */
-	public long getCountryId() {
-		return countryId;
+	public State getState() {
+		return state;
 	}
 	/**
-	 * @param countryId the countryId to set
+	 * @param state the state to set
 	 */
-	public void setCountryId(long countryId) {
-		this.countryId = countryId;
+	public void setState(State state) {
+		this.state = state;
 	}
 	/**
-	 * @return the stateId
+	 * @return the type
 	 */
-	public long getStateId() {
-		return stateId;
+	public Type getType() {
+		return type;
 	}
 	/**
-	 * @param stateId the stateId to set
+	 * @param type the type to set
 	 */
-	public void setStateId(long stateId) {
-		this.stateId = stateId;
-	}
-	/**
-	 * @return the typeId
-	 */
-	public long getTypeId() {
-		return typeId;
-	}
-	/**
-	 * @param typeId the typeId to set
-	 */
-	public void setTypeId(long typeId) {
-		this.typeId = typeId;
+	public void setType(Type type) {
+		this.type = type;
 	}
 	/**
 	 * @return the street

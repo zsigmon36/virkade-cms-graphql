@@ -5,18 +5,16 @@ import java.util.Date;
 public class News {
 	
 	private long newsId;
-	private long typeId;
+	private Type type;
 
 	private String name;
 	private String description;
 	private String content;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
 	private Date activeDate;
 	private Date expireDate;
 	private boolean enabled;
+	private Audit audit;
+	
 	/**
 	 * @return the newsId
 	 */
@@ -30,16 +28,16 @@ public class News {
 		this.newsId = newsId;
 	}
 	/**
-	 * @return the typeId
+	 * @return the type
 	 */
-	public long getTypeId() {
-		return typeId;
+	public Type getType() {
+		return type;
 	}
 	/**
-	 * @param typeId the typeId to set
+	 * @param type the type to set
 	 */
-	public void setTypeId(long typeId) {
-		this.typeId = typeId;
+	public void setType(Type type) {
+		this.type = type;
 	}
 	/**
 	 * @return the name
@@ -78,54 +76,6 @@ public class News {
 		this.content = content;
 	}
 	/**
-	 * @return the createdAt
-	 */
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-	/**
-	 * @param createdAt the createdAt to set
-	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	/**
-	 * @return the updatedAt
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-	/**
-	 * @param updatedAt the updatedAt to set
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	/**
 	 * @return the activeDate
 	 */
 	public Date getActiveDate() {
@@ -160,6 +110,18 @@ public class News {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	/**
+	 * @return the audit
+	 */
+	public Audit getAudit() {
+		return audit;
+	}
+	/**
+	 * @param audit the audit to set
+	 */
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
 	
 }

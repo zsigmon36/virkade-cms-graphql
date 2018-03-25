@@ -5,7 +5,6 @@ public class Phone {
 	private long phoneId;
 	private User user;
 	private Type type;
-
 	private int number;
 	private int countryCode;
 	private Audit audit;
@@ -74,6 +73,9 @@ public class Phone {
 	 * @return the audit
 	 */
 	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
 		return audit;
 	}
 

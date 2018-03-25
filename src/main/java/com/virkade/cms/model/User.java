@@ -29,7 +29,7 @@ public class User {
 	private Type type;
 	private Address address;
 	private Status status;
-	private List<PlaySession> session;
+	private List<PlaySession> sessions;
 	private String emailAddress;
 	private String userName;
 	private String password;
@@ -142,7 +142,7 @@ public class User {
 
 	private static User convertInputUserToUser(InputUser objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		User user = new User();
-		user.setAddress(AddressDAO.fetchAddressById(objToConvert.getAddressId()));
+		user.setAddress(AddressDAO.fetchById(objToConvert.getAddressId()));
 		user.setAge(objToConvert.getAge());
 		user.setCanContact(objToConvert.isCanContact());
 		user.setEmailAddress(objToConvert.getEmailAddress());
@@ -158,9 +158,9 @@ public class User {
 		user.setSecurityAnswer(objToConvert.getSecurityAnswer());
 		user.setPlayedBefore(objToConvert.isPlayedBefore());
 		user.setReServices(objToConvert.isReServices());
-		user.setStatus(StatusDAO.fetchStatusById(objToConvert.getStatusId()));
+		user.setStatus(StatusDAO.fetchById(objToConvert.getStatusId()));
 		user.setTcAgree(objToConvert.isTcAgree());
-		user.setType(TypeDAO.fetchTypeByCode(objToConvert.getTypeCode()));
+		user.setType(TypeDAO.fetchByCode(objToConvert.getTypeCode()));
 		user.setUserName(objToConvert.getUserName());
 		user.setWeight(objToConvert.getWeight());
 		return user;
@@ -228,16 +228,16 @@ public class User {
 	/**
 	 * @return the session
 	 */
-	public List<PlaySession> getSession() {
-		return session;
+	public List<PlaySession> getSessions() {
+		return sessions;
 	}
 
 	/**
 	 * @param session
 	 *            the session to set
 	 */
-	public void setSession(List<PlaySession> session) {
-		this.session = session;
+	public void setSessions(List<PlaySession> sessions) {
+		this.sessions = sessions;
 	}
 
 	/**

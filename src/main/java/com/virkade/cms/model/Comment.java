@@ -59,6 +59,9 @@ public class Comment {
 	 * @return the audit
 	 */
 	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
 		return audit;
 	}
 	/**

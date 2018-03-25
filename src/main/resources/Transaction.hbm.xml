@@ -3,37 +3,43 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.virkade.cms.model.Transaction" table="TRANSACTION">
-        <id name="transactionId" type="long">
-            <column name="TRANSACTIONID" />
-            <generator class="increment" />
-        </id>
-        <property name="sessionId" type="long">
-            <column name="SESSIONID" />
-        </property>
-        <property name="serviceName" type="java.lang.String">
-            <column name="SERVICENAME" />
-        </property>
-        <property name="description" type="java.lang.String">
-            <column name="DESCRIPTION" />
-        </property>
-        <property name="refId" type="java.lang.String">
-            <column name="REFID" />
-        </property>
-        <property name="payment" type="double">
-            <column name="PAYMENT" />
-        </property>
-        <property name="createdAt" type="java.util.Date">
-            <column name="CREATEDAT" />
-        </property>
-        <property name="updatedAt" type="java.util.Date">
-            <column name="UPDATEDAT" />
-        </property>
-        <property name="createdBy" type="java.lang.String">
-            <column name="CREATEDBY" />
-        </property>
-        <property name="updatedBy" type="java.lang.String">
-            <column name="UPDATEDBY" />
-        </property>
-    </class>
+	<class name="com.virkade.cms.model.Transaction" table="TRANSACTION">
+		<id name="transactionId" type="long">
+			<column name="TRANSACTIONID" />
+			<generator class="increment" />
+		</id>
+
+		<many-to-one name="session" class="com.virkade.cms.model.PlaySession" not-null="true" fetch="join">
+			<column name="SESSIONID" />
+		</many-to-one>
+
+		<property name="serviceName" type="java.lang.String">
+			<column name="SERVICENAME" />
+		</property>
+		<property name="description" type="java.lang.String">
+			<column name="DESCRIPTION" />
+		</property>
+		<property name="refId" type="java.lang.String">
+			<column name="REFID" />
+		</property>
+		<property name="payment" type="double">
+			<column name="PAYMENT" />
+		</property>
+
+		<component name="audit">
+			<property name="createdAt" type="java.util.Date">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.util.Date">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" />
+			</property>
+		</component>
+
+	</class>
 </hibernate-mapping>

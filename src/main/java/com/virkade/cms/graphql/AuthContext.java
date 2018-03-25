@@ -24,14 +24,11 @@ public class AuthContext extends GraphQLContext {
 	
 	public AuthContext(String userName, String token, Optional<HttpServletRequest> request, Optional<HttpServletResponse> response) {
 		super(request, response);
-		User user = new User();
 		boolean validSession = ClientSessionTracker.isValidActiveClientSession(userName, token);
 		if (validSession) {
-			user.setUserName(userName);
-			this.currentAuthUser = UserDAO.fetchUser(user);
+			this.currentAuthUser = UserDAO.fetchByUserName(userName);
 		} else {
-			user.setUserName(UserDAO.GUEST_USER_NAME);
-			this.currentAuthUser = UserDAO.fetchUser(user);
+			this.currentAuthUser = UserDAO.fetchByUserName(UserDAO.GUEST_USER_NAME);
 		}
 	
 	}

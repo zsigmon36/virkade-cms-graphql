@@ -1,20 +1,14 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
-
 public class Transaction {
 	
 	private long transactionId;
-	private long sessionId;
-	
+	private PlaySession session;
 	private String serviceName;
 	private String description;
 	private String refId;
 	private double payment;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
+	private Audit audit;
 	/**
 	 * @return the transactionId
 	 */
@@ -26,18 +20,6 @@ public class Transaction {
 	 */
 	public void setTransactionId(long transactionId) {
 		this.transactionId = transactionId;
-	}
-	/**
-	 * @return the sessionId
-	 */
-	public long getSessionId() {
-		return sessionId;
-	}
-	/**
-	 * @param sessionId the sessionId to set
-	 */
-	public void setSessionId(long sessionId) {
-		this.sessionId = sessionId;
 	}
 	/**
 	 * @return the serviceName
@@ -88,52 +70,28 @@ public class Transaction {
 		this.payment = payment;
 	}
 	/**
-	 * @return the createdAt
+	 * @return the session
 	 */
-	public Date getCreatedAt() {
-		return createdAt;
+	public PlaySession getSession() {
+		return session;
 	}
 	/**
-	 * @param createdAt the createdAt to set
+	 * @param session the session to set
 	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
+	public void setSession(PlaySession session) {
+		this.session = session;
 	}
 	/**
-	 * @return the updatedAt
+	 * @return the audit
 	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
+	public Audit getAudit() {
+		return audit;
 	}
 	/**
-	 * @param updatedAt the updatedAt to set
+	 * @param audit the audit to set
 	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
 	
 }

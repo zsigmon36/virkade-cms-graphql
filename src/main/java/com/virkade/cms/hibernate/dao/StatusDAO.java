@@ -20,7 +20,7 @@ public class StatusDAO {
 	public static final String ACTIVE_NAME = "Active";
 	public static final String INACTIVE_NAME = "InActive";
 	
-	public static Status fetchStatusById(long statusId) {
+	public static Status fetchById(long statusId) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		Status status = null;
@@ -36,7 +36,7 @@ public class StatusDAO {
 		return status;
 	}
 	
-	public static Status createStatus(Status status) {
+	public static Status create(Status status) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
@@ -51,7 +51,7 @@ public class StatusDAO {
 		return status;
 	}
 
-	public static Status fetchStatusByCode(String code) {
+	public static Status fetchByCode(String code) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		Status status = null;

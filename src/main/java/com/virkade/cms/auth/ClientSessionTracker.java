@@ -79,7 +79,7 @@ public class ClientSessionTracker {
 		user.setUserName(userName);
 		AuthToken authToken = null;
 		try {
-			user = UserDAO.fetchUser(user);
+			user = UserDAO.fetch(user);
 			LOG.debug("Checking "+user.getUserName()+"'s encoded password in the database matches the client provided password");
 			if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {
 				String token = createSessionToken();

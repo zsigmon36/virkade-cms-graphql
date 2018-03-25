@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
 import com.virkade.cms.hibernate.utilities.CMSSeeds;
-import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 
 import graphql.schema.GraphQLSchema;
 import graphql.servlet.DefaultExecutionStrategyProvider;
@@ -31,7 +30,16 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		super(buildSchema(), new DefaultExecutionStrategyProvider(), null, null, new CustomGraphQLErrorHandler(), null);
 		CMSSeeds.createDefaultTypes();
 		CMSSeeds.createDefaultStatus();
+		CMSSeeds.createDefaultRegions();
+		CMSSeeds.createDefaultCountries();
+		CMSSeeds.createDefaultStates();
+		CMSSeeds.createDefaultAddress();
 		CMSSeeds.createDefaultUsers();
+		CMSSeeds.createDefaultLocation();
+		
+		//test session
+		CMSSeeds.createTestGame();
+		CMSSeeds.createTestSession();
 		
 	}
 

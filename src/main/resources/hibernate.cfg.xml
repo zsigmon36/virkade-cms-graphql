@@ -8,6 +8,7 @@
   <property name="hibernate.connection.url">jdbc:postgresql://192.168.1.36:5432/virkadeCms</property>
   <property name="hibernate.connection.username">virkade</property>
   <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+  <property name="hibernate.connection.pool_size">20</property>
   <property name="hibernate.show_sql">true</property>
   <property name="hibernate.hbm2ddl.auto">create-drop</property>
   <property name="hibernate.default_schema">virkade</property>
@@ -16,7 +17,6 @@
   <mapping resource="Address.hbm.xml"/>
   <mapping resource="Country.hbm.xml"/>
   <mapping resource="Game.hbm.xml"/>
-  <mapping resource="GameSessions.hbm.xml"/>
   <mapping resource="Legal.hbm.xml"/>
   <mapping resource="Location.hbm.xml"/>
   <mapping resource="News.hbm.xml"/>

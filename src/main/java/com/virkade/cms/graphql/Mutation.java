@@ -16,10 +16,8 @@ import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
-import com.virkade.cms.hibernate.utilities.CMSSeeds;
 import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.InputUser;
-import com.virkade.cms.model.Status;
 import com.virkade.cms.model.User;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -29,23 +27,22 @@ import graphql.schema.DataFetchingEnvironment;
  *
  */
 public class Mutation implements GraphQLRootResolver {
-	
+
 	private Query query = new Query();
-	
+
 	public Mutation() {
 	}
-	
 
 	public User createNewUser(String emailAddress, AuthData authData, String firstName, String lastName, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		
+
 		List<String> missingData = new ArrayList<String>();
 
 		if (authData == null) {
 			throw new Exception("Creation of user not allowed with null AuthData");
 		}
-		if (UserDAO.fetchUser(new User(authData)) != null) {
+		if (UserDAO.fetch(new User(authData)) != null) {
 			throw new Exception("User already exists with the userName=" + authData.getUserName());
 		}
 
@@ -71,8 +68,7 @@ public class Mutation implements GraphQLRootResolver {
 			missingData.add("SecurityAnswer");
 		}
 		if (!missingData.isEmpty()) {
-			throw new Exception(
-					"Creation of user not allowed with the following missing data [" + missingData.toString() + "]");
+			throw new Exception("Creation of user not allowed with the following missing data [" + missingData.toString() + "]");
 		}
 		User user = new User(authData);
 		user.setFirstName(firstName);
@@ -82,13 +78,13 @@ public class Mutation implements GraphQLRootResolver {
 		user.setPassword(VirkadeEncryptor.hashEncode(authData.getPassword()));
 		user.setSecurityQuestion(authData.getSecurityQuestion());
 		user.setSecurityAnswer(VirkadeEncryptor.hashEncode(authData.getSecurityAnswer()));
-		user.setStatus(StatusDAO.fetchStatusByCode(StatusDAO.ACTIVE_CODE));
-		user.setType(TypeDAO.fetchTypeByCode(TypeDAO.PROSPECT_CODE));
+		user.setStatus(StatusDAO.fetchByCode(StatusDAO.ACTIVE_CODE));
+		user.setType(TypeDAO.fetchByCode(TypeDAO.PROSPECT_CODE));
 		user.getAudit().setCreatedAt(new Date());
-		user.getAudit().setCreatedBy((curSessionUser.getUserName() == null)?user.getUserName():curSessionUser.getUserName());
+		user.getAudit().setCreatedBy((curSessionUser.getUserName() == null) ? user.getUserName() : curSessionUser.getUserName());
 		user.getAudit().setUpdatedAt(new Date());
-		user.getAudit().setUpdatedBy((curSessionUser.getUserName() == null)?user.getUserName():curSessionUser.getUserName());
-		UserDAO.pushUser(user, false);
+		user.getAudit().setUpdatedBy((curSessionUser.getUserName() == null) ? user.getUserName() : curSessionUser.getUserName());
+		UserDAO.createUpdate(user, false);
 
 		return user;
 
@@ -101,15 +97,14 @@ public class Mutation implements GraphQLRootResolver {
 	public User updateUser(InputUser inputUser, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		
-		if (!curSessionUser.getUserName().equals(inputUser.getUserName()) && 
-				(curSessionUser.getType().getTypeId() != TypeDAO.fetchTypeByCode(TypeDAO.ADMIN_CODE).getTypeId())) {
+
+		if (!curSessionUser.getUserName().equals(inputUser.getUserName()) && (curSessionUser.getType().getTypeId() != TypeDAO.fetchByCode(TypeDAO.ADMIN_CODE).getTypeId())) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
-		
+
 		User userToUpdate = query.getUser(inputUser.getUserName());
 		User convertedInputUser = User.convertObjToUser(inputUser.getClass().getName(), inputUser);
-		
+
 		if (convertedInputUser.getAddress() != null) {
 			userToUpdate.setAddress(convertedInputUser.getAddress());
 		}
@@ -152,13 +147,13 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.getWeight() != 0) {
 			userToUpdate.setWeight(convertedInputUser.getWeight());
 		}
-		
+
 		Audit updatedAuditInfo = userToUpdate.getAudit();
 		updatedAuditInfo.setUpdatedAt(new Date());
 		updatedAuditInfo.setUpdatedBy(curSessionUser.getUserName());
 		userToUpdate.setAudit(updatedAuditInfo);
-		
-		return UserDAO.pushUser(userToUpdate, true);
+
+		return UserDAO.createUpdate(userToUpdate, true);
 	}
 
 }

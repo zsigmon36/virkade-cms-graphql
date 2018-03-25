@@ -20,12 +20,13 @@ public class TypeDAO {
 	public static final String TYPE_CODE = "code";
 	public static final String TYPE_NAME = "name";
 	private static final Logger LOG = Logger.getLogger(TypeDAO.class);
+	public static final String PHYSICAL_ADDRESS = "PHYSCL_ADRS";
 	
 	private TypeDAO() {
 		
 	}
 	
-	public static List<Type> getTypeByName(String typeName) {
+	public static List<Type> fetchByName(String typeName) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		List<Type> type = new ArrayList<Type>();
@@ -43,7 +44,7 @@ public class TypeDAO {
 		return type;
 	}
 	
-	public static Type fetchTypeByCode(String code) {
+	public static Type fetchByCode(String code) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		Type type = new Type();
@@ -61,7 +62,7 @@ public class TypeDAO {
 		return type;
 	}
 
-	public static Type getTypeById(long typeId) {
+	public static Type fetchById(long typeId) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		Type type = new Type();
@@ -77,7 +78,7 @@ public class TypeDAO {
 		return type;
 	}
 
-	public static Type createType(Type type) {
+	public static Type create(Type type) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {

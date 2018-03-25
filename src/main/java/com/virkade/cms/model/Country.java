@@ -1,19 +1,14 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
-
 public class Country {
 	private long countryId;
-	private long regionId;
+	private Region region;
 	
 	private String name;
 	private String description;
-	private char a2;
-	private char a3;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
+	private String a2;
+	private String a3;
+	private Audit audit;
 	/**
 	 * @return the countryId
 	 */
@@ -27,16 +22,16 @@ public class Country {
 		this.countryId = countryId;
 	}
 	/**
-	 * @return the regionId
+	 * @return the region
 	 */
-	public long getRegionId() {
-		return regionId;
+	public Region getRegion() {
+		return region;
 	}
 	/**
-	 * @param regionId the regionId to set
+	 * @param region the region to set
 	 */
-	public void setRegionId(long regionId) {
-		this.regionId = regionId;
+	public void setRegion(Region region) {
+		this.region = region;
 	}
 	/**
 	 * @return the name
@@ -65,75 +60,44 @@ public class Country {
 	/**
 	 * @return the a2
 	 */
-	public char getA2() {
+	public String getA2() {
 		return a2;
 	}
 	/**
 	 * @param a2 the a2 to set
 	 */
-	public void setA2(char a2) {
+	public void setA2(String a2) {
 		this.a2 = a2;
 	}
 	/**
 	 * @return the a3
 	 */
-	public char getA3() {
+	public String getA3() {
 		return a3;
 	}
 	/**
 	 * @param a3 the a3 to set
 	 */
-	public void setA3(char a3) {
+	public void setA3(String a3) {
 		this.a3 = a3;
 	}
+
 	/**
-	 * @return the createdAt
+	 * @return the audit
 	 */
-	public Date getCreatedAt() {
-		return createdAt;
+	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
+		return audit;
 	}
+
 	/**
-	 * @param createdAt the createdAt to set
+	 * @param audit
+	 *            the audit to set
 	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
-	/**
-	 * @return the updatedAt
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-	/**
-	 * @param updatedAt the updatedAt to set
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	
 	
 }

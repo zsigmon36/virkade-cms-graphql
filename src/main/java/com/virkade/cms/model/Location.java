@@ -1,21 +1,17 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
-
 public class Location {
 	
 	private long locationId;
-	private long addressId;
+	private Address address;
 	
 	private String name;
 	private String description;
-	private int phoneNum;
+	private long phoneNum;
 	private String manager;
-	private Date createdAt;
-	private Date updatedAt;
-	private String createdBy;
-	private String updatedBy;
 	private boolean enabled;
+	private Audit audit;
+
 	/**
 	 * @return the locationId
 	 */
@@ -29,16 +25,16 @@ public class Location {
 		this.locationId = locationId;
 	}
 	/**
-	 * @return the addressId
+	 * @return the address
 	 */
-	public long getAddressId() {
-		return addressId;
+	public Address getAddress() {
+		return address;
 	}
 	/**
-	 * @param addressId the addressId to set
+	 * @param address the address to set
 	 */
-	public void setAddressId(long addressId) {
-		this.addressId = addressId;
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 	/**
 	 * @return the name
@@ -67,13 +63,13 @@ public class Location {
 	/**
 	 * @return the phoneNum
 	 */
-	public int getPhoneNum() {
+	public long getPhoneNum() {
 		return phoneNum;
 	}
 	/**
 	 * @param phoneNum the phoneNum to set
 	 */
-	public void setPhoneNum(int phoneNum) {
+	public void setPhoneNum(long phoneNum) {
 		this.phoneNum = phoneNum;
 	}
 	/**
@@ -89,54 +85,6 @@ public class Location {
 		this.manager = manager;
 	}
 	/**
-	 * @return the createdAt
-	 */
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-	/**
-	 * @param createdAt the createdAt to set
-	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-	/**
-	 * @return the updatedAt
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-	/**
-	 * @param updatedAt the updatedAt to set
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-	/**
 	 * @return the enabled
 	 */
 	public boolean isEnabled() {
@@ -147,6 +95,21 @@ public class Location {
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	/**
+	 * @return the audit
+	 */
+	public Audit getAudit() {
+		if (this.audit == null) {
+			this.audit = new Audit();
+		}
+		return audit;
+	}
+	/**
+	 * @param audit the audit to set
+	 */
+	public void setAudit(Audit audit) {
+		this.audit = audit;
 	}
 	
 }

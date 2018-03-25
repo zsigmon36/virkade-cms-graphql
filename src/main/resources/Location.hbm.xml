@@ -3,40 +3,45 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.virkade.cms.model.Location" table="LOCATION">
-        <id name="locationId" type="long">
-            <column name="LOCATIONID" />
-            <generator class="increment" />
-        </id>
-        <property name="addressId" type="long">
-            <column name="ADDRESSID" />
-        </property>
-        <property name="name" type="java.lang.String">
-            <column name="NAME" />
-        </property>
-        <property name="description" type="java.lang.String">
-            <column name="DESCRIPTION" />
-        </property>
-        <property name="phoneNum" type="int">
-            <column name="PHONENUM" />
-        </property>
-        <property name="manager" type="java.lang.String">
-            <column name="MANAGER" />
-        </property>
-        <property name="createdAt" type="java.util.Date">
-            <column name="CREATEDAT" />
-        </property>
-        <property name="updatedAt" type="java.util.Date">
-            <column name="UPDATEDAT" />
-        </property>
-        <property name="createdBy" type="java.lang.String">
-            <column name="CREATEDBY" />
-        </property>
-        <property name="updatedBy" type="java.lang.String">
-            <column name="UPDATEDBY" />
-        </property>
-        <property name="enabled" type="boolean">
-            <column name="ENABLED" />
-        </property>
-    </class>
+	<class name="com.virkade.cms.model.Location" table="LOCATION">
+		<id name="locationId" type="long">
+			<column name="LOCATIONID" />
+			<generator class="increment" />
+		</id>
+
+		<many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join">
+			<column name="ADDRESSID" />
+		</many-to-one>
+
+		<property name="name" type="java.lang.String">
+			<column name="NAME" />
+		</property>
+		<property name="description" type="java.lang.String">
+			<column name="DESCRIPTION" />
+		</property>
+		<property name="phoneNum" type="long">
+			<column name="PHONENUM" />
+		</property>
+		<property name="manager" type="java.lang.String">
+			<column name="MANAGER" />
+		</property>
+		<property name="enabled" type="boolean">
+			<column name="ENABLED" />
+		</property>
+		<component name="audit">
+			<property name="createdAt" type="java.util.Date">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.util.Date">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" />
+			</property>
+		</component>
+
+	</class>
 </hibernate-mapping>

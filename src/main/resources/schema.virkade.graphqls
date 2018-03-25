@@ -4,6 +4,7 @@ type User {
 	address: Address
 	status: Status!
 	emailAddress: String!
+	sessions: [PlaySession]
 	userName: String!
 	securityQuestion: String
     firstName: String!
@@ -86,31 +87,73 @@ type Phone {
 }
 
 type PlaySession {
-	user: User!
-	locationId: Long!
-	startDate: Date!
-	endDate: Date!
-	audit: Audit!
+	user: User
+	location: Location
+	games: [Game]
+	startDate: Date
+	endDate: Date
+	audit: Audit
+}
+type Game {
+	gameId: Long
+	name: String
+	description: String
+	webSite: String
+	cost: Float
+	sessions: [PlaySession]
+	creator: String
+	enabled: Boolean
+	audit: Audit
+}
+
+type Location {
+	locationId: Long
+	address: Address
+	name: String
+	description: String
+	phoneNum : Int
+	manager: String
+	enabled: Boolean
+	audit: Audit
 }
 
 type Address {
 	addressId: Long
-	countryId: Long
-	stateId: Long
-	typeId: Long
+	state: State
+	type: Type
 	street: String
 	unit: String
 	apt: String
 	city: String
-	postalCode: Int
+	postalCode: Long
 	audit: Audit
 }
 
-type Audit {
-	createdAt: Date!
-	updatedAt: Date!
-    createdBy: String!
-    updatedBy: String!
+type Region {
+	regionId: Long
+	name: String
+	description: String
+	regionCode: String
+	audit: Audit
+}
+
+type Country {
+	countryId: Long
+	region: Region
+	name: String
+	description: String
+	a2: String
+	a3: String
+	audit: Audit
+}
+
+type State {
+	stateId: Long
+	country: Country
+	name: String
+	description: String
+	stateCode: String
+	audit: Audit
 }
 
 type Type {
@@ -119,6 +162,13 @@ type Type {
 	description: String
 	code: String
 	audit: Audit
+}
+
+type Audit {
+	createdAt: Date!
+	updatedAt: Date!
+    createdBy: String!
+    updatedBy: String!
 }
 
 input AuthData {

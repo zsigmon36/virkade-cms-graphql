@@ -28,7 +28,7 @@ public class Query implements GraphQLRootResolver {
 	public User getUser(String userName) throws Exception {
 		User user = new User();
 		user.setUserName(userName);
-		return UserDAO.fetchUser(user);
+		return UserDAO.fetch(user);
 	}
 	
 	public List<PlaySession> getUserSessions(String username) throws Exception {
@@ -50,13 +50,13 @@ public class Query implements GraphQLRootResolver {
 	}
 	
 	public List<User> getUserByEmailAddress(String emailAddress) {
-		return UserDAO.fetchUsers(emailAddress);
+		return UserDAO.fetchByEmail(emailAddress);
 	}
 	
 	public User getUserById(Long userId){
 		User user = new User();
 		user.setUserId(userId);
-		user = UserDAO.fetchUser(user);
+		user = UserDAO.fetch(user);
 		return user;
 	}
 }
