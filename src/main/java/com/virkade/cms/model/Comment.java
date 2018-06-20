@@ -70,4 +70,10 @@ public class Comment {
 	public void setAudit(Audit audit) {
 		this.audit = audit;
 	}
+	
+	
+	public static Comment convertObjToComment(String name, InputComment inputComment) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

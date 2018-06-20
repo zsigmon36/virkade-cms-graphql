@@ -18,20 +18,21 @@
 		</many-to-one>
 
 		<property name="street" type="java.lang.String">
-			<column name="STREET" />
+			<column name="STREET" sql-type="varchar(100)"/>
 		</property>
-		<property name="unit" type="char">
-			<column name="UNIT" />
+		<property name="unit" type="java.lang.String">
+			<column name="UNIT" sql-type="varchar(5)"/>
 		</property>
-		<property name="apt" type="char">
-			<column name="APT" />
+		<property name="apt" type="java.lang.String">
+			<column name="APT" sql-type="varchar(5)"/>
 		</property>
 		<property name="city" type="java.lang.String">
-			<column name="CITY" />
+			<column name="CITY" sql-type="varchar(75)"/>
 		</property>
 		<property name="postalCode" type="int">
 			<column name="POSTALCODE" />
 		</property>
+		
 		<component name="audit">
 			<property name="createdAt" type="java.util.Date">
 				<column name="CREATEDAT" />
@@ -40,10 +41,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 	</class>

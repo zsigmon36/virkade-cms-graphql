@@ -24,12 +24,13 @@ public class User {
 	private static final String GET = "get";
 	private static final String SET = "set";
 	private static final String IS = "is";
-	
+
 	private long userId;
 	private Type type;
 	private Address address;
 	private Status status;
 	private List<PlaySession> sessions;
+	private List<Comment> comments;
 	private String emailAddress;
 	private String userName;
 	private String password;
@@ -42,8 +43,6 @@ public class User {
 	private int height;
 	private int weight;
 	private float idp;
-	private boolean tcAgree;
-	private boolean liabilityAgree;
 	private boolean emailVerified;
 	private boolean playedBefore;
 	private Date lastLogin;
@@ -59,111 +58,6 @@ public class User {
 		this.password = authData.getPassword();
 		this.securityQuestion = authData.getPassword();
 		this.securityAnswer = authData.getSecurityAnswer();
-	}
-
-	/**
-	 * @return the attribute sorted list
-	 */
-	public static SortedSet<String> getUserAttributeList() {
-		SortedSet<String> attributes = new TreeSet<String>();
-			attributes.add("UserId");
-			attributes.add("Type");
-			attributes.add("Address");
-			attributes.add("StatusId");
-			attributes.add("Session");
-			attributes.add("EmailAddress");
-			attributes.add("UserName");
-			attributes.add("Password");
-			attributes.add("SecurityQuestion");
-			attributes.add("SecurityAnswer");
-			attributes.add("FirstName");
-			attributes.add("LastName");
-			attributes.add("Gender");
-			attributes.add("Age");
-			attributes.add("Height");
-			attributes.add("Weight");
-			attributes.add("Idp");
-			attributes.add("TcAgree");
-			attributes.add("LiabilityAgree");
-			attributes.add("EmailVerified");
-			attributes.add("PlayedBefore");
-			attributes.add("LastLogin");
-			attributes.add("ReServices");
-			attributes.add("CanContact");
-			attributes.add("Audit");
-		return attributes;
-	}
-	
-	/**
-	 * @return a converted object
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidKeyException 
-	 */
-	public static User convertObjToUser(String className, Object objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if (className.equalsIgnoreCase(InputUser.class.getName())) {
-			return convertInputUserToUser((InputUser)objToConvert);
-		}
-		User user = new User();
-		SortedSet<String> attributeList = getUserAttributeList();
-		Class <?> objToConvertClazz = Class.forName(className);
-		Class <?> userClazz = Class.forName(user.getClass().getName());
-		Method[] objToConvertMethods = objToConvertClazz.getDeclaredMethods();
-		Method[] userObjMethods = userClazz.getDeclaredMethods();
-		Iterator<String> attributeIterator = attributeList.iterator();
-		int iterationNumber = 1;
-		while (attributeIterator.hasNext()) {
-			if (iterationNumber >= 100) {
-				LOG.warn("interation max of 100 reached, exiting loop for performance reasons");
-				break;
-			}
-			String currentAttribute = attributeIterator.next();
-			for (Method curObjToConvertMethod : objToConvertMethods) {
-				if (curObjToConvertMethod.getName().contains(currentAttribute) && 
-						(curObjToConvertMethod.getName().contains(GET) || curObjToConvertMethod.getName().contains(IS)) &&
-						curObjToConvertMethod.invoke(objToConvert) != null) {
-					for (Method curUserMethod : userObjMethods) {
-						if (curUserMethod.getName().contains(currentAttribute) && curUserMethod.getName().contains(SET) ) {
-							curUserMethod.invoke(user, (curObjToConvertMethod.invoke(objToConvert)));
-						}
-					}	
-				}
-			}
-			iterationNumber++;
-		}
-		return user;
-	}
-
-
-	private static User convertInputUserToUser(InputUser objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		User user = new User();
-		user.setAddress(AddressDAO.fetchById(objToConvert.getAddressId()));
-		user.setAge(objToConvert.getAge());
-		user.setCanContact(objToConvert.isCanContact());
-		user.setEmailAddress(objToConvert.getEmailAddress());
-		user.setEmailVerified(objToConvert.isEmailVerified());
-		user.setFirstName(objToConvert.getFirstName());
-		user.setGender(objToConvert.getGender());
-		user.setHeight(objToConvert.getHeight());
-		user.setIdp(objToConvert.getIdp());
-		user.setLastName(objToConvert.getLastName());
-		user.setLiabilityAgree(objToConvert.isLiabilityAgree());
-		user.setPassword(objToConvert.getPassword());
-		user.setSecurityQuestion(objToConvert.getSecurityQuestion());
-		user.setSecurityAnswer(objToConvert.getSecurityAnswer());
-		user.setPlayedBefore(objToConvert.isPlayedBefore());
-		user.setReServices(objToConvert.isReServices());
-		user.setStatus(StatusDAO.fetchById(objToConvert.getStatusId()));
-		user.setTcAgree(objToConvert.isTcAgree());
-		user.setType(TypeDAO.fetchByCode(objToConvert.getTypeCode()));
-		user.setUserName(objToConvert.getUserName());
-		user.setWeight(objToConvert.getWeight());
-		return user;
 	}
 
 	/**
@@ -219,7 +113,8 @@ public class User {
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
@@ -238,6 +133,21 @@ public class User {
 	 */
 	public void setSessions(List<PlaySession> sessions) {
 		this.sessions = sessions;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments
+	 *            the comments to set
+	 */
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	/**
@@ -280,9 +190,9 @@ public class User {
 	/**
 	 * @param password
 	 *            the password to set
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidKeyException 
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws InvalidKeyException
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -296,7 +206,8 @@ public class User {
 	}
 
 	/**
-	 * @param securityQuestion the securityQuestion to set
+	 * @param securityQuestion
+	 *            the securityQuestion to set
 	 */
 	public void setSecurityQuestion(String securityQuestion) {
 		this.securityQuestion = securityQuestion;
@@ -310,7 +221,8 @@ public class User {
 	}
 
 	/**
-	 * @param securityAnswer the securityAnswer to set
+	 * @param securityAnswer
+	 *            the securityAnswer to set
 	 */
 	public void setSecurityAnswer(String securityAnswer) {
 		this.securityAnswer = securityAnswer;
@@ -422,36 +334,6 @@ public class User {
 	}
 
 	/**
-	 * @return the tcAgree
-	 */
-	public boolean isTcAgree() {
-		return tcAgree;
-	}
-
-	/**
-	 * @param tcAgree
-	 *            the tcAgree to set
-	 */
-	public void setTcAgree(boolean tcAgree) {
-		this.tcAgree = tcAgree;
-	}
-
-	/**
-	 * @return the liabilityAgree
-	 */
-	public boolean isLiabilityAgree() {
-		return liabilityAgree;
-	}
-
-	/**
-	 * @param liabilityAgree
-	 *            the liabilityAgree to set
-	 */
-	public void setLiabilityAgree(boolean liabilityAgree) {
-		this.liabilityAgree = liabilityAgree;
-	}
-
-	/**
 	 * @return the emailVerified
 	 */
 	public boolean isEmailVerified() {
@@ -551,14 +433,111 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", type=" + type.toString() + ", address=" + address.toString() + ", status=" + status.toString()
-				+ ", emailAddress=" + emailAddress + ", userName=" + userName + ", password=" + password
-				+ ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", age=" + age
-				+ ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", tcAgree=" + tcAgree
-				+ ", liabilityAgree=" + liabilityAgree + ", emailVerified=" + emailVerified + ", playedBefore="
-				+ playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact="
-				+ canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt()
-				+ ", createdBy=" + audit.getCreatedBy() + ", updatedBy=" + audit.getUpdatedBy() + "]";
+		return "User [userId=" + userId + ", type=" + type.toString() + ", address=" + address.toString() + ", status=" + status.toString() 
+		+ ", emailAddress=" + emailAddress + ", userName=" + userName + ", password=" + password + ", firstName=" + firstName + ", lastName=" 
+				+ lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp
+				+ ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices 
+				+ ", canContact=" + canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt() + ", createdBy=" 
+				+ audit.getCreatedBy() + ", updatedBy=" + audit.getUpdatedBy() + "]";
 	}
+	
+	/**
+	 * @return the attribute sorted list
+	 */
+	public static SortedSet<String> getUserAttributeList() {
+		SortedSet<String> attributes = new TreeSet<String>();
+		attributes.add("UserId");
+		attributes.add("Type");
+		attributes.add("Address");
+		attributes.add("StatusId");
+		attributes.add("Session");
+		attributes.add("EmailAddress");
+		attributes.add("UserName");
+		attributes.add("Password");
+		attributes.add("SecurityQuestion");
+		attributes.add("SecurityAnswer");
+		attributes.add("FirstName");
+		attributes.add("LastName");
+		attributes.add("Gender");
+		attributes.add("Age");
+		attributes.add("Height");
+		attributes.add("Weight");
+		attributes.add("Idp");
+		attributes.add("EmailVerified");
+		attributes.add("PlayedBefore");
+		attributes.add("LastLogin");
+		attributes.add("ReServices");
+		attributes.add("CanContact");
+		attributes.add("Audit");
+		return attributes;
+	}
+
+	/**
+	 * @return a converted object
+	 * @throws ClassNotFoundException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 * @throws BadPaddingException
+	 * @throws IllegalBlockSizeException
+	 * @throws InvalidKeyException
+	 */
+	public static User convertObjToUser(String className, Object objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if (className.equalsIgnoreCase(InputUser.class.getName())) {
+			return convertInputUserToUser((InputUser) objToConvert);
+		}
+		User user = new User();
+		SortedSet<String> attributeList = getUserAttributeList();
+		Class<?> objToConvertClazz = Class.forName(className);
+		Class<?> userClazz = Class.forName(user.getClass().getName());
+		Method[] objToConvertMethods = objToConvertClazz.getDeclaredMethods();
+		Method[] userObjMethods = userClazz.getDeclaredMethods();
+		Iterator<String> attributeIterator = attributeList.iterator();
+		int iterationNumber = 1;
+		while (attributeIterator.hasNext()) {
+			if (iterationNumber >= 100) {
+				LOG.warn("interation max of 100 reached, exiting loop for performance reasons");
+				break;
+			}
+			String currentAttribute = attributeIterator.next();
+			for (Method curObjToConvertMethod : objToConvertMethods) {
+				if (curObjToConvertMethod.getName().contains(currentAttribute) && (curObjToConvertMethod.getName().contains(GET) || curObjToConvertMethod.getName().contains(IS)) && curObjToConvertMethod.invoke(objToConvert) != null) {
+					for (Method curUserMethod : userObjMethods) {
+						if (curUserMethod.getName().contains(currentAttribute) && curUserMethod.getName().contains(SET)) {
+							curUserMethod.invoke(user, (curObjToConvertMethod.invoke(objToConvert)));
+						}
+					}
+				}
+			}
+			iterationNumber++;
+		}
+		return user;
+	}
+
+	private static User convertInputUserToUser(InputUser objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		User user = new User();
+		user.setAddress(AddressDAO.fetchById(objToConvert.getAddressId()));
+		user.setAge(objToConvert.getAge());
+		user.setCanContact(objToConvert.isCanContact());
+		user.setEmailAddress(objToConvert.getEmailAddress());
+		user.setEmailVerified(objToConvert.isEmailVerified());
+		user.setFirstName(objToConvert.getFirstName());
+		user.setGender(objToConvert.getGender());
+		user.setHeight(objToConvert.getHeight());
+		user.setIdp(objToConvert.getIdp());
+		user.setLastName(objToConvert.getLastName());
+		user.setPassword(objToConvert.getPassword());
+		user.setSecurityQuestion(objToConvert.getSecurityQuestion());
+		user.setSecurityAnswer(objToConvert.getSecurityAnswer());
+		user.setPlayedBefore(objToConvert.isPlayedBefore());
+		user.setReServices(objToConvert.isReServices());
+		user.setStatus(StatusDAO.fetchById(objToConvert.getStatusId()));
+		user.setType(TypeDAO.fetchByCode(objToConvert.getTypeCode()));
+		user.setUserName(objToConvert.getUserName());
+		user.setWeight(objToConvert.getWeight());
+		return user;
+	}
+
 
 }

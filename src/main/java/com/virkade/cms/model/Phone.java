@@ -5,7 +5,7 @@ public class Phone {
 	private long phoneId;
 	private User user;
 	private Type type;
-	private int number;
+	private long number;
 	private int countryCode;
 	private Audit audit;
 
@@ -27,7 +27,7 @@ public class Phone {
 	/**
 	 * @return the number
 	 */
-	public int getNumber() {
+	public long getNumber() {
 		return number;
 	}
 
@@ -35,7 +35,7 @@ public class Phone {
 	 * @param number
 	 *            the number to set
 	 */
-	public void setNumber(int number) {
+	public void setNumber(long number) {
 		this.number = number;
 	}
 

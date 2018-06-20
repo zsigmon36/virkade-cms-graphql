@@ -14,16 +14,16 @@
 		</many-to-one>
 
 		<property name="name" type="java.lang.String">
-			<column name="NAME" />
+			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" />
+			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
 		<property name="phoneNum" type="long">
 			<column name="PHONENUM" />
 		</property>
 		<property name="manager" type="java.lang.String">
-			<column name="MANAGER" />
+			<column name="MANAGER" sql-type="varchar(75)"/>
 		</property>
 		<property name="enabled" type="boolean">
 			<column name="ENABLED" />
@@ -36,10 +36,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 

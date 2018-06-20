@@ -8,9 +8,7 @@ public class Legal {
 	private User user;
 	private Type type;
 	
-	private String name;
-	private String description;
-	private String content;
+	private boolean agree;
 	private Date activeDate;
 	private Date expireDate;
 	private boolean enabled;
@@ -39,42 +37,6 @@ public class Legal {
 	 */
 	public void setUser(User user) {
 		this.user = user;
-	}
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	/**
-	 * @return the content
-	 */
-	public String getContent() {
-		return content;
-	}
-	/**
-	 * @param content the content to set
-	 */
-	public void setContent(String content) {
-		this.content = content;
 	}
 	/**
 	 * @return the activeDate
@@ -139,15 +101,25 @@ public class Legal {
 	public Type getType() {
 		return type;
 	}
+	/**
+	 * @return the agree
+	 */
+	public boolean isAgree() {
+		return agree;
+	}
+	/**
+	 * @param agree the agree to set
+	 */
+	public void setAgree(boolean agree) {
+		this.agree = agree;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Legal [legalDocId=" + legalDocId + ", user=" + user.toString() + ", type=" + type.toString() + ", name=" + name
-				+ ", description=" + description + ", content=" + content + ", activeDate=" + activeDate
-				+ ", expireDate=" + expireDate + ", enabled=" + enabled + ", audit=" + audit.toString() + "]";
+		return "Legal [legalDocId=" + legalDocId + ", user=" + user + ", type=" + type + ", agree=" + agree + ", activeDate=" + activeDate 
+				+ ", expireDate=" + expireDate + ", enabled=" + enabled + ", audit=" + audit + "]";
 	}
-	
 	
 }

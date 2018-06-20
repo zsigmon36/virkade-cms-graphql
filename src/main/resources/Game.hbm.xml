@@ -9,13 +9,13 @@
 			<generator class="increment" />
 		</id>
 		<property name="name" type="java.lang.String">
-			<column name="NAME" />
+			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" />
+			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
 		<property name="webSite" type="java.lang.String">
-			<column name="WEBSITE" />
+			<column name="WEBSITE" sql-type="varchar(75)"/>
 		</property>
 		<property name="cost" type="double">
 			<column name="COST" />
@@ -28,7 +28,7 @@
         </list>
 
 		<property name="creator" type="java.lang.String">
-			<column name="CREATOR" />
+			<column name="CREATOR" sql-type="varchar(75)"/>
 		</property>
 		<property name="enabled" type="boolean">
 			<column name="ENABLED" />
@@ -42,10 +42,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 	</class>

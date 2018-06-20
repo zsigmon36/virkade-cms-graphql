@@ -28,6 +28,7 @@
 		<property name="endDate" type="java.util.Date">
 			<column name="ENDDATE" />
 		</property>
+		
 		<component name="audit">
 			<property name="createdAt" type="java.util.Date">
 				<column name="CREATEDAT" />
@@ -36,10 +37,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 	</class>

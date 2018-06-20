@@ -3,100 +3,101 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 17, 2018 4:20:16 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-    <class name="com.virkade.cms.model.User" table="USER">
-        <id name="userId" type="long">
-            <column name="USERID" />
-            <generator class="increment" />
-        </id>
-        <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
-            <column name="TYPEID" />
-        </many-to-one>
-        
-        <many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join">
-            <column name="ADDRESSID" />
-        </many-to-one>
-        
-        <many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join">
-            <column name="STATUSID" />
-       	</many-to-one>
-       
-        <property name="emailAddress" type="java.lang.String" not-null="true">
-            <column name="EMAILADDRESS" />
-        </property>
-        <property name="userName" type="java.lang.String" not-null="true" unique="true">
-            <column name="USERNAME" />
-        </property>
-        <property name="password" type="java.lang.String" not-null="true" >
-            <column name="PASSWORD" />
-        </property>
-          <property name="securityQuestion" type="java.lang.String">
-            <column name="SECURITYQ" />
-        </property>
-          <property name="securityAnswer" type="java.lang.String">
-            <column name="SECURITYA" />
-        </property>
-        <property name="firstName" type="java.lang.String" not-null="true">
-            <column name="FIRSTNAME" />
-        </property>
-        <property name="lastName" type="java.lang.String" not-null="true">
-            <column name="LASTNAME" />
-        </property>
-        <property name="gender" type="java.lang.String">
-            <column name="GENDER" />
-        </property>
-        <property name="age" type="int">
-            <column name="AGE" />
-        </property>
-        <property name="height" type="int">
-            <column name="HEIGHT" />
-        </property>
-        <property name="weight" type="int">
-            <column name="WEIGHT" />
-        </property>
-        <property name="idp" type="float">
-            <column name="IDP" />
-        </property>
-        <property name="tcAgree" type="boolean">
-            <column name="TCAGREE" />
-        </property>
-        <property name="liabilityAgree" type="boolean">
-            <column name="LIABILITYAGREE" />
-        </property>
-        <property name="emailVerified" type="boolean">
-            <column name="EMAILVERIFIED" />
-        </property>
-        <property name="playedBefore" type="boolean">
-            <column name="PLAYEDBEFORE" />
-        </property>
-        <property name="lastLogin" type="java.util.Date">
-            <column name="LASTLOGIN" />
-        </property>
-        <property name="reServices" type="boolean">
-            <column name="RESERVICES" />
-        </property>
-        <property name="canContact" type="boolean" access="field">
-            <column name="CANCONTACT" />
-        </property>
-        <component name="audit">
-	        <property name="createdAt" type="java.util.Date">
-	            <column name="CREATEDAT" />
-	        </property>
-	        <property name="updatedAt" type="java.util.Date">
-	            <column name="UPDATEDAT" />
-	        </property>
-	        <property name="createdBy" type="java.lang.String">
-	            <column name="CREATEDBY" />
-	        </property>
-	        <property name="updatedBy" type="java.lang.String">
-	            <column name="UPDATEDBY" />
-	        </property>
-        </component>
-        
-        <list name="sessions" table="SESSION" inverse="true" cascade="save-update" fetch="join">
-        	<key column="USERID" />
-        	<list-index column="SESSIONID"/>
-        	<one-to-many class="com.virkade.cms.model.PlaySession"/>
-        </list>
-        
-    </class>
+	<class name="com.virkade.cms.model.User" table="USER">
+		<id name="userId" type="long">
+			<column name="USERID" />
+			<generator class="increment" />
+		</id>
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+			<column name="TYPEID" />
+		</many-to-one>
+
+		<many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join">
+			<column name="ADDRESSID" />
+		</many-to-one>
+
+		<many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join">
+			<column name="STATUSID" />
+		</many-to-one>
+
+		<property name="emailAddress" type="java.lang.String" not-null="true">
+			<column name="EMAILADDRESS" />
+		</property>
+		<property name="userName" type="java.lang.String" not-null="true" unique="true">
+			<column name="USERNAME" sql-type="varchar(75)" />
+		</property>
+		<property name="password" type="java.lang.String" not-null="true">
+			<column name="PASSWORD" sql-type="varchar(100)" />
+		</property>
+		<property name="securityQuestion" type="java.lang.String">
+			<column name="SECURITYQ" />
+		</property>
+		<property name="securityAnswer" type="java.lang.String">
+			<column name="SECURITYA" sql-type="varchar(75)" />
+		</property>
+		<property name="firstName" type="java.lang.String" not-null="true">
+			<column name="FIRSTNAME" sql-type="varchar(75)" />
+		</property>
+		<property name="lastName" type="java.lang.String" not-null="true">
+			<column name="LASTNAME" sql-type="varchar(75)" />
+		</property>
+		<property name="gender" type="java.lang.String">
+			<column name="GENDER" sql-type="varchar(25)" />
+		</property>
+		<property name="age" type="int">
+			<column name="AGE" />
+		</property>
+		<property name="height" type="int">
+			<column name="HEIGHT" />
+		</property>
+		<property name="weight" type="int">
+			<column name="WEIGHT" />
+		</property>
+		<property name="idp" type="float">
+			<column name="IDP" />
+		</property>
+		<property name="emailVerified" type="boolean">
+			<column name="EMAILVERIFIED" />
+		</property>
+		<property name="playedBefore" type="boolean">
+			<column name="PLAYEDBEFORE" />
+		</property>
+		<property name="lastLogin" type="java.util.Date">
+			<column name="LASTLOGIN" />
+		</property>
+		<property name="reServices" type="boolean">
+			<column name="RESERVICES" />
+		</property>
+		<property name="canContact" type="boolean" access="field">
+			<column name="CANCONTACT" />
+		</property>
+		
+		<component name="audit">
+			<property name="createdAt" type="java.util.Date">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.util.Date">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" sql-type="varchar(75)" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" sql-type="varchar(75)" />
+			</property>
+		</component>
+
+		<list name="sessions" table="SESSION" inverse="true" cascade="save-update" fetch="join">
+			<key column="USERID" />
+			<list-index column="SESSIONID" />
+			<one-to-many class="com.virkade.cms.model.PlaySession" />
+		</list>
+
+		<list name="comments" table="COMMENT" inverse="true" cascade="save-update" fetch="join">
+			<key column="USERID" />
+			<list-index column="COMMENTID" />
+			<one-to-many class="com.virkade.cms.model.Comment" />
+		</list>
+
+	</class>
 </hibernate-mapping>

@@ -17,6 +17,7 @@ public class TypeDAO {
 	public static final String ADMIN_CODE = "ADMN";
 	public static final String PROSPECT_CODE = "PRSP";
 	public static final String CUSTOMER_CODE = "CSTMR";
+	public static final String GUEST_CODE = "GST";
 	public static final String TYPE_CODE = "code";
 	public static final String TYPE_NAME = "name";
 	private static final Logger LOG = Logger.getLogger(TypeDAO.class);

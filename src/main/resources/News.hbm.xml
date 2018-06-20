@@ -14,13 +14,13 @@
 		</many-to-one>
 
 		<property name="name" type="java.lang.String">
-			<column name="NAME" />
+			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" />
+			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
 		<property name="content" type="java.lang.String">
-			<column name="CONTENT" />
+			<column name="CONTENT" sql-type="varchar(8000)"/>
 		</property>
 		<property name="activeDate" type="java.util.Date">
 			<column name="ACTIVEDATE" />
@@ -40,10 +40,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 		

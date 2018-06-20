@@ -14,13 +14,13 @@
 		</many-to-one>
 
 		<property name="serviceName" type="java.lang.String">
-			<column name="SERVICENAME" />
+			<column name="SERVICENAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" />
+			<column name="DESCRIPTION" sql-type="varchar(75)"/>
 		</property>
 		<property name="refId" type="java.lang.String">
-			<column name="REFID" />
+			<column name="REFID" sql-type="varchar(75)"/>
 		</property>
 		<property name="payment" type="double">
 			<column name="PAYMENT" />
@@ -34,10 +34,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 

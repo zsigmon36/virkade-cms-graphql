@@ -9,13 +9,13 @@
 			<generator class="increment" />
 		</id>
 		<property name="name" type="java.lang.String">
-			<column name="NAME" />
+			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" />
+			<column name="DESCRIPTION" sql-type="varchar(75)"/>
 		</property>
 		<property name="regionCode" type="java.lang.String">
-			<column name="REGIONCODE" />
+			<column name="REGIONCODE" sql-type="varchar(8)"/>
 		</property>
 
 		<component name="audit">
@@ -26,10 +26,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 

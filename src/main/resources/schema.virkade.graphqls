@@ -5,6 +5,7 @@ type User {
 	status: Status!
 	emailAddress: String!
 	sessions: [PlaySession]
+	comments: [Comment]
 	userName: String!
 	securityQuestion: String
     firstName: String!
@@ -14,8 +15,6 @@ type User {
 	height: Long
 	weight: Long
 	idp: Float
-	tcAgree: Boolean!
-	liabilityAgree: Boolean!
 	emailVerified: Boolean!
 	playedBefore: Boolean!
 	lastLogin: Date
@@ -40,8 +39,6 @@ input InputUser {
 	height: Long
 	weight: Long
 	idp: Float
-	tcAgree: Boolean!
-	liabilityAgree: Boolean!
 	emailVerified: Boolean!
 	playedBefore: Boolean!
 	reServices: Boolean!
@@ -52,9 +49,7 @@ type Legal {
 	legalDocId: Long
 	user: User
 	type: Type
-	name: String
-	description: String
-	content: String
+	agree: Boolean
 	activeDate: Date
 	expireDate: Date
 	enabled: Boolean
@@ -77,6 +72,12 @@ type Comment {
 	audit: Audit
 }
 
+input InputComment {
+	userName: String!
+	typeCode: String!
+	commentContent: String!
+}
+
 type Phone {
 	phoneId: Long
 	user: User
@@ -84,6 +85,13 @@ type Phone {
 	number: Int
 	countryCode: Int
 	audit: Audit
+}
+
+input InputPhone {
+	userName: String!
+	typeCode: String!
+	number: Int!
+	countryCode: Int!
 }
 
 type PlaySession {
@@ -185,17 +193,30 @@ type AuthToken {
 }
 
 type Query {
-  allUsers: [User]
-  getUserByEmailAddress(emailAddress: String!): [User]
+  getUsersByEmailAddress(emailAddress: String!): [User]
   getUserById(userId: Long!): User
   getUserSessions(userName: String!): [PlaySession]
-  getUser(userName: String): User
+  getUserByUserName(userName: String!): User
+  getUserComments(userName: String!): [Comment]
+  getCountries: [Country]
+  getStates: [State]
+  getTypeByCode(code: String!): Type
+  getLegalsByUser(user: InputUser!): [Legal] 
+  getPhonesByUser(user: InputUser!): [Phone]
+  getPhonesByUserName(userName: String!): [Phone]
 }
 
 type Mutation {
   createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
-  signIn(authData: AuthData!) : AuthToken
   updateUser(inputUser: InputUser!): User
+  signIn(authData: AuthData!): AuthToken
+  signOut: String
+  addPhone(inputPhone: InputPhone!): Phone
+  addComment(inputComment: InputComment!): Comment
+  addSession(userName: String!): PlaySession
+  addLegal(userName: String!): Legal
+  setPassword(userName: String!, newPassword: String!): String
+  setSecurityQA(userName: String!, securityQ: String!, securityA: String!): String
 }
 
 schema {

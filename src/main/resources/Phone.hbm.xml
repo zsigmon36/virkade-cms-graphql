@@ -17,7 +17,7 @@
 			<column name="TYPEID" />
 		</many-to-one>
 		
-		<property name="number" type="int">
+		<property name="number" type="long">
 			<column name="NUMBER" />
 		</property>
 		<property name="countryCode" type="int">
@@ -31,10 +31,10 @@
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" />
+				<column name="CREATEDBY" sql-type="varchar(75)"/>
 			</property>
 			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" />
+				<column name="UPDATEDBY" sql-type="varchar(75)"/>
 			</property>
 		</component>
 	</class>

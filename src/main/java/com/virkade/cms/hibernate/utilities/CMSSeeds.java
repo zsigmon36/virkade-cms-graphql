@@ -82,6 +82,17 @@ public class CMSSeeds {
 			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
 			TypeDAO.create(type);
 		}
+		if (TypeDAO.fetchByCode(TypeDAO.GUEST_CODE) == null) {
+			type.setCode(TypeDAO.GUEST_CODE);
+			type.setName("Guest User");
+			type.setDescription("this is the public user when no account is signed in");
+			type.getAudit().setCreatedAt(new Date());
+			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setUpdatedAt(new Date());
+			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			TypeDAO.create(type);
+		}
+		
 		if (TypeDAO.fetchByCode(TypeDAO.ADMIN_CODE) == null) {
 			type.setCode(TypeDAO.ADMIN_CODE);
 			type.setName("Administrator");
@@ -193,7 +204,7 @@ public class CMSSeeds {
 			user.setEmailAddress(UserDAO.GUEST_EMAIL_ADDRESS);
 			user.setPassword(VirkadeEncryptor.hashEncode("123456"));
 			user.setStatus(StatusDAO.fetchByCode(StatusDAO.ACTIVE_CODE));
-			user.setType(TypeDAO.fetchByCode(TypeDAO.PROSPECT_CODE));
+			user.setType(TypeDAO.fetchByCode(TypeDAO.GUEST_CODE));
 			user.getAudit().setCreatedAt(new Date());
 			user.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
 			user.getAudit().setUpdatedAt(new Date());
