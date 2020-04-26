@@ -5,7 +5,8 @@
  <session-factory name="">
   <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
   <property name="hibernate.connection.password">Reid.Zac36</property>
-  <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/virkadeCms</property>
+  <property name="hibernate.connection.url">jdbc:postgresql://192.168.1.36:5432/virkadeCms</property>
+  
   <property name="hibernate.connection.username">virkade</property>
   <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
   <property name="hibernate.connection.pool_size">20</property>
