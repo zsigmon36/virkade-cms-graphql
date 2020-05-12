@@ -1,52 +1,51 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-	<class name="com.virkade.cms.model.Game" table="GAME">
-		<id name="gameId" type="long">
-			<column name="GAMEID" />
-			<generator class="increment" />
-		</id>
-		<property name="name" type="java.lang.String">
-			<column name="NAME" sql-type="varchar(75)"/>
-		</property>
-		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" sql-type="varchar(150)"/>
-		</property>
-		<property name="webSite" type="java.lang.String">
-			<column name="WEBSITE" sql-type="varchar(75)"/>
-		</property>
-		<property name="cost" type="double">
-			<column name="COST" />
-		</property>
-		
-		<list name="sessions" table="GAME_SESSION" inverse="true" cascade="save-update">
-        	<key column="GAMEID"/>
-        	<list-index column="CREATE_ORDER"/>
-        	<many-to-many class="com.virkade.cms.model.PlaySession" column="SESSIONID"/>
-        </list>
-
-		<property name="creator" type="java.lang.String">
-			<column name="CREATOR" sql-type="varchar(75)"/>
-		</property>
-		<property name="enabled" type="boolean">
-			<column name="ENABLED" />
-		</property>
-		
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
-				<column name="CREATEDAT" />
-			</property>
-			<property name="updatedAt" type="java.util.Date">
-				<column name="UPDATEDAT" />
-			</property>
-			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" sql-type="varchar(75)"/>
-			</property>
-			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" sql-type="varchar(75)"/>
-			</property>
-		</component>
-	</class>
+ <class name="com.virkade.cms.model.Game" table="GAME">
+  <id name="gameId" type="long">
+   <column name="GAMEID"/>
+   <generator class="increment"/>
+  </id>
+  <property generated="never" lazy="false" name="name"
+   type="java.lang.String" unique="true">
+   <column name="NAME" sql-type="varchar(75)"/>
+  </property>
+  <property generated="never" lazy="false" name="description" type="java.lang.String">
+   <column name="DESCRIPTION" sql-type="varchar(150)"/>
+  </property>
+  <property generated="never" lazy="false" name="webSite" type="java.lang.String">
+   <column name="WEBSITE" sql-type="varchar(75)"/>
+  </property>
+  <property generated="never" lazy="false" name="cost" type="double">
+   <column name="COST"/>
+  </property>
+  <list cascade="save-update" inverse="true" name="sessions" table="GAME_SESSION">
+   <key column="GAMEID"/>
+   <list-index base="0" column="CREATE_ORDER"/>
+   <many-to-many class="com.virkade.cms.model.PlaySession"
+    column="SESSIONID" unique="false"/>
+  </list>
+  <property generated="never" lazy="false" name="creator" type="java.lang.String">
+   <column name="CREATOR" sql-type="varchar(75)"/>
+  </property>
+  <property generated="never" lazy="false" name="enabled" type="boolean">
+   <column name="ENABLED"/>
+  </property>
+  <component name="audit">
+   <property generated="never" lazy="false" name="createdAt" type="java.util.Date">
+    <column name="CREATEDAT"/>
+   </property>
+   <property generated="never" lazy="false" name="updatedAt" type="java.util.Date">
+    <column name="UPDATEDAT"/>
+   </property>
+   <property generated="never" lazy="false" name="createdBy" type="java.lang.String">
+    <column name="CREATEDBY" sql-type="varchar(75)"/>
+   </property>
+   <property generated="never" lazy="false" name="updatedBy" type="java.lang.String">
+    <column name="UPDATEDBY" sql-type="varchar(75)"/>
+   </property>
+  </component>
+ </class>
 </hibernate-mapping>

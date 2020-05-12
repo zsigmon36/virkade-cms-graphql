@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CountryDAO;
@@ -28,6 +30,7 @@ import com.virkade.cms.model.User;
 
 public class CMSSeeds {
 
+	private static final Logger LOG = Logger.getLogger(CMSSeeds.class);
 	private CMSSeeds() {
 
 	}
@@ -229,6 +232,7 @@ public class CMSSeeds {
 	}
 
 	public static void createTestGame() {
+		
 		Game game = new Game();
 		game.setCost(22.55);
 		game.setCreator("Bethesda");
@@ -240,7 +244,13 @@ public class CMSSeeds {
 		game.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
 		game.getAudit().setUpdatedAt(new Date());
 		game.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
-		GameDAO.create(game);
+		Game testGame = GameDAO.fetchByName(game.getName());
+		if (testGame == null) {
+			GameDAO.create(game);
+		} else {
+			LOG.info(String.format("Seed name with %s already exists", game.getName()));
+		}
+		
 
 	}
 
