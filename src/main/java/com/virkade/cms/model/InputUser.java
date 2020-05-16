@@ -1,9 +1,7 @@
 package com.virkade.cms.model;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 public class InputUser {
+	private long userId;
 	private String typeCode;
 	private long addressId;
 	private long statusId;
@@ -27,37 +25,18 @@ public class InputUser {
 	private boolean canContact;	
 	
 	/**
-	 * @return the attribute sorted list
+	 * @return the userId
 	 */
-	public static SortedSet<String> getInputUserAttributeList() {
-		SortedSet<String> attributes =new TreeSet<String>();
-		
-			attributes.add("TypeId");
-			attributes.add("AddressId");
-			attributes.add("StatusId");
-			attributes.add("EmailAddress");
-			attributes.add("UserName");
-			attributes.add("Password");
-			attributes.add("SecurityQuestion");
-			attributes.add("SecurityAnswer");
-			attributes.add("FirstName");
-			// private String lastName;
-			// private String gender;
-			// private int age;
-			// private int height;
-			// private int weight;
-			// private float idp;
-			// private boolean tcAgree;
-			// private boolean liabilityAgree;
-			// private boolean emailVerified;
-			// private boolean playedBefore;
-			// private Date lastLogin;
-			// private boolean reServices;
-			// private boolean canContact;
-			// private Audit audit;
-		return attributes;
+	public long getUserId() {
+		return userId;
 	}
-	
+	/**
+	 * @param userId
+	 *            the userId to set
+	 */
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
 	/**
 	 * @return the typeCode
 	 */
@@ -82,6 +61,7 @@ public class InputUser {
 	public void setAddressId(long addressId) {
 		this.addressId = addressId;
 	}
+
 	/**
 	 * @return the statusId
 	 */

@@ -1,6 +1,15 @@
 package com.virkade.cms.model;
 
-public class Address {
+import java.util.SortedSet;
+
+import org.apache.log4j.Logger;
+
+import com.virkade.cms.hibernate.dao.StateDAO;
+import com.virkade.cms.hibernate.dao.TypeDAO;
+
+public class Address extends VirkadeModel {
+	private static final Logger LOG = Logger.getLogger(Address.class);
+	
 	private long addressId;
 	private State state;
 	private Type type;
@@ -123,5 +132,40 @@ public class Address {
 		this.audit = audit;
 	}
 	
+	/**
+	 * @return the attribute sorted list
+	 */
+	public SortedSet<String> getUserAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
+		attributes.add("AddressId");
+		attributes.add("State");
+		attributes.add("Type");
+		attributes.add("Street");
+		attributes.add("Unit");
+		attributes.add("Apt");
+		attributes.add("City");
+		attributes.add("PostalCode");
+		
+		return attributes;
+	}
 	
+	static Address convertInput(InputAddress inputAddress) throws Exception {
+		Address address = new Address();
+		
+		if (inputAddress.getStateCode() != null) {
+			address.setState(StateDAO.getByCode(inputAddress.getStateCode()));
+		} else if (inputAddress.getStateId() > 0) {
+			address.setState(StateDAO.getById(inputAddress.getStateId()));
+		}
+		
+		address.setAddressId(inputAddress.getAddressId());
+		address.setApt(inputAddress.getApt());
+		address.setCity(inputAddress.getCity());
+		address.setPostalCode(inputAddress.getPostalCode());
+		address.setStreet(inputAddress.getStreet());
+		address.setType(TypeDAO.getByCode(inputAddress.getTypeCode()));
+		address.setUnit(inputAddress.getUnit());
+		
+		return address;
+	}
 }

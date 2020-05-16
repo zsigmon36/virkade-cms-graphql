@@ -24,11 +24,12 @@ type User {
 }
 
 input InputUser {
+	userId: Long
     typeCode: String
 	addressId: Long
 	statusId: Long
 	emailAddress: String
-	userName: String!
+	userName: String
 	password: String
 	securityQuestion: String
 	securityAnswer: String
@@ -39,10 +40,10 @@ input InputUser {
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean!
-	playedBefore: Boolean!
-	reServices: Boolean!
-	canContact: Boolean!
+	emailVerified: Boolean
+	playedBefore: Boolean
+	reServices: Boolean
+	canContact: Boolean
 }
 
 type Legal {
@@ -137,6 +138,18 @@ type Address {
 	audit: Audit
 }
 
+input InputAddress {
+	addressId: Long
+	stateId: Long
+	stateCode: String
+	typeCode: String
+	street: String
+	unit: String
+	apt: String
+	city: String
+	postalCode: Int
+}
+
 type Region {
 	regionId: Long
 	name: String
@@ -217,6 +230,7 @@ type Mutation {
   addLegal(userName: String!): Legal
   setPassword(userName: String!, newPassword: String!): String
   setSecurityQA(userName: String!, securityQ: String!, securityA: String!): String
+  addUserAddress(inputAddress: InputAddress!): Address
 }
 
 schema {

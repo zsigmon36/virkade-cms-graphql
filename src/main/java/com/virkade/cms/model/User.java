@@ -1,13 +1,9 @@
 package com.virkade.cms.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.InvalidKeyException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -19,11 +15,8 @@ import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 
-public class User {
+public class User extends VirkadeModel {
 	private static final Logger LOG = Logger.getLogger(User.class);
-	private static final String GET = "get";
-	private static final String SET = "set";
-	private static final String IS = "is";
 
 	private long userId;
 	private Type type;
@@ -91,15 +84,15 @@ public class User {
 	}
 
 	/**
-	 * @return the addressId
+	 * @return the address
 	 */
 	public Address getAddress() {
 		return address;
 	}
 
 	/**
-	 * @param addressId
-	 *            the addressId to set
+	 * @param address
+	 *            the address to set
 	 */
 	public void setAddress(Address address) {
 		this.address = address;
@@ -444,8 +437,8 @@ public class User {
 	/**
 	 * @return the attribute sorted list
 	 */
-	public static SortedSet<String> getUserAttributeList() {
-		SortedSet<String> attributes = new TreeSet<String>();
+	public SortedSet<String> getAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
 		attributes.add("UserId");
 		attributes.add("Type");
 		attributes.add("Address");
@@ -468,74 +461,30 @@ public class User {
 		attributes.add("LastLogin");
 		attributes.add("ReServices");
 		attributes.add("CanContact");
-		attributes.add("Audit");
 		return attributes;
 	}
 
-	/**
-	 * @return a converted object
-	 * @throws ClassNotFoundException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws InvalidKeyException
-	 */
-	public static User convertObjToUser(String className, Object objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if (className.equalsIgnoreCase(InputUser.class.getName())) {
-			return convertInputUserToUser((InputUser) objToConvert);
-		}
+	static User convertInput(InputUser inputUser) {
 		User user = new User();
-		SortedSet<String> attributeList = getUserAttributeList();
-		Class<?> objToConvertClazz = Class.forName(className);
-		Class<?> userClazz = Class.forName(user.getClass().getName());
-		Method[] objToConvertMethods = objToConvertClazz.getDeclaredMethods();
-		Method[] userObjMethods = userClazz.getDeclaredMethods();
-		Iterator<String> attributeIterator = attributeList.iterator();
-		int iterationNumber = 1;
-		while (attributeIterator.hasNext()) {
-			if (iterationNumber >= 100) {
-				LOG.warn("interation max of 100 reached, exiting loop for performance reasons");
-				break;
-			}
-			String currentAttribute = attributeIterator.next();
-			for (Method curObjToConvertMethod : objToConvertMethods) {
-				if (curObjToConvertMethod.getName().contains(currentAttribute) && (curObjToConvertMethod.getName().contains(GET) || curObjToConvertMethod.getName().contains(IS)) && curObjToConvertMethod.invoke(objToConvert) != null) {
-					for (Method curUserMethod : userObjMethods) {
-						if (curUserMethod.getName().contains(currentAttribute) && curUserMethod.getName().contains(SET)) {
-							curUserMethod.invoke(user, (curObjToConvertMethod.invoke(objToConvert)));
-						}
-					}
-				}
-			}
-			iterationNumber++;
-		}
-		return user;
-	}
-
-	private static User convertInputUserToUser(InputUser objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		User user = new User();
-		user.setAddress(AddressDAO.fetchById(objToConvert.getAddressId()));
-		user.setAge(objToConvert.getAge());
-		user.setCanContact(objToConvert.isCanContact());
-		user.setEmailAddress(objToConvert.getEmailAddress());
-		user.setEmailVerified(objToConvert.isEmailVerified());
-		user.setFirstName(objToConvert.getFirstName());
-		user.setGender(objToConvert.getGender());
-		user.setHeight(objToConvert.getHeight());
-		user.setIdp(objToConvert.getIdp());
-		user.setLastName(objToConvert.getLastName());
-		user.setPassword(objToConvert.getPassword());
-		user.setSecurityQuestion(objToConvert.getSecurityQuestion());
-		user.setSecurityAnswer(objToConvert.getSecurityAnswer());
-		user.setPlayedBefore(objToConvert.isPlayedBefore());
-		user.setReServices(objToConvert.isReServices());
-		user.setStatus(StatusDAO.fetchById(objToConvert.getStatusId()));
-		user.setType(TypeDAO.fetchByCode(objToConvert.getTypeCode()));
-		user.setUserName(objToConvert.getUserName());
-		user.setWeight(objToConvert.getWeight());
+		user.setAddress(AddressDAO.fetchById(inputUser.getAddressId()));
+		user.setAge(inputUser.getAge());
+		user.setCanContact(inputUser.isCanContact());
+		user.setEmailAddress(inputUser.getEmailAddress());
+		user.setEmailVerified(inputUser.isEmailVerified());
+		user.setFirstName(inputUser.getFirstName());
+		user.setGender(inputUser.getGender());
+		user.setHeight(inputUser.getHeight());
+		user.setIdp(inputUser.getIdp());
+		user.setLastName(inputUser.getLastName());
+		user.setPassword(inputUser.getPassword());
+		user.setSecurityQuestion(inputUser.getSecurityQuestion());
+		user.setSecurityAnswer(inputUser.getSecurityAnswer());
+		user.setPlayedBefore(inputUser.isPlayedBefore());
+		user.setReServices(inputUser.isReServices());
+		user.setStatus(StatusDAO.fetchById(inputUser.getStatusId()));
+		user.setType(TypeDAO.getByCode(inputUser.getTypeCode()));
+		user.setUserName(inputUser.getUserName());
+		user.setWeight(inputUser.getWeight());
 		return user;
 	}
 

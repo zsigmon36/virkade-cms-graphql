@@ -157,7 +157,7 @@ public class CMSSeeds {
 			State state = new State();
 			state.setCountry(CountryDAO.fetchByA2(CountryDAO.A2_UNITEDSTATES));
 			state.setName(StateDAO.NAME_ARKANSAS);
-			state.setDescription(" State of Arkansas");
+			state.setDescription("State of Arkansas");
 			state.setStateCode(StateDAO.CODE_ARKANSAS);
 			state.getAudit().setCreatedAt(new Date());
 			state.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
