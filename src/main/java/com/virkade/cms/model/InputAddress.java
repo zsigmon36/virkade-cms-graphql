@@ -9,7 +9,7 @@ public class InputAddress {
 	private String unit;
 	private String apt;
 	private String city;
-	private int postalCode;
+	private String postalCode;
 	
 	/**
 	 * @return the addressId
@@ -110,13 +110,13 @@ public class InputAddress {
 	/**
 	 * @return the postalCode
 	 */
-	public int getPostalCode() {
+	public String getPostalCode() {
 		return postalCode;
 	}
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	public void setPostalCode(int postalCode) {
+	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
 

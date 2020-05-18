@@ -5,9 +5,10 @@ package com.virkade.cms.graphql;
 
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -235,8 +236,12 @@ public class Mutation implements GraphQLRootResolver {
 		if (!AuthData.checkPermission(env, curSessionUser, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Comment cannot be added by the requesting user");
 		}
-		if (inputAddress.getPostalCode() < 10000) {
-			//do message or action
+		if (inputAddress.getPostalCode() != null) {
+			Pattern regex = Pattern.compile("^[0-9]{5}(?:-[0-9]{4})?$");
+			Matcher matcher = regex.matcher(inputAddress.getPostalCode());
+			if (!matcher.matches()) {
+				throw new Exception("Postal code does not match expected pattern of 55555 or 55555-5555");
+			}		
 		}
 		
 		Address convertedInputAddress = (Address) VirkadeModel.convertObj(inputAddress.getClass().getName(), inputAddress);

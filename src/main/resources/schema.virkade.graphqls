@@ -134,7 +134,7 @@ type Address {
 	unit: String
 	apt: String
 	city: String
-	postalCode: Long
+	postalCode: String
 	audit: Audit
 }
 
@@ -147,7 +147,7 @@ input InputAddress {
 	unit: String
 	apt: String
 	city: String
-	postalCode: Int
+	postalCode: String
 }
 
 type Region {

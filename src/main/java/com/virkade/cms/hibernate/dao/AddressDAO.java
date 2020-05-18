@@ -1,8 +1,5 @@
 package com.virkade.cms.hibernate.dao;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -34,7 +31,7 @@ public class AddressDAO {
 		ORIGINAL_LOCATION.setStreet("149 Glen");
 		ORIGINAL_LOCATION.setCity("Farmingtion");
 		ORIGINAL_LOCATION.setState(StateDAO.fetchByCode(StateDAO.CODE_ARKANSAS));
-		ORIGINAL_LOCATION.setPostalCode(72730);
+		ORIGINAL_LOCATION.setPostalCode("72730");
 		ORIGINAL_LOCATION.setType(TypeDAO.fetchByCode(TypeDAO.PHYSICAL_ADDRESS));
 	}
 
@@ -61,15 +58,13 @@ public class AddressDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Address.class);
-			Map<String, Object> fields = new HashMap<>();
-			fields.put(STREET_FIELD, address.getStreet());
-			fields.put(CITY_FIELD, address.getCity());
-			fields.put(APT_FIELD, address.getApt());
-			fields.put(UNIT_FIELD, address.getUnit());
-			fields.put(STATE_FIELD, address.getState());
-			fields.put(ZIP_FIELD, address.getPostalCode());
-			fields.put(TYPE_FIELD, address.getType());
-			criteria.add(Restrictions.allEq(fields));
+			criteria.add(Restrictions.eqOrIsNull(STREET_FIELD, address.getStreet()));
+			criteria.add(Restrictions.eqOrIsNull(CITY_FIELD, address.getCity()));
+			criteria.add(Restrictions.eqOrIsNull(APT_FIELD, address.getApt()));
+			criteria.add(Restrictions.eqOrIsNull(UNIT_FIELD, address.getUnit()));
+			criteria.add(Restrictions.eqOrIsNull(STATE_FIELD, address.getState()));
+			criteria.add(Restrictions.eqOrIsNull(ZIP_FIELD, address.getPostalCode()));
+			criteria.add(Restrictions.eqOrIsNull(TYPE_FIELD, address.getType()));
 			addressReturned = (Address) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting Address=" + address.toString(), he);

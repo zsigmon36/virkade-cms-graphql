@@ -17,7 +17,7 @@ public class Address extends VirkadeModel {
 	private String unit;
 	private String apt;
 	private String city;
-	private int postalCode;
+	private String postalCode;
 	private Audit audit;
 	
 	/**
@@ -107,13 +107,13 @@ public class Address extends VirkadeModel {
 	/**
 	 * @return the postalCode
 	 */
-	public int getPostalCode() {
+	public String getPostalCode() {
 		return postalCode;
 	}
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	public void setPostalCode(int postalCode) {
+	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
 	/**

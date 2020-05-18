@@ -29,7 +29,7 @@
 		<property name="city" type="java.lang.String">
 			<column name="CITY" sql-type="varchar(75)"/>
 		</property>
-		<property name="postalCode" type="int">
+		<property name="postalCode" type="java.lang.String">
 			<column name="POSTALCODE" />
 		</property>
 		
