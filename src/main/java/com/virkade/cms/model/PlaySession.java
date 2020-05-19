@@ -1,6 +1,5 @@
 package com.virkade.cms.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,21 +8,13 @@ public class PlaySession {
 	private long sessionId;
 	private User user;
 	private Location location;
-	private List<Game> games = new ArrayList<>();
+	private List<Game> games;
 	private Date startDate;
 	private Date endDate;
 	private Audit audit;
 
 	public PlaySession() {
 
-	}
-
-	public PlaySession(User user, Location location, List<Game> games, Date startDate, Date endDate) {
-		this.user = user;
-		this.location = location;
-		this.games = (games != null) ? games : new ArrayList<>();
-		this.startDate = startDate;
-		this.endDate = endDate;
 	}
 
 	/**

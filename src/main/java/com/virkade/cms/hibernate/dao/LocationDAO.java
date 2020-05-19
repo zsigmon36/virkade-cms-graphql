@@ -25,7 +25,7 @@ public class LocationDAO {
 		Location location = new Location();
 		try {
 			hs.beginTransaction();
-			Criteria criteria = hs.createCriteria(State.class);
+			Criteria criteria = hs.createCriteria(Location.class);
 			criteria.add(Restrictions.eq(NAME_FIELD, name));
 			location = (Location) criteria.uniqueResult();
 		} catch (HibernateException he) {

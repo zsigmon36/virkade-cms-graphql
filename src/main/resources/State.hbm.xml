@@ -16,8 +16,8 @@
 		<property name="name" type="java.lang.String" not-null="true" unique="true">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
-		<property name="description" type="java.lang.String">
-			<column name="DESCRIPTION" sql-type="varchar(75)"/>
+		<property name="abbreviation" type="java.lang.String">
+			<column name="ABBREVIATION" sql-type="varchar(75)"/>
 		</property>
 		<property name="stateCode" type="java.lang.String" not-null="true" unique="true">
 			<column name="STATECODE" sql-type="varchar(3)"/>

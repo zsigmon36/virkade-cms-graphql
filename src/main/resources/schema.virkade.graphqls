@@ -172,7 +172,7 @@ type State {
 	stateId: Long
 	country: Country
 	name: String
-	description: String
+	abbreviation: String
 	stateCode: String
 	audit: Audit
 }

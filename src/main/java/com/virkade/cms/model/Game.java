@@ -1,6 +1,5 @@
 package com.virkade.cms.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -9,7 +8,7 @@ public class Game {
 	private String description;
 	private String webSite;
 	private double cost;
-	private List<PlaySession> sessions = new ArrayList<>();
+	private List<PlaySession> sessions;
 	private String creator;
 	private boolean enabled;
 	private Audit audit;

@@ -1,5 +1,11 @@
 package com.virkade.cms.hibernate.utilities;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -153,17 +159,34 @@ public class CMSSeeds {
 
 	public static void createDefaultStates() {
 
-		if (StateDAO.fetchByCode(StateDAO.CODE_ARKANSAS) == null) {
-			State state = new State();
-			state.setCountry(CountryDAO.fetchByA2(CountryDAO.A2_UNITEDSTATES));
-			state.setName(StateDAO.NAME_ARKANSAS);
-			state.setDescription("State of Arkansas");
-			state.setStateCode(StateDAO.CODE_ARKANSAS);
-			state.getAudit().setCreatedAt(new Date());
-			state.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			state.getAudit().setUpdatedAt(new Date());
-			state.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
-			StateDAO.create(state);
+		
+		List<String> lines = null;
+		try {
+			Path path = Paths.get(ClassLoader.getSystemResource("stateData.csv").toURI());
+			lines = Files.readAllLines(path);
+		}catch (InvalidPathException | IOException | URISyntaxException  e) {
+			LOG.error(e);
+		}
+		for (int i=0; i < lines.size(); i++) {
+			if (i == 0) continue;
+			String[] valuesArray = lines.get(i).split(",");
+			if (StateDAO.fetchByCode(valuesArray[2]) == null) {
+				State state = new State();
+				state.setName(valuesArray[0]);
+				state.setAbbreviation(valuesArray[1]);
+				state.setStateCode(valuesArray[2]);
+				state.setCountry(CountryDAO.fetchByA2(valuesArray[3]));
+				state.getAudit().setCreatedAt(new Date());
+				state.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+				state.getAudit().setUpdatedAt(new Date());
+				state.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+				State newState = StateDAO.create(state);
+				if (newState != null) {
+					LOG.info(valuesArray[0] + " : state created ");
+				}
+			}else {
+				LOG.warn(valuesArray[0] + " : state already exists ");
+			}
 		}
 
 	}
@@ -257,7 +280,20 @@ public class CMSSeeds {
 	public static void createTestSession() {
 		List<Game> games = new ArrayList<>();
 		games.add(GameDAO.fetchByName("Super Hot"));
-		PlaySession session = new PlaySession(UserDAO.fetchByUserName(UserDAO.GUEST_USER_NAME), LocationDAO.fetchByName(LocationDAO.ORIGINAL_LOCATION_NAME), games, new Date(), new Date());
+		User user = UserDAO.fetchByUserName(UserDAO.GUEST_USER_NAME);
+		Location location = LocationDAO.fetchByName(LocationDAO.ORIGINAL_LOCATION_NAME);
+		
+		
+		PlaySession session = new PlaySession();
+		session.setUser(user);
+		session.setLocation(location);
+		session.setGames(games);
+		session.setStartDate(new Date());
+		session.setEndDate(new Date());
+		session.getAudit().setCreatedAt(new Date());
+		session.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+		session.getAudit().setUpdatedAt(new Date());
+		session.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
 		SessionDAO.create(session);
 
 	}

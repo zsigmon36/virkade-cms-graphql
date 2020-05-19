@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.PlaySession" table="SESSION">
@@ -8,39 +8,35 @@
 			<column name="SESSIONID" />
 			<generator class="increment" />
 		</id>
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true">
-			<column name="USERID"></column>
+		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true"  fetch="join">
+			<column name="USERID" />
 		</many-to-one>
-
-		<many-to-one name="location" class="com.virkade.cms.model.Location" not-null="true" fetch="join">
+		<many-to-one class="com.virkade.cms.model.Location" fetch="join" name="location" not-null="true">
 			<column name="LOCATIONID" />
 		</many-to-one>
-		
-		<list name="games" table="GAME_SESSION" cascade="save-update">
-        	<key column="SESSIONID"/>
-        	<list-index column="CREATE_ORDER"/>
-        	<many-to-many class="com.virkade.cms.model.Game" column="GAMEID"/>
-        </list>
-		
-		<property name="startDate" type="java.util.Date">
+		<list cascade="save-update" lazy="false" name="games" table="GAME_SESSION">
+			<key column="SESSIONID" />
+			<list-index base="0" column="CREATE_ORDER" />
+			<many-to-many class="com.virkade.cms.model.Game" column="GAMEID"/>
+		</list>
+		<property generated="never" lazy="false" name="startDate" type="java.util.Date">
 			<column name="STARTDATE" />
 		</property>
-		<property name="endDate" type="java.util.Date">
+		<property generated="never" lazy="false" name="endDate" type="java.util.Date">
 			<column name="ENDDATE" />
 		</property>
-		
 		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+			<property generated="never" lazy="false" name="createdAt" type="java.util.Date">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property generated="never" lazy="false" name="updatedAt" type="java.util.Date">
 				<column name="UPDATEDAT" />
 			</property>
-			<property name="createdBy" type="java.lang.String">
-				<column name="CREATEDBY" sql-type="varchar(75)"/>
+			<property generated="never" lazy="false" name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" sql-type="varchar(75)" />
 			</property>
-			<property name="updatedBy" type="java.lang.String">
-				<column name="UPDATEDBY" sql-type="varchar(75)"/>
+			<property generated="never" lazy="false" name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" sql-type="varchar(75)" />
 			</property>
 		</component>
 	</class>

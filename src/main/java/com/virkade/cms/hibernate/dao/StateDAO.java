@@ -1,5 +1,7 @@
 package com.virkade.cms.hibernate.dao;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -9,6 +11,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.State;
+import com.virkade.cms.model.User;
 
 public class StateDAO {
 
@@ -35,7 +38,7 @@ public class StateDAO {
 		}
 		return state;
 	}
-
+	
 	public static State getByCode(String code) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -113,6 +116,22 @@ public class StateDAO {
 			throw new HibernateException("No state foundby StateID=" + id);
 		}
 		return state;
+	}
+
+	public static List<State> fetchAll() {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		List<State> states = null;
+		try {
+			hs.beginTransaction();
+			states = hs.createCriteria(State.class).list();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting all states", he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return states;
 	}
 
 }
