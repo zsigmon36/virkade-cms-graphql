@@ -53,6 +53,20 @@ public class Phone {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	/**
+	 * @return the userId
+	 */
+	public long getUserId() {
+		return user.getUserId();
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return user.getUserName();
+	}
 
 	/**
 	 * @return the type

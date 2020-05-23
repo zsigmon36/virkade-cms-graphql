@@ -23,6 +23,8 @@ public class TypeDAO {
 	public static final String TYPE_NAME = "name";
 	private static final Logger LOG = Logger.getLogger(TypeDAO.class);
 	public static final String PHYSICAL_ADDRESS = "PHYSCL_ADRS";
+	public static final String MOBILE_PHONE = "MBLE_PHNE";
+	public static final String HOME_PHONE = "HME_PHNE";
 	private static final String ID_FIELD = "typeId";
 	
 	private TypeDAO() {

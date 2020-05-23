@@ -3,9 +3,9 @@
                                    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-	<class name="com.virkade.cms.model.Game" table="GAME">
-		<id name="gameId" type="long">
-			<column name="GAMEID" />
+	<class name="com.virkade.cms.model.Activity" table="ACTIVITY">
+		<id name="activityId" type="long">
+			<column name="ACTIVITYID" />
 			<generator class="increment" />
 		</id>
 		<property generated="never" lazy="false" name="name" type="java.lang.String" unique="true">
@@ -17,14 +17,16 @@
 		<property generated="never" lazy="false" name="webSite" type="java.lang.String">
 			<column name="WEBSITE" sql-type="varchar(75)" />
 		</property>
-		<property generated="never" lazy="false" name="cost" type="double">
-			<column name="COST" />
+		<property generated="never" lazy="false" name="supportContact" type="java.lang.String">
+			<column name="SUPPORT_CONTACT" sql-type="varchar(75)" />
 		</property>
-		<list cascade="save-update" lazy="false" name="sessions" table="GAME_SESSION">
-			<key column="GAMEID" />
-			<list-index base="0" column="CREATE_ORDER" />
+		<property generated="never" lazy="false" name="costpm" type="double">
+			<column name="COSTPM" />
+		</property>
+		<bag cascade="save-update" lazy="false" name="sessions" table="ACTIVITY_SESSION">
+			<key column="ACTIVITYID" />
 			<many-to-many class="com.virkade.cms.model.PlaySession" column="SESSIONID" />
-		</list>
+		</bag>
 		<property generated="never" lazy="false" name="creator" type="java.lang.String">
 			<column name="CREATOR" sql-type="varchar(75)" />
 		</property>

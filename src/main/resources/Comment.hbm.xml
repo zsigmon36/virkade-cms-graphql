@@ -9,10 +9,9 @@
             <generator class="increment" />
         </id>
        
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true">
             <column name="USERID" />
         </many-to-one>
-        
         <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
             <column name="TYPEID" />
         </many-to-one>
@@ -20,7 +19,6 @@
         <property name="commentContent" type="java.lang.String">
             <column name="COMMENTCONTENT" sql-type="varchar(8000)"/>
         </property>
-        
         <component name="audit">
 	        <property name="createdAt" type="java.util.Date">
 	            <column name="CREATEDAT" />

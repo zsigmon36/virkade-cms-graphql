@@ -8,24 +8,23 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
-import com.virkade.cms.model.Game;
-import com.virkade.cms.model.User;
+import com.virkade.cms.model.Activity;
 
-public class GameDAO {
+public class ActivityDAO {
 
-	private static final Logger LOG = Logger.getLogger(GameDAO.class);
+	private static final Logger LOG = Logger.getLogger(ActivityDAO.class);
 	// field constants
 	private static final String NAME_FIELD = "name";
 
-	public static Game fetchByName(String name) {
+	public static Activity fetchByName(String name) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
-		Game game = new Game();
+		Activity activity = new Activity();
 		try {
 			hs.beginTransaction();
-			Criteria criteria = hs.createCriteria(Game.class);
+			Criteria criteria = hs.createCriteria(Activity.class);
 			criteria.add(Restrictions.eq(NAME_FIELD, name));
-			game = (Game) criteria.uniqueResult();
+			activity = (Activity) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get Game by name=" + name, he);
 		} finally {
@@ -33,10 +32,10 @@ public class GameDAO {
 			hs.close();
 		}
 
-		return game;
+		return activity;
 	}
 
-	public static Game create(Game game) {
+	public static Activity create(Activity game) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {

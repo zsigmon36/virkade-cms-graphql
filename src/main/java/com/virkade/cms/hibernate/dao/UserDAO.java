@@ -62,6 +62,26 @@ public class UserDAO {
 
 		return user;
 	}
+	
+	public static User getByUserName(String userName) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		User user = new User();
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(User.class);
+			criteria.add(Restrictions.eq(USER_NAME, userName));
+			user = (User) criteria.uniqueResult();
+			if (user == null) throw new HibernateException("No user found");
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting user by username=" + userName, he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+
+		return user;
+	}
 
 	/**
 	 * @param user

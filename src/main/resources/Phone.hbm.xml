@@ -9,10 +9,10 @@
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
-			<column name="USERID" />
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" >
+			<column name="USERID"></column>
 		</many-to-one>
-
+		
 		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
 			<column name="TYPEID" />
 		</many-to-one>

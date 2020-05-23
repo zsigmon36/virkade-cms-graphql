@@ -13,20 +13,22 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.virkade.cms.auth.VirkadeEncryptor;
+import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CountryDAO;
-import com.virkade.cms.hibernate.dao.GameDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.RegionDAO;
 import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
+import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
 import com.virkade.cms.model.Country;
-import com.virkade.cms.model.Game;
 import com.virkade.cms.model.Location;
+import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.Region;
 import com.virkade.cms.model.State;
@@ -116,6 +118,26 @@ public class CMSSeeds {
 			type.setCode(TypeDAO.PHYSICAL_ADDRESS);
 			type.setName("Physical Address");
 			type.setDescription("the physical address of an entity");
+			type.getAudit().setCreatedAt(new Date());
+			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setUpdatedAt(new Date());
+			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			TypeDAO.create(type);
+		}
+		if (TypeDAO.fetchByCode(TypeDAO.MOBILE_PHONE) == null) {
+			type.setCode(TypeDAO.MOBILE_PHONE);
+			type.setName("Mobile Phone Number");
+			type.setDescription("mobile network phone number");
+			type.getAudit().setCreatedAt(new Date());
+			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setUpdatedAt(new Date());
+			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			TypeDAO.create(type);
+		}
+		if (TypeDAO.fetchByCode(TypeDAO.HOME_PHONE) == null) {
+			type.setCode(TypeDAO.HOME_PHONE);
+			type.setName("Land line Phone Number");
+			type.setDescription("terestrial service phone number");
 			type.getAudit().setCreatedAt(new Date());
 			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
 			type.getAudit().setUpdatedAt(new Date());
@@ -221,6 +243,7 @@ public class CMSSeeds {
 
 	public static void createDefaultUsers() {
 		User user = new User();
+		User user2 = new User();
 
 		if (UserDAO.fetchByUserName(UserDAO.GUEST_USER_NAME) == null) {
 			user.setFirstName(UserDAO.GUEST_USER_NAME);
@@ -236,50 +259,84 @@ public class CMSSeeds {
 			user.getAudit().setUpdatedAt(new Date());
 			user.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
 			UserDAO.createUpdate(user, false);
+			
+			Phone phone = new Phone();
+			phone.setUser(user);
+			phone.setCountryCode(1);
+			phone.setNumber(4795445445L);
+			phone.setType(TypeDAO.fetchByCode(TypeDAO.HOME_PHONE));
+			phone.getAudit().setCreatedAt(new Date());
+			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Date());
+			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			PhoneDAO.create(phone);
 		}
 		if (UserDAO.fetchByUserName(UserDAO.OWNER_USER_NAME) == null) {
-			user.setFirstName(UserDAO.OWNER_USER_NAME);
-			user.setLastName(UserDAO.OWNER_USER_NAME);
-			user.setUserName(UserDAO.OWNER_USER_NAME);
-			user.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
-			user.setEmailAddress(UserDAO.GUEST_EMAIL_ADDRESS);
-			user.setPassword(VirkadeEncryptor.hashEncode("Reid.Zac36"));
-			user.setStatus(StatusDAO.fetchByCode(StatusDAO.ACTIVE_CODE));
-			user.setType(TypeDAO.fetchByCode(TypeDAO.ADMIN_CODE));
-			user.getAudit().setCreatedAt(new Date());
-			user.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			user.getAudit().setUpdatedAt(new Date());
-			user.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
-			UserDAO.createUpdate(user, false);
+			user2.setFirstName(UserDAO.OWNER_USER_NAME);
+			user2.setLastName(UserDAO.OWNER_USER_NAME);
+			user2.setUserName(UserDAO.OWNER_USER_NAME);
+			user2.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
+			user2.setEmailAddress(UserDAO.GUEST_EMAIL_ADDRESS);
+			user2.setPassword(VirkadeEncryptor.hashEncode("Reid.Zac36"));
+			user2.setStatus(StatusDAO.fetchByCode(StatusDAO.ACTIVE_CODE));
+			user2.setType(TypeDAO.fetchByCode(TypeDAO.ADMIN_CODE));
+			user2.getAudit().setCreatedAt(new Date());
+			user2.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			user2.getAudit().setUpdatedAt(new Date());
+			user2.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			UserDAO.createUpdate(user2, false);
+			
+			Phone phone = new Phone();
+			phone.setUser(user2);
+			phone.setCountryCode(1);
+			phone.setNumber(4792632216L);
+			phone.setType(TypeDAO.fetchByCode(TypeDAO.MOBILE_PHONE));
+			phone.getAudit().setCreatedAt(new Date());
+			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Date());
+			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			PhoneDAO.create(phone);
+			
+			phone.setUser(user);
+			phone.setCountryCode(1);
+			phone.setNumber(4792632216L);
+			phone.setType(TypeDAO.fetchByCode(TypeDAO.MOBILE_PHONE));
+			phone.getAudit().setCreatedAt(new Date());
+			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Date());
+			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			PhoneDAO.create(phone);
+			
 		}
 	}
 
 	public static void createTestGame() {
 		
-		Game game = new Game();
-		game.setCost(22.55);
-		game.setCreator("Bethesda");
-		game.setName("Super Hot");
-		game.setDescription("test description");
-		game.setEnabled(true);
-		game.setWebSite("www.bethesda.com");
-		game.getAudit().setCreatedAt(new Date());
-		game.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-		game.getAudit().setUpdatedAt(new Date());
-		game.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
-		Game testGame = GameDAO.fetchByName(game.getName());
-		if (testGame == null) {
-			GameDAO.create(game);
+		Activity activity = new Activity();
+		activity.setCostpm(0.85);
+		activity.setCreator("HTC");
+		activity.setName("Vive Port");
+		activity.setDescription("the default vr arcade for the vive");
+		activity.setEnabled(true);
+		activity.setSupportContact("https://service.viveport.com/hc/en-us/requests/new?v_to_v&");
+		activity.setWebSite("https://www.viveport.com");
+		activity.getAudit().setCreatedAt(new Date());
+		activity.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+		activity.getAudit().setUpdatedAt(new Date());
+		activity.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+		Activity testActivity = ActivityDAO.fetchByName(activity.getName());
+		if (testActivity == null) {
+			ActivityDAO.create(activity);
 		} else {
-			LOG.info(String.format("Seed name with %s already exists", game.getName()));
+			LOG.info(String.format("Seed name with %s already exists", activity.getName()));
 		}
 		
 
 	}
 
 	public static void createTestSession() {
-		List<Game> games = new ArrayList<>();
-		games.add(GameDAO.fetchByName("Super Hot"));
+		List<Activity> activities = new ArrayList<>();
+		activities.add(ActivityDAO.fetchByName("Vive Port"));
 		User user = UserDAO.fetchByUserName(UserDAO.GUEST_USER_NAME);
 		Location location = LocationDAO.fetchByName(LocationDAO.ORIGINAL_LOCATION_NAME);
 		
@@ -287,7 +344,19 @@ public class CMSSeeds {
 		PlaySession session = new PlaySession();
 		session.setUser(user);
 		session.setLocation(location);
-		session.setGames(games);
+		session.setActivities(activities);
+		session.setStartDate(new Date());
+		session.setEndDate(new Date());
+		session.getAudit().setCreatedAt(new Date());
+		session.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+		session.getAudit().setUpdatedAt(new Date());
+		session.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+		SessionDAO.create(session);
+		
+		user = UserDAO.fetchByUserName(UserDAO.OWNER_USER_NAME);
+		session.setUser(user);
+		session.setLocation(location);
+		session.setActivities(activities);
 		session.setStartDate(new Date());
 		session.setEndDate(new Date());
 		session.getAudit().setCreatedAt(new Date());

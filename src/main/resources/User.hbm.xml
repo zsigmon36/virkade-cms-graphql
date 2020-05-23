@@ -87,17 +87,20 @@
 			</property>
 		</component>
 
-		<list name="sessions" table="SESSION" lazy="false" cascade="save-update">
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
 			<key column="USERID" />
-			<list-index column="SESSIONID" />
 			<one-to-many class="com.virkade.cms.model.PlaySession" />
-		</list>
-
-		<list name="comments" table="COMMENT" inverse="true" cascade="save-update" fetch="join">
+		</bag>
+		
+		<bag name="phoneNumbers" table="PHONE" lazy="false" cascade="save-update">
 			<key column="USERID" />
-			<list-index column="COMMENTID" />
+			<one-to-many class="com.virkade.cms.model.Phone" />
+		</bag>
+
+		<bag name="comments" table="COMMENT" lazy="false" cascade="save-update">
+			<key column="USERID" />
 			<one-to-many class="com.virkade.cms.model.Comment" />
-		</list>
+		</bag>
 
 	</class>
 </hibernate-mapping>

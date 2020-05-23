@@ -24,6 +24,7 @@ public class User extends VirkadeModel {
 	private Status status;
 	private List<PlaySession> sessions;
 	private List<Comment> comments;
+	private List<Phone> phoneNumbers;
 	private String emailAddress;
 	private String userName;
 	private String password;
@@ -141,6 +142,20 @@ public class User extends VirkadeModel {
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	/**
+	 * @return the phoneNumbers
+	 */
+	public List<Phone> getPhoneNumbers() {
+		return phoneNumbers;
+	}
+
+	/**
+	 * @param phoneNumbers the phoneNumbers to set
+	 */
+	public void setPhoneNumbers(List<Phone> phoneNumbers) {
+		this.phoneNumbers = phoneNumbers;
 	}
 
 	/**

@@ -8,17 +8,19 @@
 			<column name="SESSIONID" />
 			<generator class="increment" />
 		</id>
-		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true"  fetch="join">
+		
+		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true">
 			<column name="USERID" />
 		</many-to-one>
-		<many-to-one class="com.virkade.cms.model.Location" fetch="join" name="location" not-null="true">
+		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join">
 			<column name="LOCATIONID" />
 		</many-to-one>
-		<list cascade="save-update" lazy="false" name="games" table="GAME_SESSION">
+		
+		<bag cascade="save-update" lazy="false" name="activities" table="ACTIVITY_SESSION">
 			<key column="SESSIONID" />
-			<list-index base="0" column="CREATE_ORDER" />
-			<many-to-many class="com.virkade.cms.model.Game" column="GAMEID"/>
-		</list>
+			<many-to-many class="com.virkade.cms.model.Activity" column="ACTIVITYID"/>
+		</bag>
+		
 		<property generated="never" lazy="false" name="startDate" type="java.util.Date">
 			<column name="STARTDATE" />
 		</property>

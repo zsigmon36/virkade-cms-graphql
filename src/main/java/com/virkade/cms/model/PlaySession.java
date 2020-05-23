@@ -7,8 +7,13 @@ public class PlaySession {
 
 	private long sessionId;
 	private User user;
+	private long userId;
+	private String emailAddress;
+	private String userName;
+	private String firstName;
+	private String lastName;
 	private Location location;
-	private List<Game> games;
+	private List<Activity> activities;
 	private Date startDate;
 	private Date endDate;
 	private Audit audit;
@@ -48,18 +53,18 @@ public class PlaySession {
 	}
 
 	/**
-	 * @return the games
+	 * @return the activities
 	 */
-	public List<Game> getGames() {
-		return games;
+	public List<Activity> getActivities() {
+		return activities;
 	}
 
 	/**
-	 * @param games
-	 *            the games to set
+	 * @param activities
+	 *            the activities to set
 	 */
-	public void setGames(List<Game> games) {
-		this.games = games;
+	public void setActivities(List<Activity> activities) {
+		this.activities = activities;
 	}
 
 	/**
@@ -75,6 +80,41 @@ public class PlaySession {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public long getUserId() {
+		return user.getUserId();
+	}
+
+	/**
+	 * @return the emailAddress
+	 */
+	public String getEmailAddress() {
+		return user.getEmailAddress();
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return user.getUserName();
+	}
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return user.getFirstName();
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return user.getLastName();
 	}
 
 	/**

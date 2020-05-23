@@ -1,25 +1,26 @@
 type User {
-	userId: Long
-    type: Type!
+	userId: Long!
+    type: Type
 	address: Address
-	status: Status!
-	emailAddress: String!
+	status: Status
+	emailAddress: String
 	sessions: [PlaySession]
 	comments: [Comment]
+	phoneNumbers: [Phone]
 	userName: String!
 	securityQuestion: String
-    firstName: String!
-    lastName: String!
+    firstName: String
+    lastName: String
 	gender: String
 	age: Long
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean!
-	playedBefore: Boolean!
+	emailVerified: Boolean
+	playedBefore: Boolean
 	lastLogin: Date
-	reServices: Boolean!
-	canContact: Boolean!
+	reServices: Boolean
+	canContact: Boolean
 	audit: Audit
 }
 
@@ -81,7 +82,8 @@ input InputComment {
 
 type Phone {
 	phoneId: Long
-	user: User
+	userId: Long
+	userName: String
 	type: Type
 	number: Int
 	countryCode: Int
@@ -96,21 +98,26 @@ input InputPhone {
 }
 
 type PlaySession {
-	user: User
+	userId: Long
+	emailAddress: String
+	userName: String
+    firstName: String
+    lastName: String
 	location: Location
-	games: [Game]
+	activities: [Activity]
 	startDate: Date
 	endDate: Date
 	audit: Audit
 }
-type Game {
-	gameId: Long
+type Activity {
+	activityId: Long
 	name: String
 	description: String
 	webSite: String
-	cost: Float
-	sessions: [PlaySession]
+	supportContact : String
 	creator: String
+	costpm: Float
+	sessions: [PlaySession]
 	enabled: Boolean
 	audit: Audit
 }
@@ -212,7 +219,7 @@ type Query {
   getUserByUserName(userName: String!): User
   getUserComments(userName: String!): [Comment]
   getCountries: [Country]
-  getStates: [State]
+  getAllStates: [State]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]

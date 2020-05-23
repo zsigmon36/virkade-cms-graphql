@@ -2,27 +2,28 @@ package com.virkade.cms.model;
 
 import java.util.List;
 
-public class Game {
-	private long gameId;
+public class Activity {
+	private long activityId;
 	private String name;
 	private String description;
 	private String webSite;
-	private double cost;
+	private String supportContact;
+	private double costpm;
 	private List<PlaySession> sessions;
 	private String creator;
 	private boolean enabled;
 	private Audit audit;
 	/**
-	 * @return the gameId
+	 * @return the activityId
 	 */
-	public long getGameId() {
-		return gameId;
+	public long getActivityId() {
+		return activityId;
 	}
 	/**
-	 * @param gameId the gameId to set
+	 * @param activityId the activityId to set
 	 */
-	public void setGameId(long gameId) {
-		this.gameId = gameId;
+	public void setActivityId(long activityId) {
+		this.activityId = activityId;
 	}
 	/**
 	 * @return the name
@@ -61,16 +62,28 @@ public class Game {
 		this.webSite = webSite;
 	}
 	/**
+	 * @return the supportContact
+	 */
+	public String getSupportContact() {
+		return supportContact;
+	}
+	/**
+	 * @param supportContact the supportContact to set
+	 */
+	public void setSupportContact(String supportContact) {
+		this.supportContact = supportContact;
+	}
+	/**
 	 * @return the cost
 	 */
-	public double getCost() {
-		return cost;
+	public double getCostpm() {
+		return costpm;
 	}
 	/**
 	 * @param cost the cost to set
 	 */
-	public void setCost(double cost) {
-		this.cost = cost;
+	public void setCostpm(double costpm) {
+		this.costpm = costpm;
 	}
 	/**
 	 * @return the session
