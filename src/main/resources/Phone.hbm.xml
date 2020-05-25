@@ -17,7 +17,7 @@
 			<column name="TYPEID" />
 		</many-to-one>
 		
-		<property name="number" type="long">
+		<property name="number" type="java.lang.String">
 			<column name="NUMBER" />
 		</property>
 		<property name="countryCode" type="int">

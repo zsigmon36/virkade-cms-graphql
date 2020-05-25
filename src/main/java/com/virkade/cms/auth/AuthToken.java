@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class AuthToken {
 	private String token;
-	private String userName;
+	private String username;
 	private Date createdDate;
 
 	public AuthToken() {
 	}
 	
-	public AuthToken(String userName, String authToken) {
-		this.userName = userName;
+	public AuthToken(String username, String authToken) {
+		this.username = username;
 		this.token = authToken;
 		this.createdDate = new Date();
 	}
@@ -33,15 +33,15 @@ public class AuthToken {
 	/**
 	 * @return the userName
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**

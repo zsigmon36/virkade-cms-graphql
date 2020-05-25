@@ -7,7 +7,7 @@ type User {
 	sessions: [PlaySession]
 	comments: [Comment]
 	phoneNumbers: [Phone]
-	userName: String!
+	username: String!
 	securityQuestion: String
     firstName: String
     lastName: String
@@ -30,7 +30,7 @@ input InputUser {
 	addressId: Long
 	statusId: Long
 	emailAddress: String
-	userName: String
+	username: String
 	password: String
 	securityQuestion: String
 	securityAnswer: String
@@ -68,14 +68,15 @@ type Status {
 
 type Comment {
 	commentId: Long
-	user: User
+	userId: Long
+	username: String
 	type: Type
 	commentContent: String
 	audit: Audit
 }
 
 input InputComment {
-	userName: String!
+	username: String!
 	typeCode: String!
 	commentContent: String!
 }
@@ -83,24 +84,24 @@ input InputComment {
 type Phone {
 	phoneId: Long
 	userId: Long
-	userName: String
+	username: String
 	type: Type
-	number: Int
+	number: String
 	countryCode: Int
 	audit: Audit
 }
 
 input InputPhone {
-	userName: String!
+	username: String!
 	typeCode: String!
-	number: Int!
-	countryCode: Int!
+	number: String!
+	countryCode: Int
 }
 
 type PlaySession {
 	userId: Long
 	emailAddress: String
-	userName: String
+	username: String
     firstName: String
     lastName: String
 	location: Location
@@ -200,14 +201,14 @@ type Audit {
 }
 
 input AuthData {
-	userName: String!
+	username: String!
 	password: String!
 	securityQuestion: String
 	securityAnswer: String
 }
 
 type AuthToken {
-	userName: String!
+	username: String!
 	token: String!
 	createdDate: Date!
 }
@@ -215,15 +216,15 @@ type AuthToken {
 type Query {
   getUsersByEmailAddress(emailAddress: String!): [User]
   getUserById(userId: Long!): User
-  getUserSessions(userName: String!): [PlaySession]
-  getUserByUserName(userName: String!): User
-  getUserComments(userName: String!): [Comment]
+  getUserSessions(username: String!): [PlaySession]
+  getUserByUsername(username: String!): User
+  getUserComments(username: String!): [Comment]
   getCountries: [Country]
   getAllStates: [State]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]
-  getPhonesByUserName(userName: String!): [Phone]
+  getPhonesByUsername(username: String!): [Phone]
 }
 
 type Mutation {
@@ -233,10 +234,10 @@ type Mutation {
   signOut: String
   addPhone(inputPhone: InputPhone!): Phone
   addComment(inputComment: InputComment!): Comment
-  addSession(userName: String!): PlaySession
-  addLegal(userName: String!): Legal
-  setPassword(userName: String!, newPassword: String!): String
-  setSecurityQA(userName: String!, securityQ: String!, securityA: String!): String
+  addSession(username: String!): PlaySession
+  addLegal(username: String!): Legal
+  setPassword(username: String!, newPassword: String!): String
+  setSecurityQA(username: String!, securityQ: String!, securityA: String!): String
   addUserAddress(inputAddress: InputAddress!): Address
 }
 

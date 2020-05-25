@@ -15,13 +15,7 @@ import com.virkade.cms.model.User;
 public class UserDAO {
 
 	private static final Logger LOG = Logger.getLogger(UserDAO.class);
-	// property fields to query
-	public static final String USER_NAME = "userName";
-	public static final String EMAIL_ADDRESS = "emailAddress";
-	public static final String GUEST_USER_NAME = "guest";
-	public static final String OWNER_USER_NAME = "Virkade Experience";
-	public static final String GUEST_EMAIL_ADDRESS = "virkadeexperience@gmail.com";
-
+	
 	private UserDAO() {
 	}
 
@@ -44,17 +38,17 @@ public class UserDAO {
 		return user;
 	}
 
-	public static User fetchByUserName(String userName) {
+	public static User fetchByUsername(String username) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		User user = new User();
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
-			criteria.add(Restrictions.eq(USER_NAME, userName));
+			criteria.add(Restrictions.eq(ConstantsDAO.USER_NAME_FIELD, username));
 			user = (User) criteria.uniqueResult();
 		} catch (HibernateException he) {
-			LOG.error("Hibernate exception getting user by username=" + userName, he);
+			LOG.error("Hibernate exception getting user by username=" + username, he);
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();
@@ -63,18 +57,18 @@ public class UserDAO {
 		return user;
 	}
 	
-	public static User getByUserName(String userName) {
+	public static User getByUsername(String username) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		User user = new User();
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
-			criteria.add(Restrictions.eq(USER_NAME, userName));
+			criteria.add(Restrictions.eq(ConstantsDAO.USER_NAME_FIELD, username));
 			user = (User) criteria.uniqueResult();
 			if (user == null) throw new HibernateException("No user found");
 		} catch (HibernateException he) {
-			LOG.error("Hibernate exception getting user by username=" + userName, he);
+			LOG.error("Hibernate exception getting user by username=" + username, he);
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();
@@ -90,8 +84,8 @@ public class UserDAO {
 	 */
 	public static User fetch(User user) {
 
-		if (user.getUserName() != null) {
-			user = fetchByUserName(user.getUserName());
+		if (user.getUsername() != null) {
+			user = fetchByUsername(user.getUsername());
 		} else if (user.getUserId() != 0) {
 			user = fetchById(user.getUserId());
 		} else if (user.getEmailAddress() != null) {
@@ -124,7 +118,7 @@ public class UserDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
-			criteria.add(Restrictions.eq(EMAIL_ADDRESS, emailAddress));
+			criteria.add(Restrictions.eq(ConstantsDAO.EMAIL_ADDRESS_FIELD, emailAddress));
 			users = criteria.list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting users by emailAddress=" + emailAddress, he);

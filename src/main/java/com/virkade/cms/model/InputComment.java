@@ -1,20 +1,20 @@
 package com.virkade.cms.model;
 
 public class InputComment {
-	private String userName;
+	private String username;
 	private String typeCode;
 	private String commentContent;
 	/**
 	 * @return the userName
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	/**
 	 * @return the typeCode

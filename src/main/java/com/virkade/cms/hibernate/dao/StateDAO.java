@@ -11,18 +11,10 @@ import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.State;
-import com.virkade.cms.model.User;
 
 public class StateDAO {
 
 	private static final Logger LOG = Logger.getLogger(StateDAO.class);
-	
-	//common constants
-	public static final String CODE_ARKANSAS = "AR";
-	public static final String NAME_ARKANSAS = "Arkansas";
-	//field constants
-	private static final String CODE_FIELD = "stateCode";
-	private static final String ID_FIELD = "stateId";
 
 	public static State create(State state) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -46,7 +38,7 @@ public class StateDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(State.class);
-			criteria.add(Restrictions.eq(CODE_FIELD, code));
+			criteria.add(Restrictions.eq(ConstantsDAO.STATE_CODE_FIELD, code));
 			state = (State) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get state by StateCode=" + code, he);
@@ -67,7 +59,7 @@ public class StateDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(State.class);
-			criteria.add(Restrictions.eq(CODE_FIELD, code));
+			criteria.add(Restrictions.eq(ConstantsDAO.STATE_CODE_FIELD, code));
 			state = (State) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get state by StateCode=" + code, he);
@@ -85,7 +77,7 @@ public class StateDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(State.class);
-			criteria.add(Restrictions.eq(ID_FIELD, id));
+			criteria.add(Restrictions.eq(ConstantsDAO.STATEID_FIELD, id));
 			state = (State) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get state by StateID=" + id, he);
@@ -103,7 +95,7 @@ public class StateDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(State.class);
-			criteria.add(Restrictions.eq(ID_FIELD, id));
+			criteria.add(Restrictions.eq(ConstantsDAO.STATEID_FIELD, id));
 			state = (State) criteria.uniqueResult();
 			
 		} catch (HibernateException he) {

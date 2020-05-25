@@ -14,13 +14,11 @@ import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.User;
 
 public class PlaySessionDAO {
-
-	public static final String USER_ID = "userId";
 	
 	private static final Logger LOG = Logger.getLogger(PlaySessionDAO.class);
 
 	public static List<PlaySession> fetchUserSessions(String username) throws Exception {
-		User user = UserDAO.fetchByUserName(username);
+		User user = UserDAO.fetchByUsername(username);
 		List<PlaySession> playSessions = null;
 		if (user == null) {
 			throw new Exception("username: "+username+" could not be found");

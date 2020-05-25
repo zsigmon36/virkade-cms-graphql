@@ -13,13 +13,6 @@ import com.virkade.cms.model.Region;
 public class RegionDAO {
 
 	private static final Logger LOG = Logger.getLogger(RegionDAO.class);
-
-	//common region constants
-	public static final String NAME_AMERICAS = "Americas";
-	public static final String CODE_AMERICAS = "AMS";
-
-	//property fields
-	private static final String CODE_FIELD = "regionCode";
 	
 	public static Region fetchByCode(String code) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -28,7 +21,7 @@ public class RegionDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Region.class);
-			criteria.add(Restrictions.eq(CODE_FIELD, code));
+			criteria.add(Restrictions.eq(ConstantsDAO.REGION_CODE_FIELD, code));
 			region = (Region) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get Region by regionCode=" + code, he);

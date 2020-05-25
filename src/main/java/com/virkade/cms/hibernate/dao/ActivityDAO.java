@@ -13,8 +13,6 @@ import com.virkade.cms.model.Activity;
 public class ActivityDAO {
 
 	private static final Logger LOG = Logger.getLogger(ActivityDAO.class);
-	// field constants
-	private static final String NAME_FIELD = "name";
 
 	public static Activity fetchByName(String name) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -23,7 +21,7 @@ public class ActivityDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Activity.class);
-			criteria.add(Restrictions.eq(NAME_FIELD, name));
+			criteria.add(Restrictions.eq(ConstantsDAO.NAME_FIELD, name));
 			activity = (Activity) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get Game by name=" + name, he);

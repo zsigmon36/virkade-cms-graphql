@@ -23,7 +23,7 @@
 		<property name="emailAddress" type="java.lang.String" not-null="true">
 			<column name="EMAILADDRESS" />
 		</property>
-		<property name="userName" type="java.lang.String" not-null="true" unique="true">
+		<property name="username" type="java.lang.String" not-null="true" unique="true">
 			<column name="USERNAME" sql-type="varchar(75)" />
 		</property>
 		<property name="password" type="java.lang.String" not-null="true">

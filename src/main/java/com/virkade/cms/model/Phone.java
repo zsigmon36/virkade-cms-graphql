@@ -1,11 +1,15 @@
 package com.virkade.cms.model;
 
-public class Phone {
+import java.util.SortedSet;
+
+import com.virkade.cms.hibernate.dao.TypeDAO;
+
+public class Phone extends VirkadeModel{
 
 	private long phoneId;
 	private User user;
 	private Type type;
-	private long number;
+	private String number;
 	private int countryCode;
 	private Audit audit;
 
@@ -27,7 +31,7 @@ public class Phone {
 	/**
 	 * @return the number
 	 */
-	public long getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
@@ -35,7 +39,7 @@ public class Phone {
 	 * @param number
 	 *            the number to set
 	 */
-	public void setNumber(long number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
@@ -62,10 +66,10 @@ public class Phone {
 	}
 
 	/**
-	 * @return the userName
+	 * @return the Username
 	 */
-	public String getUserName() {
-		return user.getUserName();
+	public String getUsername() {
+		return user.getUsername();
 	}
 
 	/**
@@ -116,4 +120,24 @@ public class Phone {
 		this.countryCode = countryCode;
 	}
 
+	/**
+	 * @return the attribute sorted list
+	 */
+	public SortedSet<String> getAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
+		attributes.add("PhoneId");
+		attributes.add("User");
+		attributes.add("Type");
+		attributes.add("Number");
+		attributes.add("CountryCode");
+		return attributes;
+	}
+
+	static Phone convertInput(InputPhone inputPhone) {
+		Phone phone = new Phone();
+		phone.setType(TypeDAO.fetchByCode(inputPhone.getTypeCode()));
+		phone.setNumber(inputPhone.getNumber());
+		phone.setCountryCode(inputPhone.getCountryCode());
+		return phone;
+	}
 }

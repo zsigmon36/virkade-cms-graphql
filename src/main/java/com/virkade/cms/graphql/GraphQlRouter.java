@@ -61,13 +61,13 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		        .filter(id -> !id.isEmpty())
 		        .map(id -> id.replace("Bearer ", ""))
 		        .orElse(null);
-		String userName = request
-		        .map(req -> req.getHeader("UserName"))
+		String username = request
+		        .map(req -> req.getHeader("Username"))
 		        .filter(id -> !id.isEmpty())
 		        .orElse(null);
 
 		
-		return new AuthContext(userName, authToken, request, response);
+		return new AuthContext(username, authToken, request, response);
 	}
 	
 }

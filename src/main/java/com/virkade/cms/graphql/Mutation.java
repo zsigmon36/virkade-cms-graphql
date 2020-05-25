@@ -19,6 +19,8 @@ import com.virkade.cms.auth.ClientSessionTracker;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.AddressDAO;
+import com.virkade.cms.hibernate.dao.CommentDAO;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
@@ -60,7 +62,7 @@ public class Mutation implements GraphQLRootResolver {
 			throw new Exception("Creation of user not allowed with null AuthData");
 		}
 		if (UserDAO.fetch(new User(authData)) != null) {
-			throw new Exception("User already exists with the userName=" + authData.getUserName());
+			throw new Exception("User already exists with the username=" + authData.getUsername());
 		}
 
 		if (firstName == null || firstName.equalsIgnoreCase("")) {
@@ -72,7 +74,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (emailAddress == null || emailAddress.equalsIgnoreCase("")) {
 			missingData.add("EmailAddress");
 		}
-		if (authData.getUserName() == null || authData.getUserName().equalsIgnoreCase("")) {
+		if (authData.getUsername() == null || authData.getUsername().equalsIgnoreCase("")) {
 			missingData.add("Username");
 		}
 		if (authData.getPassword() == null || authData.getPassword().equalsIgnoreCase("")) {
@@ -88,24 +90,24 @@ public class Mutation implements GraphQLRootResolver {
 			throw new Exception("Creation of user not allowed with the following missing data [" + missingData.toString() + "]");
 		}
 
-		if (!AuthData.checkPermission(env, UserDAO.fetchByUserName(authData.getUserName()), PermissionType.GUEST)) {
+		if (!AuthData.checkPermission(env, UserDAO.fetchByUsername(authData.getUsername()), PermissionType.GUEST)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
 
 		User user = new User(authData);
 		user.setFirstName(firstName);
 		user.setLastName(lastName);
-		user.setUserName(authData.getUserName());
+		user.setUsername(authData.getUsername());
 		user.setEmailAddress(emailAddress);
 		user.setPassword(VirkadeEncryptor.hashEncode(authData.getPassword()));
 		user.setSecurityQuestion(authData.getSecurityQuestion());
 		user.setSecurityAnswer(VirkadeEncryptor.hashEncode(authData.getSecurityAnswer()));
-		user.setStatus(StatusDAO.fetchByCode(StatusDAO.ACTIVE_CODE));
-		user.setType(TypeDAO.getByCode(TypeDAO.PROSPECT_CODE));
+		user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
+		user.setType(TypeDAO.getByCode(ConstantsDAO.PROSPECT_CODE));
 		user.getAudit().setCreatedAt(new Date());
-		user.getAudit().setCreatedBy((curSessionUser.getUserName() == null) ? user.getUserName() : curSessionUser.getUserName());
+		user.getAudit().setCreatedBy((curSessionUser.getUsername() == null) ? user.getUsername() : curSessionUser.getUsername());
 		user.getAudit().setUpdatedAt(new Date());
-		user.getAudit().setUpdatedBy((curSessionUser.getUserName() == null) ? user.getUserName() : curSessionUser.getUserName());
+		user.getAudit().setUpdatedBy((curSessionUser.getUsername() == null) ? user.getUsername() : curSessionUser.getUsername());
 		UserDAO.createUpdate(user, false);
 
 		return user;
@@ -118,14 +120,14 @@ public class Mutation implements GraphQLRootResolver {
 
 		User userToUpdate = query.getUserById(inputUser.getUserId());
 
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
 
 		User convertedInputUser = (User) VirkadeModel.convertObj(inputUser.getClass().getName(), inputUser);
 
-		if (convertedInputUser.getUserName() != null) {
-			userToUpdate.setUserName(convertedInputUser.getUserName());
+		if (convertedInputUser.getUsername() != null) {
+			userToUpdate.setUsername(convertedInputUser.getUsername());
 		}
 		if (convertedInputUser.getAddress() != null) {
 			userToUpdate.setAddress(convertedInputUser.getAddress());
@@ -145,7 +147,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.getHeight() != 0) {
 			userToUpdate.setHeight(convertedInputUser.getHeight());
 		}
-		if (convertedInputUser.getIdp() != 0F) {
+		if (convertedInputUser.getIdp() != 0.0F) {
 			userToUpdate.setIdp(convertedInputUser.getIdp());
 		}
 		if (convertedInputUser.getLastName() != null) {
@@ -169,10 +171,19 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.getWeight() != 0) {
 			userToUpdate.setWeight(convertedInputUser.getWeight());
 		}
+		if (convertedInputUser.canContact() != null) {
+			userToUpdate.setCanContact(convertedInputUser.canContact());
+		}
+		if (convertedInputUser.isReServices() != null) {
+			userToUpdate.setReServices(convertedInputUser.isReServices());
+		}
+		if (convertedInputUser.isPlayedBefore() != null) {
+			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
+		}
 
 		Audit updatedAuditInfo = userToUpdate.getAudit();
 		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUserName());
+		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
 		userToUpdate.setAudit(updatedAuditInfo);
 
 		return UserDAO.createUpdate(userToUpdate, true);
@@ -189,44 +200,47 @@ public class Mutation implements GraphQLRootResolver {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
 
-		ClientSessionTracker.purgeActiveSession(curSessionUser.getUserName());
+		ClientSessionTracker.purgeActiveSession(curSessionUser.getUsername());
 		return "Success";
 	}
 
 	public Phone addPhone(InputPhone phoneInput, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = query.getUserByUserName(phoneInput.getUserName());
+		User userToUpdate = query.getUserByUsername(phoneInput.getUsername());
 
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
-
+		
+		Phone convertedInputPhone = (Phone) VirkadeModel.convertObj(phoneInput.getClass().getName(), phoneInput);
+		
 		List<String> missingData = new ArrayList<String>();
 		if (phoneInput.getTypeCode() == null || phoneInput.getTypeCode().equalsIgnoreCase("")) {
 			missingData.add("Type Code");
 		}
-		if (phoneInput.getCountryCode() == 0) {
-			missingData.add("Country Code");
-		}
-		if (phoneInput.getNumber() == 0) {
+		if (phoneInput.getNumber() == "") {
 			missingData.add("Number");
 		}
 		if (!missingData.isEmpty()) {
 			throw new Exception("Creation of phone not allowed with the following missing data [" + missingData.toString() + "]");
 		}
+		
+		Audit updatedAuditInfo = convertedInputPhone.getAudit();
+		updatedAuditInfo.setCreatedAt(new Date());
+		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
+		updatedAuditInfo.setUpdatedAt(new Date());
+		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
+		convertedInputPhone.setAudit(updatedAuditInfo);
+		
 		Phone phone = new Phone();
-
-		phone.setUser(userToUpdate);
-		phone.setType(TypeDAO.fetchByCode(phoneInput.getTypeCode()));
-		phone.setNumber(phoneInput.getNumber());
-		phone.setCountryCode(phoneInput.getCountryCode());
-		phone.getAudit().setCreatedAt(new Date());
-		phone.getAudit().setCreatedBy(curSessionUser.getUserName());
-		phone.getAudit().setUpdatedAt(new Date());
-		phone.getAudit().setUpdatedBy(curSessionUser.getUserName());
-
-		return PhoneDAO.create(phone);
+		User user = UserDAO.fetch(userToUpdate);
+		convertedInputPhone.setUser(user);
+		phone = PhoneDAO.fetch(convertedInputPhone);
+		if (phone == null) {
+			phone = PhoneDAO.create(convertedInputPhone);
+		}
+		return phone;
 
 	}
 
@@ -248,8 +262,8 @@ public class Mutation implements GraphQLRootResolver {
 		
 		Audit updatedAuditInfo = convertedInputAddress.getAudit();
 		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUserName());
-		updatedAuditInfo.setCreatedBy(curSessionUser.getUserName());
+		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
+		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
 		updatedAuditInfo.setCreatedAt(new Date());
 		convertedInputAddress.setAudit(updatedAuditInfo);
 		
@@ -257,7 +271,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (address == null) {
 			address = AddressDAO.create(convertedInputAddress);
 		} else {
-			LOG.warn(String.format("Address was found, assigning user: %s to address: %s ", curSessionUser.getUserName(), address.getAddressId()));
+			LOG.warn(String.format("Address was found, assigning user: %s to address: %s ", curSessionUser.getUsername(), address.getAddressId()));
 		}
 		User user = UserDAO.fetch(curSessionUser);
 		user.setAddress(address);
@@ -265,53 +279,69 @@ public class Mutation implements GraphQLRootResolver {
 		return address;
 	}
 
-	public Comment addComment(InputComment inputComment, DataFetchingEnvironment env) throws AccessDeniedException {
+	public Comment addComment(InputComment inputComment, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUserName(inputComment.getUserName());
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		User userToUpdate = UserDAO.fetchByUsername(inputComment.getUsername());
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Comment cannot be added by the requesting user");
 		}
 
-		Comment convertedInputComment = Comment.convertObjToComment(inputComment.getClass().getName(), inputComment);
-		return null;
+		Comment convertedInputComment = (Comment) Comment.convertObj(inputComment.getClass().getName(), inputComment);
+		
+		Audit updatedAuditInfo = convertedInputComment.getAudit();
+		updatedAuditInfo.setUpdatedAt(new Date());
+		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
+		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
+		updatedAuditInfo.setCreatedAt(new Date());
+		convertedInputComment.setAudit(updatedAuditInfo);
+		
+		Comment comment = new Comment();
+		User user = UserDAO.fetch(userToUpdate);
+		comment.setUser(user);
+		comment = CommentDAO.fetch(convertedInputComment);
+		if (comment == null) {
+			comment = CommentDAO.create(convertedInputComment);
+		}
+		return comment;
+
 	}
 
-	public PlaySession addSession(String userName, DataFetchingEnvironment env) throws AccessDeniedException {
+	public PlaySession addSession(String username, DataFetchingEnvironment env) throws AccessDeniedException {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUserName(userName);
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		User userToUpdate = UserDAO.fetchByUsername(username);
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Session cannot be created by the requesting user");
 		}
 		return null;
 	}
 
-	public Legal addLegal(String userName, DataFetchingEnvironment env) throws AccessDeniedException {
+	public Legal addLegal(String username, DataFetchingEnvironment env) throws AccessDeniedException {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUserName(userName);
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		User userToUpdate = UserDAO.fetchByUsername(username);
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Legal document association cannot be modified by the requesting user");
 		}
 		return null;
 	}
 
-	public String setPassword(String userName, String newPassword, DataFetchingEnvironment env) throws AccessDeniedException {
+	public String setPassword(String username, String newPassword, DataFetchingEnvironment env) throws AccessDeniedException {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUserName(userName);
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		User userToUpdate = UserDAO.fetchByUsername(username);
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
 		return null;
 	}
 
-	public String setSecurityQA(String userName, String securityQ, String securityA, DataFetchingEnvironment env) throws AccessDeniedException {
+	public String setSecurityQA(String username, String securityQ, String securityA, DataFetchingEnvironment env) throws AccessDeniedException {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUserName(userName);
-		if (!AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		User userToUpdate = UserDAO.fetchByUsername(username);
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
 		return null;

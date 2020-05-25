@@ -1,13 +1,14 @@
 package com.virkade.cms.auth;
 
 import com.virkade.cms.graphql.AuthContext;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.model.User;
 
 import graphql.schema.DataFetchingEnvironment;
 
 public class AuthData {
-	private String userName;
+	private String username;
 	private String password;
 	private String securityQuestion;
 	private String securityAnswer;
@@ -16,24 +17,24 @@ public class AuthData {
 
 	}
 
-	public AuthData(String userName, String password) {
-		this.userName = userName;
+	public AuthData(String username, String password) {
+		this.username = username;
 		this.password = password;
 	}
 
 	/**
-	 * @return the userName
+	 * @return the username
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
-	 * @param userName
-	 *            the userName to set
+	 * @param username
+	 *            the username to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -104,14 +105,14 @@ public class AuthData {
 	private static boolean normalPermissionCheck(User curUser, User userToModify) {
 		if (adminPermissionCheck(curUser)) {
 			return true;
-		} else if (curUser.getUserName().equals(userToModify.getUserName()) && curUser.getType().getTypeId() != TypeDAO.fetchByCode(TypeDAO.GUEST_CODE).getTypeId()) {
+		} else if (curUser.getUserId() == (userToModify.getUserId()) && curUser.getType().getTypeId() != TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE).getTypeId()) {
 			return true;
 		}
 		return false;
 	}
 
 	private static boolean adminPermissionCheck(User curUser) {
-		if (curUser.getType().getTypeId() != TypeDAO.fetchByCode(TypeDAO.ADMIN_CODE).getTypeId()) {
+		if (curUser.getType().getTypeId() == TypeDAO.fetchByCode(ConstantsDAO.ADMIN_CODE).getTypeId()) {
 			return true;
 		}
 		return false;

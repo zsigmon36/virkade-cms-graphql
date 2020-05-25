@@ -6,7 +6,7 @@ public class InputUser {
 	private long addressId;
 	private long statusId;
 	private String emailAddress;
-	private String userName;
+	private String username;
 	private String password;
 	private String securityQuestion;
 	private String securityAnswer;
@@ -17,12 +17,12 @@ public class InputUser {
 	private int height;
 	private int weight;
 	private float idp;
-	private boolean tcAgree;
-	private boolean liabilityAgree;
-	private boolean emailVerified;
-	private boolean playedBefore;
-	private boolean reServices;
-	private boolean canContact;	
+	private Boolean tcAgree;
+	private Boolean liabilityAgree;
+	private Boolean emailVerified;
+	private Boolean playedBefore;
+	private Boolean reServices;
+	private Boolean canContact;	
 	
 	/**
 	 * @return the userId
@@ -87,16 +87,16 @@ public class InputUser {
 		this.emailAddress = emailAddress;
 	}
 	/**
-	 * @return the userName
+	 * @return the username
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 	/**
-	 * @param userName the userName to set
+	 * @param username the username to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	/**
 	 * @return the password
@@ -225,73 +225,73 @@ public class InputUser {
 	/**
 	 * @return the tcAgree
 	 */
-	public boolean isTcAgree() {
+	public Boolean isTcAgree() {
 		return tcAgree;
 	}
 	/**
 	 * @param tcAgree the tcAgree to set
 	 */
-	public void setTcAgree(boolean tcAgree) {
+	public void setTcAgree(Boolean tcAgree) {
 		this.tcAgree = tcAgree;
 	}
 	/**
 	 * @return the liabilityAgree
 	 */
-	public boolean isLiabilityAgree() {
+	public Boolean isLiabilityAgree() {
 		return liabilityAgree;
 	}
 	/**
 	 * @param liabilityAgree the liabilityAgree to set
 	 */
-	public void setLiabilityAgree(boolean liabilityAgree) {
+	public void setLiabilityAgree(Boolean liabilityAgree) {
 		this.liabilityAgree = liabilityAgree;
 	}
 	/**
 	 * @return the emailVerified
 	 */
-	public boolean isEmailVerified() {
+	public Boolean isEmailVerified() {
 		return emailVerified;
 	}
 	/**
 	 * @param emailVerified the emailVerified to set
 	 */
-	public void setEmailVerified(boolean emailVerified) {
+	public void setEmailVerified(Boolean emailVerified) {
 		this.emailVerified = emailVerified;
 	}
 	/**
 	 * @return the playedBefore
 	 */
-	public boolean isPlayedBefore() {
+	public Boolean isPlayedBefore() {
 		return playedBefore;
 	}
 	/**
 	 * @param playedBefore the playedBefore to set
 	 */
-	public void setPlayedBefore(boolean playedBefore) {
+	public void setPlayedBefore(Boolean playedBefore) {
 		this.playedBefore = playedBefore;
 	}
 	/**
 	 * @return the reServices
 	 */
-	public boolean isReServices() {
+	public Boolean isReServices() {
 		return reServices;
 	}
 	/**
 	 * @param reServices the reServices to set
 	 */
-	public void setReServices(boolean reServices) {
+	public void setReServices(Boolean reServices) {
 		this.reServices = reServices;
 	}
 	/**
 	 * @return the canContact
 	 */
-	public boolean isCanContact() {
+	public Boolean isCanContact() {
 		return canContact;
 	}
 	/**
 	 * @param canContact the canContact to set
 	 */
-	public void setCanContact(boolean canContact) {
+	public void setCanContact(Boolean canContact) {
 		this.canContact = canContact;
 	}
 }

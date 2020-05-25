@@ -152,12 +152,11 @@ public class Address extends VirkadeModel {
 	static Address convertInput(InputAddress inputAddress) throws Exception {
 		Address address = new Address();
 		
-		if (inputAddress.getStateCode() != null) {
+		if (inputAddress.getStateCode() != null && inputAddress.getStateCode() != "") {
 			address.setState(StateDAO.getByCode(inputAddress.getStateCode()));
 		} else if (inputAddress.getStateId() > 0) {
 			address.setState(StateDAO.getById(inputAddress.getStateId()));
 		}
-		
 		address.setAddressId(inputAddress.getAddressId());
 		address.setApt(inputAddress.getApt());
 		address.setCity(inputAddress.getCity());

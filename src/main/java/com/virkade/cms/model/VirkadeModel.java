@@ -10,6 +10,10 @@ public class VirkadeModel {
 			return User.convertInput((InputUser) objToConvert);
 		} else if (className.equalsIgnoreCase(InputAddress.class.getName())) {
 			return Address.convertInput((InputAddress) objToConvert);
+		} else if (className.equalsIgnoreCase(InputPhone.class.getName())) {
+			return Phone.convertInput((InputPhone) objToConvert);
+		} else if (className.equalsIgnoreCase(InputComment.class.getName())) {
+			return Comment.convertInput((InputComment) objToConvert);
 		}
 		return null;
 	}

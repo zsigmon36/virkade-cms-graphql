@@ -9,15 +9,10 @@ import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.Location;
-import com.virkade.cms.model.State;
 
 public class LocationDAO {
 
 	private static final Logger LOG = Logger.getLogger(LocationDAO.class);
-	
-	public static final String ORIGINAL_LOCATION_NAME = "VirKade Prime";
-
-	private static final String NAME_FIELD = "name";
 
 	public static Location fetchByName(String name) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -26,7 +21,7 @@ public class LocationDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Location.class);
-			criteria.add(Restrictions.eq(NAME_FIELD, name));
+			criteria.add(Restrictions.eq(ConstantsDAO.NAME_FIELD, name));
 			location = (Location) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting location by name=" + name, he);

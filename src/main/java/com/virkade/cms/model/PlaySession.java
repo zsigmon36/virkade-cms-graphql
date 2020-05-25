@@ -7,11 +7,6 @@ public class PlaySession {
 
 	private long sessionId;
 	private User user;
-	private long userId;
-	private String emailAddress;
-	private String userName;
-	private String firstName;
-	private String lastName;
 	private Location location;
 	private List<Activity> activities;
 	private Date startDate;
@@ -97,10 +92,10 @@ public class PlaySession {
 	}
 
 	/**
-	 * @return the userName
+	 * @return the Username
 	 */
-	public String getUserName() {
-		return user.getUserName();
+	public String getUsername() {
+		return user.getUsername();
 	}
 
 	/**

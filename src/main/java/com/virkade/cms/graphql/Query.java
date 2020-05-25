@@ -3,7 +3,6 @@ package com.virkade.cms.graphql;
 import java.util.List;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
-import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Comment;
@@ -24,9 +23,9 @@ public class Query implements GraphQLRootResolver {
 		return UserDAO.fetchAll();
 	}
 
-	public User getUserByUserName(String userName) {
+	public User getUserByUsername(String username) {
 		User user = new User();
-		user.setUserName(userName);
+		user.setUsername(username);
 		return UserDAO.fetch(user);
 	}
 
@@ -42,7 +41,7 @@ public class Query implements GraphQLRootResolver {
 	}
 
 	public List<PlaySession> getUserSessions(String username) throws Exception {
-		User user = UserDAO.getByUserName(username);
+		User user = UserDAO.getByUsername(username);
 		List<PlaySession> playSessions = user.getSessions();
 		return playSessions;
 	}
@@ -62,7 +61,7 @@ public class Query implements GraphQLRootResolver {
 		return null;
 	}
 
-	public List<Comment> getUserComments(String userName) {
+	public List<Comment> getUserComments(String username) {
 		return null;
 	}
 
@@ -74,7 +73,7 @@ public class Query implements GraphQLRootResolver {
 		return null;
 	}
 
-	public List<Phone> getPhonesByUserName(String userName) {
+	public List<Phone> getPhonesByUsername(String username) {
 		return null;
 	}
 }

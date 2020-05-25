@@ -1,6 +1,10 @@
 package com.virkade.cms.model;
 
-public class Comment {
+import java.util.SortedSet;
+
+import com.virkade.cms.hibernate.dao.TypeDAO;
+
+public class Comment extends VirkadeModel{
 	private long commentId;
 	private User user;
 	private Type type;
@@ -19,6 +23,21 @@ public class Comment {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	/**
+	 * @return the userId
+	 */
+	public long getUserId() {
+		return user.getUserId();
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUsername() {
+		return user.getUsername();
+	}
+	
 	/**
 	 * @return the type
 	 */
@@ -71,9 +90,23 @@ public class Comment {
 		this.audit = audit;
 	}
 	
-	
-	public static Comment convertObjToComment(String name, InputComment inputComment) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * @return the attribute sorted list
+	 */
+	public SortedSet<String> getAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
+		attributes.add("PhoneId");
+		attributes.add("User");
+		attributes.add("Type");
+		attributes.add("Number");
+		attributes.add("CountryCode");
+		return attributes;
+	}
+
+	static Comment convertInput(InputComment inputComment) {
+		Comment comment = new Comment();
+		comment.setType(TypeDAO.fetchByCode(inputComment.getTypeCode()));
+		comment.setCommentContent(inputComment.getCommentContent());
+		return comment;
 	}
 }

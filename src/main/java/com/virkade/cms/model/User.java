@@ -26,7 +26,7 @@ public class User extends VirkadeModel {
 	private List<Comment> comments;
 	private List<Phone> phoneNumbers;
 	private String emailAddress;
-	private String userName;
+	private String username;
 	private String password;
 	private String securityQuestion;
 	private String securityAnswer;
@@ -37,18 +37,18 @@ public class User extends VirkadeModel {
 	private int height;
 	private int weight;
 	private float idp;
-	private boolean emailVerified;
-	private boolean playedBefore;
+	private Boolean emailVerified;
+	private Boolean playedBefore;
 	private Date lastLogin;
-	private boolean reServices;
-	private boolean canContact;
+	private Boolean reServices;
+	private Boolean canContact;
 	private Audit audit;
 
 	public User() {
 	}
 
 	public User(AuthData authData) {
-		this.userName = authData.getUserName();
+		this.username = authData.getUsername();
 		this.password = authData.getPassword();
 		this.securityQuestion = authData.getPassword();
 		this.securityAnswer = authData.getSecurityAnswer();
@@ -174,18 +174,18 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @return the userName
+	 * @return the username
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
-	 * @param userName
-	 *            the userName to set
+	 * @param username
+	 *            the username to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class User extends VirkadeModel {
 	/**
 	 * @return the emailVerified
 	 */
-	public boolean isEmailVerified() {
+	public Boolean isEmailVerified() {
 		return emailVerified;
 	}
 
@@ -352,14 +352,14 @@ public class User extends VirkadeModel {
 	 * @param emailVerified
 	 *            the emailVerified to set
 	 */
-	public void setEmailVerified(boolean emailVerified) {
+	public void setEmailVerified(Boolean emailVerified) {
 		this.emailVerified = emailVerified;
 	}
 
 	/**
 	 * @return the playedBefore
 	 */
-	public boolean isPlayedBefore() {
+	public Boolean isPlayedBefore() {
 		return playedBefore;
 	}
 
@@ -367,7 +367,7 @@ public class User extends VirkadeModel {
 	 * @param playedBefore
 	 *            the playedBefore to set
 	 */
-	public void setPlayedBefore(boolean playedBefore) {
+	public void setPlayedBefore(Boolean playedBefore) {
 		this.playedBefore = playedBefore;
 	}
 
@@ -389,7 +389,7 @@ public class User extends VirkadeModel {
 	/**
 	 * @return the reServices
 	 */
-	public boolean isReServices() {
+	public Boolean isReServices() {
 		return reServices;
 	}
 
@@ -397,14 +397,14 @@ public class User extends VirkadeModel {
 	 * @param reServices
 	 *            the reServices to set
 	 */
-	public void setReServices(boolean reServices) {
+	public void setReServices(Boolean reServices) {
 		this.reServices = reServices;
 	}
 
 	/**
 	 * @return the canContact
 	 */
-	public boolean canContact() {
+	public Boolean canContact() {
 		return canContact;
 	}
 
@@ -412,7 +412,7 @@ public class User extends VirkadeModel {
 	 * @param canContact
 	 *            the canContact to set
 	 */
-	public void setCanContact(boolean canContact) {
+	public void setCanContact(Boolean canContact) {
 		this.canContact = canContact;
 	}
 
@@ -442,7 +442,7 @@ public class User extends VirkadeModel {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", type=" + type.toString() + ", address=" + address.toString() + ", status=" + status.toString() 
-		+ ", emailAddress=" + emailAddress + ", userName=" + userName + ", password=" + password + ", firstName=" + firstName + ", lastName=" 
+		+ ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", firstName=" + firstName + ", lastName=" 
 				+ lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp
 				+ ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices 
 				+ ", canContact=" + canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt() + ", createdBy=" 
@@ -460,7 +460,7 @@ public class User extends VirkadeModel {
 		attributes.add("StatusId");
 		attributes.add("Session");
 		attributes.add("EmailAddress");
-		attributes.add("UserName");
+		attributes.add("Username");
 		attributes.add("Password");
 		attributes.add("SecurityQuestion");
 		attributes.add("SecurityAnswer");
@@ -498,7 +498,7 @@ public class User extends VirkadeModel {
 		user.setReServices(inputUser.isReServices());
 		user.setStatus(StatusDAO.fetchById(inputUser.getStatusId()));
 		user.setType(TypeDAO.getByCode(inputUser.getTypeCode()));
-		user.setUserName(inputUser.getUserName());
+		user.setUsername(inputUser.getUsername());
 		user.setWeight(inputUser.getWeight());
 		return user;
 	}
