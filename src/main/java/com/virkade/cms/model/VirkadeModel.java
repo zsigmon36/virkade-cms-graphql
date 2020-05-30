@@ -1,5 +1,6 @@
 package com.virkade.cms.model;
 
+import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -14,6 +15,8 @@ public class VirkadeModel {
 			return Phone.convertInput((InputPhone) objToConvert);
 		} else if (className.equalsIgnoreCase(InputComment.class.getName())) {
 			return Comment.convertInput((InputComment) objToConvert);
+		} else if (className.equalsIgnoreCase(InputLegal.class.getName())) {
+			return Legal.convertInput((InputLegal) objToConvert);
 		}
 		return null;
 	}
@@ -22,6 +25,17 @@ public class VirkadeModel {
 		attributes.add("Audit");
 		
 		return attributes;
+	}
+	
+	public static Audit addAuditToModel(User requestingUser,  boolean isNew) {
+		Audit auditInfo = new Audit();
+		auditInfo.setUpdatedAt(new Date());
+		auditInfo.setUpdatedBy(requestingUser.getUsername());
+	    if (isNew) {
+	    	auditInfo.setCreatedBy(requestingUser.getUsername());
+			auditInfo.setCreatedAt(new Date());
+	    }
+		return auditInfo;
 	}
 	
 }

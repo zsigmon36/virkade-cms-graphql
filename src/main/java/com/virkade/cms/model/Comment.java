@@ -3,6 +3,7 @@ package com.virkade.cms.model;
 import java.util.SortedSet;
 
 import com.virkade.cms.hibernate.dao.TypeDAO;
+import com.virkade.cms.hibernate.dao.UserDAO;
 
 public class Comment extends VirkadeModel{
 	private long commentId;
@@ -106,6 +107,7 @@ public class Comment extends VirkadeModel{
 	static Comment convertInput(InputComment inputComment) {
 		Comment comment = new Comment();
 		comment.setType(TypeDAO.fetchByCode(inputComment.getTypeCode()));
+		comment.setUser(UserDAO.fetchByUsername(inputComment.getUsername()));
 		comment.setCommentContent(inputComment.getCommentContent());
 		return comment;
 	}

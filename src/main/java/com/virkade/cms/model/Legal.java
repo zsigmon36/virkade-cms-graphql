@@ -1,8 +1,12 @@
 package com.virkade.cms.model;
 
 import java.util.Date;
+import java.util.SortedSet;
 
-public class Legal {
+import com.virkade.cms.hibernate.dao.TypeDAO;
+import com.virkade.cms.hibernate.dao.UserDAO;
+
+public class Legal extends VirkadeModel{
 	
 	private long legalDocId;
 	private User user;
@@ -120,6 +124,32 @@ public class Legal {
 	public String toString() {
 		return "Legal [legalDocId=" + legalDocId + ", user=" + user + ", type=" + type + ", agree=" + agree + ", activeDate=" + activeDate 
 				+ ", expireDate=" + expireDate + ", enabled=" + enabled + ", audit=" + audit + "]";
+	}
+	
+	/**
+	 * @return the attribute sorted list
+	 */
+	public SortedSet<String> getAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
+		attributes.add("LegalDocId");
+		attributes.add("User");
+		attributes.add("Type");
+		attributes.add("Agree");
+		attributes.add("ActiveDate");
+		attributes.add("ExpireDate");
+		attributes.add("Enabled");
+		return attributes;
+	}
+
+	static Legal convertInput(InputLegal inputLegal) {
+		Legal legal = new Legal();
+		legal.setUser(UserDAO.fetchByUsername(inputLegal.getUsername()));
+		legal.setActiveDate(inputLegal.getActiveDate());
+		legal.setExpireDate(inputLegal.getExpireDate());
+		legal.setType(TypeDAO.getByCode(inputLegal.getTypeCode()));
+		legal.setAgree(inputLegal.isAgree());
+		legal.setEnabled(inputLegal.isEnabled());
+		return legal;
 	}
 	
 }

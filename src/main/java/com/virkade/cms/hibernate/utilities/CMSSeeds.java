@@ -165,6 +165,26 @@ public class CMSSeeds {
 			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
 			TypeDAO.create(type);
 		}
+		if (TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS) == null) {
+			type.setCode(ConstantsDAO.TERMS_CONDITIONS);
+			type.setName("terms and conditions");
+			type.setDescription("the legal document for terms and conditions");
+			type.getAudit().setCreatedAt(new Date());
+			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setUpdatedAt(new Date());
+			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			TypeDAO.create(type);
+		}
+		if (TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE) == null) {
+			type.setCode(ConstantsDAO.LIMITED_LIABLE);
+			type.setName("limited liablity");
+			type.setDescription("the legal document for limited liability waiver");
+			type.getAudit().setCreatedAt(new Date());
+			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setUpdatedAt(new Date());
+			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			TypeDAO.create(type);
+		}
 	}
 
 	public static void createDefaultRegions() {

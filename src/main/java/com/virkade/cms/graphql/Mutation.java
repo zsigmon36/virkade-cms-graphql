@@ -5,7 +5,6 @@ package com.virkade.cms.graphql;
 
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +20,7 @@ import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CommentDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
+import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
@@ -30,6 +30,7 @@ import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Comment;
 import com.virkade.cms.model.InputAddress;
 import com.virkade.cms.model.InputComment;
+import com.virkade.cms.model.InputLegal;
 import com.virkade.cms.model.InputPhone;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
@@ -104,10 +105,10 @@ public class Mutation implements GraphQLRootResolver {
 		user.setSecurityAnswer(VirkadeEncryptor.hashEncode(authData.getSecurityAnswer()));
 		user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 		user.setType(TypeDAO.getByCode(ConstantsDAO.PROSPECT_CODE));
-		user.getAudit().setCreatedAt(new Date());
-		user.getAudit().setCreatedBy((curSessionUser.getUsername() == null) ? user.getUsername() : curSessionUser.getUsername());
-		user.getAudit().setUpdatedAt(new Date());
-		user.getAudit().setUpdatedBy((curSessionUser.getUsername() == null) ? user.getUsername() : curSessionUser.getUsername());
+		
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, true);
+		user.setAudit(updatedAuditInfo);
+		
 		UserDAO.createUpdate(user, false);
 
 		return user;
@@ -181,9 +182,7 @@ public class Mutation implements GraphQLRootResolver {
 			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
 		}
 
-		Audit updatedAuditInfo = userToUpdate.getAudit();
-		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, false);
 		userToUpdate.setAudit(updatedAuditInfo);
 
 		return UserDAO.createUpdate(userToUpdate, true);
@@ -226,11 +225,7 @@ public class Mutation implements GraphQLRootResolver {
 			throw new Exception("Creation of phone not allowed with the following missing data [" + missingData.toString() + "]");
 		}
 		
-		Audit updatedAuditInfo = convertedInputPhone.getAudit();
-		updatedAuditInfo.setCreatedAt(new Date());
-		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
-		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, true);
 		convertedInputPhone.setAudit(updatedAuditInfo);
 		
 		Phone phone = new Phone();
@@ -260,11 +255,7 @@ public class Mutation implements GraphQLRootResolver {
 		
 		Address convertedInputAddress = (Address) VirkadeModel.convertObj(inputAddress.getClass().getName(), inputAddress);
 		
-		Audit updatedAuditInfo = convertedInputAddress.getAudit();
-		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
-		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
-		updatedAuditInfo.setCreatedAt(new Date());
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, true);
 		convertedInputAddress.setAudit(updatedAuditInfo);
 		
 		Address address = AddressDAO.fetch(convertedInputAddress);
@@ -289,22 +280,14 @@ public class Mutation implements GraphQLRootResolver {
 
 		Comment convertedInputComment = (Comment) Comment.convertObj(inputComment.getClass().getName(), inputComment);
 		
-		Audit updatedAuditInfo = convertedInputComment.getAudit();
-		updatedAuditInfo.setUpdatedAt(new Date());
-		updatedAuditInfo.setUpdatedBy(curSessionUser.getUsername());
-		updatedAuditInfo.setCreatedBy(curSessionUser.getUsername());
-		updatedAuditInfo.setCreatedAt(new Date());
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, true);
 		convertedInputComment.setAudit(updatedAuditInfo);
 		
-		Comment comment = new Comment();
-		User user = UserDAO.fetch(userToUpdate);
-		comment.setUser(user);
-		comment = CommentDAO.fetch(convertedInputComment);
+		Comment comment = CommentDAO.fetch(convertedInputComment);
 		if (comment == null) {
 			comment = CommentDAO.create(convertedInputComment);
 		}
 		return comment;
-
 	}
 
 	public PlaySession addSession(String username, DataFetchingEnvironment env) throws AccessDeniedException {
@@ -317,14 +300,28 @@ public class Mutation implements GraphQLRootResolver {
 		return null;
 	}
 
-	public Legal addLegal(String username, DataFetchingEnvironment env) throws AccessDeniedException {
+	public Legal addUserLegalDoc(InputLegal inputLegal, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUsername(username);
+		User userToUpdate = UserDAO.fetchByUsername(inputLegal.getUsername());
 		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Legal document association cannot be modified by the requesting user");
 		}
-		return null;
+		
+		Legal convertedInputLegal = (Legal) VirkadeModel.convertObj(InputLegal.class.getName(), inputLegal);
+		
+		
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, true);
+		convertedInputLegal.setAudit(updatedAuditInfo);
+		
+		Legal legal = LegalDAO.fetch(convertedInputLegal);
+		if (legal == null) {
+			legal = LegalDAO.create(convertedInputLegal);
+		} else {
+			convertedInputLegal.setLegalDocId(legal.getLegalDocId());
+			legal = LegalDAO.update(convertedInputLegal);
+		}
+		return legal;
 	}
 
 	public String setPassword(String username, String newPassword, DataFetchingEnvironment env) throws AccessDeniedException {

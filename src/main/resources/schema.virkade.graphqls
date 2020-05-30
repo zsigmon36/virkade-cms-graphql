@@ -57,6 +57,14 @@ type Legal {
 	enabled: Boolean
 	audit: Audit
 }
+input InputLegal {
+	username: String
+	typeCode: String
+	agree: Boolean
+	activeDate: Date
+	expireDate: Date
+	enabled: Boolean
+}
 
 type Status {
 	statusId: Long
@@ -235,10 +243,10 @@ type Mutation {
   addPhone(inputPhone: InputPhone!): Phone
   addComment(inputComment: InputComment!): Comment
   addSession(username: String!): PlaySession
-  addLegal(username: String!): Legal
   setPassword(username: String!, newPassword: String!): String
   setSecurityQA(username: String!, securityQ: String!, securityA: String!): String
   addUserAddress(inputAddress: InputAddress!): Address
+  addUserLegalDoc(inputLegal: InputLegal!): Legal
 }
 
 schema {

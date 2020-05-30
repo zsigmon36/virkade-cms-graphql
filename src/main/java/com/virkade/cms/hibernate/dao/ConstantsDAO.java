@@ -33,6 +33,8 @@ public class ConstantsDAO {
 	public static final String TYPEID_FIELD = "typeId";
 	public static final String GENERAL_COMMENT = "GNRL_CMNT";
 	public static final String CONDITION_COMMENT = "CNDTN_CMNT";
+	public static final String TERMS_CONDITIONS = "TRMS_CNDTN";
+	public static final String LIMITED_LIABLE = "LTD_LBLE";
 	
 	//stateDAO
 	public static final String CODE_ARKANSAS = "AR";
