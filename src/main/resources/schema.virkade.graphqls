@@ -239,12 +239,13 @@ type Mutation {
   createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
   updateUser(inputUser: InputUser!): User
   signIn(authData: AuthData!): AuthToken
-  signOut: String
+  recoverySignIn(authData: AuthData!): Boolean
+  signOut(username: String!): String
   addPhone(inputPhone: InputPhone!): Phone
   addComment(inputComment: InputComment!): Comment
   addSession(username: String!): PlaySession
-  setPassword(username: String!, newPassword: String!): String
-  setSecurityQA(username: String!, securityQ: String!, securityA: String!): String
+  setNewPassword(username: String!, passCode: String!, newPassword: String!): Boolean
+  setSecurityQA(username: String!, securityQ: String!, securityA: String!): Boolean
   addUserAddress(inputAddress: InputAddress!): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
 }

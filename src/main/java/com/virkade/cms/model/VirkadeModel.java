@@ -27,13 +27,16 @@ public class VirkadeModel {
 		return attributes;
 	}
 	
-	public static Audit addAuditToModel(User requestingUser,  boolean isNew) {
+	public static Audit addAuditToModel(User requestingUser, Audit currentAudit) {
 		Audit auditInfo = new Audit();
 		auditInfo.setUpdatedAt(new Date());
 		auditInfo.setUpdatedBy(requestingUser.getUsername());
-	    if (isNew) {
+	    if (currentAudit == null) {
 	    	auditInfo.setCreatedBy(requestingUser.getUsername());
 			auditInfo.setCreatedAt(new Date());
+	    } else {
+	    	auditInfo.setCreatedBy(currentAudit.getCreatedBy());
+			auditInfo.setCreatedAt(currentAudit.getCreatedAt());
 	    }
 		return auditInfo;
 	}

@@ -11,7 +11,7 @@
   <property name="hibernate.connection.username">virkade</property>
   <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
   <property name="hibernate.connection.pool_size">20</property>
-  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.show_sql">false</property>
   <property name="hibernate.hbm2ddl.auto">create-drop</property>
   <property name="hibernate.default_schema">virkade</property>
   <property name="hibernate.connection.characterEncoding">utf8</property>

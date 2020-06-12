@@ -3,6 +3,7 @@ package com.virkade.cms.graphql;
 import java.io.IOException;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
+import com.virkade.cms.communication.EmailUtil;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
 import com.virkade.cms.hibernate.utilities.CMSSeeds;
 
@@ -23,7 +25,7 @@ import graphql.servlet.SimpleGraphQLServlet;
 @RestController
 @RequestMapping("/service")
 public class GraphQlRouter extends SimpleGraphQLServlet {
-
+	
 	private static final long serialVersionUID = 465489113L;
 	
 	public GraphQlRouter() {
@@ -37,9 +39,12 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultUsers();
 		CMSSeeds.createDefaultLocation();
 		
-		//test session
-		CMSSeeds.createTestGame();
-		CMSSeeds.createTestSession();
+		//test
+		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting", "this is a test message for the email utility");
+		EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System Starting", "this is a test message for the email utility");
+		//CMSSeeds.createTestGame();
+		//CMSSeeds.createTestSession();
+		
 		
 	}
 

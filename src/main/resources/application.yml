@@ -16,4 +16,8 @@ logging:
 security:
   basic:
     enabled: false
+
+    
+    
+#Port: 465 (SSL required) or 587 (TLS required)   
     
