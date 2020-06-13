@@ -31,6 +31,7 @@ public class UserDAO {
 			}
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating or updating user=" + user.toString(), he);
+			return null;
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();

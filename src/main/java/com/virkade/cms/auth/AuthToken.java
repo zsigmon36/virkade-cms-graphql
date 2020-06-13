@@ -57,4 +57,9 @@ public class AuthToken {
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+	
+	@Override
+	public String toString() {
+		return "{username : "+getUsername()+", token : "+getToken()+", createdDate : "+getCreatedDate()+"}";
+	}
 }

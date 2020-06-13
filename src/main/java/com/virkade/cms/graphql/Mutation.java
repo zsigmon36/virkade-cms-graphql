@@ -310,15 +310,14 @@ public class Mutation implements GraphQLRootResolver {
 		
 		Legal convertedInputLegal = (Legal) VirkadeModel.convertObj(InputLegal.class.getName(), inputLegal);
 		
-		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
-		convertedInputLegal.setAudit(updatedAuditInfo);
-		
 		Legal legal = LegalDAO.fetch(convertedInputLegal);
 		if (legal == null) {
+			Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
+			convertedInputLegal.setAudit(updatedAuditInfo);
 			legal = LegalDAO.create(convertedInputLegal);
 		} else {
-			convertedInputLegal.getAudit().setCreatedAt(legal.getAudit().getCreatedAt());
-			convertedInputLegal.getAudit().setCreatedBy(legal.getAudit().getCreatedBy());
+			Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, legal.getAudit());
+			convertedInputLegal.setAudit(updatedAuditInfo);
 			convertedInputLegal.setLegalDocId(legal.getLegalDocId());
 			legal = LegalDAO.update(convertedInputLegal);
 		}
@@ -327,13 +326,15 @@ public class Mutation implements GraphQLRootResolver {
 
 	public boolean setNewPassword(String username, String passCode, String newPassword, DataFetchingEnvironment env) throws Exception {
 		User userToUpdate = UserDAO.fetchByUsername(username);
-		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
-			throw new AccessDeniedException("User cannot be modified by the requesting user");
-		}
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
 		boolean results = false;
 		if (ClientSessionTracker.isValidClientSession(username, passCode, true)) {
 			userToUpdate.setPassword(VirkadeEncryptor.hashEncode(newPassword));
-			results = true;
+			Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, userToUpdate.getAudit());
+			userToUpdate.setAudit(updatedAuditInfo);
+			User updatedUser = UserDAO.createUpdate(userToUpdate, true);
+			results = (updatedUser != null);
 			ClientSessionTracker.purgeSession(passCode, true);
 		}
 		return results;

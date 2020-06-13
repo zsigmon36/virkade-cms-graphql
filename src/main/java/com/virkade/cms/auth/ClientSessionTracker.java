@@ -65,14 +65,18 @@ public class ClientSessionTracker {
 		boolean results = false;
 		if (isRecovery) {
 			AuthToken recoverySession = getRecoveryClientSessions().get(token);
-			long curTime = new Date().getTime();
-			long createdTime = recoverySession.getCreatedDate().getTime();
-			long diffMillis = curTime - createdTime;
-			if (recoverySession == null || diffMillis > RECOVERY_TOKEN_LIFE) {
-				LOG.info("no valid recovery session found for passcode=" + token);
+			if (recoverySession == null) {
+				LOG.info("no recovery session found for passcode=" + token);
 				return results;
 			}
 			LOG.info("recovery session found for passcode=" + token + " the authToken on record is=" + recoverySession);
+			long curTime = new Date().getTime();
+			long createdTime = recoverySession.getCreatedDate().getTime();
+			long diffMillis = curTime - createdTime;
+			if (diffMillis > RECOVERY_TOKEN_LIFE) {
+				LOG.info("recovery session expired for passcode=" + token);
+				return results;
+			}
 			if (recoverySession.getUsername().equals(username)) {
 				results = true;
 			} else {
@@ -80,11 +84,15 @@ public class ClientSessionTracker {
 			}
 		} else {
 			AuthToken activeSession = getActiveClientSessions().get(username);
+			if (activeSession == null) {
+				LOG.info("no active session found for username=" + username);
+				return results;
+			}
 			long curTime = new Date().getTime();
 			long createdTime = activeSession.getCreatedDate().getTime();
 			long diffMillis = curTime - createdTime;
-			if (activeSession == null || diffMillis > ACTIVE_TOKEN_LIFE) {
-				LOG.info("no valid active session found for userName=" + username);
+			if (diffMillis > ACTIVE_TOKEN_LIFE) {
+				LOG.info("active session expired for username=" + username);
 				return results;
 			}
 			LOG.info("active session found for userName=" + username + " the authToken on record is=" + activeSession);
@@ -116,62 +124,56 @@ public class ClientSessionTracker {
 			throw new Exception("AuthData cannot be null for this request");
 		}
 		AuthToken activeSessionToken = getActiveClientSessions().get(authData.getUsername());
-		long curTime = new Date().getTime();
-		long createdTime = activeSessionToken.getCreatedDate().getTime();
-		long diffMillis = curTime - createdTime;
-		if (activeSessionToken == null || diffMillis > ACTIVE_TOKEN_LIFE) {
-			AuthToken authToken = createActiveSession(authData.getUsername(), authData.getPassword());
-			if (authToken == null) {
+		if (activeSessionToken == null) {
+			activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword());
+			if (activeSessionToken == null) {
 				throw new Exception("could not create the client auth session");
 			}
-			return authToken;
 		} else {
+			long curTime = new Date().getTime();
+			long createdTime = activeSessionToken.getCreatedDate().getTime();
+			long diffMillis = curTime - createdTime;
+			if (diffMillis > ACTIVE_TOKEN_LIFE) {
+				activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword());
+			}
 			LOG.info("active session found for userName=" + authData.getUsername() + " the authToken on record is=" + activeSessionToken.getToken());
-			return activeSessionToken;
 		}
-
+		return activeSessionToken;
 	}
 
-	private static AuthToken createActiveSession(String username, String password) {
+	private static AuthToken createActiveSession(String username, String password) throws Exception {
 		User user = new User();
 		user.setUsername(username);
 		AuthToken authToken = null;
-		try {
-			user = UserDAO.fetch(user);
-			LOG.debug("Checking " + user.getUsername() + "'s encoded password in the database matches the client provided password");
-			if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {
-				String token = createSessionToken();
-				authToken = new AuthToken(username, token);
-				addNewSession(user.getUsername(), authToken, false);
-				LOG.debug("Session token created and added to system");
-			} else {
-				throw new Exception("Incorrect passord given for userName=" + username);
-			}
-		} catch (Exception e) {
-			LOG.error("Counld not create the session for the userId=" + user.getUserId(), e);
+		user = UserDAO.fetch(user);
+		LOG.debug("Checking " + user.getUsername() + "'s encoded password in the database matches the client provided password");
+		if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {
+			String token = createSessionToken();
+			authToken = new AuthToken(username, token);
+			addNewSession(user.getUsername(), authToken, false);
+			LOG.debug("Session token created and added to system");
+		} else {
+			throw new Exception("Incorrect passord given for userName=" + username);
 		}
 		return authToken;
 	}
 
-	private static AuthToken createRecoverySession(String username, String securityA) {
+	private static AuthToken createRecoverySession(String username, String securityA) throws Exception {
 		User user = new User();
 		user.setUsername(username);
 		AuthToken authToken = null;
-		try {
-			user = UserDAO.fetch(user);
-			LOG.debug("Checking " + user.getSecurityAnswer() + "'s encoded security answer in the database matches the client provided security answer");
-			if (VirkadeEncryptor.isMatch(user.getSecurityAnswer(), securityA)) {
-				String token = String.valueOf((int) (Math.random() * 1000000));
-				authToken = new AuthToken(username, token);
-				addNewSession(token, authToken, true);
-				EmailUtil.sendSimpleMail(user.getEmailAddress(), "Password Reset Passcode: " + token, "Enter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode: " + token);
-				LOG.debug("recovery session created and added to system");
-			} else {
-				throw new Exception("Incorrect security answer given for userName=" + username);
-			}
-		} catch (Exception e) {
-			LOG.error("Counld not create the session for the userId=" + user.getUserId(), e);
+		user = UserDAO.fetch(user);
+		LOG.debug("Checking " + user.getSecurityAnswer() + "'s encoded security answer in the database matches the client provided security answer");
+		if (VirkadeEncryptor.isMatch(user.getSecurityAnswer(), securityA)) {
+			String token = String.valueOf((int) (Math.random() * 1000000));
+			authToken = new AuthToken(username, token);
+			addNewSession(token, authToken, true);
+			EmailUtil.sendSimpleMail(user.getEmailAddress(), "Password Reset Passcode: " + token, "Enter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode: " + token);
+			LOG.debug("recovery session created and added to system");
+		} else {
+			throw new Exception("Incorrect security answer given for userName=" + username);
 		}
+
 		return authToken;
 	}
 
