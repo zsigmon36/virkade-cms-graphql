@@ -103,6 +103,14 @@ public class Mutation implements GraphQLRootResolver {
 		user.setPassword(VirkadeEncryptor.hashEncode(authData.getPassword()));
 		user.setSecurityQuestion(authData.getSecurityQuestion());
 		user.setSecurityAnswer(VirkadeEncryptor.hashEncode(authData.getSecurityAnswer()));
+		user.setAge(0);
+		user.setCanContact(false);
+		user.setCanContact(false);
+		user.setEmailVerified(false);
+		user.setHeight(0);
+		user.setPlayedBefore(false);
+		user.setReServices(false);
+		user.setWeight(0);
 		user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 		user.setType(TypeDAO.getByCode(ConstantsDAO.PROSPECT_CODE));
 		
