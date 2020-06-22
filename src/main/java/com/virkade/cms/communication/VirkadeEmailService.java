@@ -1,8 +1,6 @@
 package com.virkade.cms.communication;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -12,11 +10,12 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.virkade.cms.PropsUtil;
+
 public class VirkadeEmailService {
 	
 	private Session session;
 	private MimeMessage message;
-	private static Properties props = new Properties();
 	private static Authenticator auth;
 	
 	/**
@@ -27,18 +26,14 @@ public class VirkadeEmailService {
 	}
 
 	public VirkadeEmailService() throws IOException, MessagingException{
-		if (props.isEmpty()) {
-			InputStream stream = ClassLoader.getSystemResourceAsStream("email.cfg.properties");
-			props.load(stream);
+		if (auth == null) {
+			auth = getAuth(String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_USER)), String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_PASSWORD)));
 		}
-		if (!props.isEmpty() && auth == null) {
-			auth = getAuth(String.valueOf(props.get("mail.smtp.user")), String.valueOf(props.get("mail.smtp.password")));
-		}
-		Session session = Session.getInstance(props, auth);
+		Session session = Session.getInstance(PropsUtil.getProps(), auth);
 		this.session = session;
 		MimeMessage msg = new MimeMessage(session);
-		msg.setSender(new InternetAddress(String.valueOf(props.get("mail.smtp.from"))));
-		msg.setFrom(new InternetAddress(String.valueOf(props.get("mail.smtp.from"))));
+		msg.setSender(new InternetAddress(String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_FROM))));
+		msg.setFrom(new InternetAddress(String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_FROM))));
 		this.message = msg;
 	}
 	

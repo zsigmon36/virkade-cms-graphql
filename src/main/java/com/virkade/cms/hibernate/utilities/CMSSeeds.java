@@ -6,18 +6,22 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.CountryDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.OperatingHoursDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.RegionDAO;
 import com.virkade.cms.hibernate.dao.SessionDAO;
@@ -27,8 +31,10 @@ import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
+import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Country;
 import com.virkade.cms.model.Location;
+import com.virkade.cms.model.OperatingHours;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.Region;
@@ -36,10 +42,12 @@ import com.virkade.cms.model.State;
 import com.virkade.cms.model.Status;
 import com.virkade.cms.model.Type;
 import com.virkade.cms.model.User;
+import com.virkade.cms.model.VirkadeModel;
 
 public class CMSSeeds {
 
 	private static final Logger LOG = Logger.getLogger(CMSSeeds.class);
+
 	private CMSSeeds() {
 
 	}
@@ -51,10 +59,10 @@ public class CMSSeeds {
 			status.setCode(ConstantsDAO.ACTIVE_CODE);
 			status.setDescription("Status for general customer or admins");
 			status.setName(ConstantsDAO.ACTIVE_NAME);
-			status.getAudit().setCreatedAt(new Date());
-			status.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			status.getAudit().setUpdatedAt(new Date());
-			status.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			status.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			status.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			status.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			status.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			StatusDAO.create(status);
 		}
 
@@ -62,10 +70,10 @@ public class CMSSeeds {
 			status.setCode(ConstantsDAO.INACTIVE_CODE);
 			status.setDescription("Status for customer or admin that no longer want to interact with the system");
 			status.setName(ConstantsDAO.INACTIVE_NAME);
-			status.getAudit().setCreatedAt(new Date());
-			status.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			status.getAudit().setUpdatedAt(new Date());
-			status.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			status.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			status.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			status.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			status.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			StatusDAO.create(status);
 		}
 	}
@@ -77,10 +85,10 @@ public class CMSSeeds {
 			type.setCode(ConstantsDAO.CUSTOMER_CODE);
 			type.setName("Customer User");
 			type.setDescription("this is the regular type user that has an account and played at least one session");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 
@@ -88,101 +96,101 @@ public class CMSSeeds {
 			type.setCode(ConstantsDAO.PROSPECT_CODE);
 			type.setName("Prospect User");
 			type.setDescription("this is the user has created an account, but has not played a session yet");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE) == null) {
 			type.setCode(ConstantsDAO.GUEST_CODE);
 			type.setName("Guest User");
 			type.setDescription("this is the public user when no account is signed in");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
-		
+
 		if (TypeDAO.fetchByCode(ConstantsDAO.ADMIN_CODE) == null) {
 			type.setCode(ConstantsDAO.ADMIN_CODE);
 			type.setName("Administrator");
 			type.setDescription("this is the user that can perform super user tasks, usually an employee");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.PHYSICAL_ADDRESS) == null) {
 			type.setCode(ConstantsDAO.PHYSICAL_ADDRESS);
 			type.setName("Physical Address");
 			type.setDescription("the physical address of an entity");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE) == null) {
 			type.setCode(ConstantsDAO.MOBILE_PHONE);
 			type.setName("Mobile Phone Number");
 			type.setDescription("mobile network phone number");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE) == null) {
 			type.setCode(ConstantsDAO.HOME_PHONE);
 			type.setName("Land line Phone Number");
 			type.setDescription("terestrial service phone number");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.CONDITION_COMMENT) == null) {
 			type.setCode(ConstantsDAO.CONDITION_COMMENT);
 			type.setName("User Conditions Comment");
 			type.setDescription("user comments about conditions that need to be known");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.GENERAL_COMMENT) == null) {
 			type.setCode(ConstantsDAO.GENERAL_COMMENT);
 			type.setName("General User Comments");
 			type.setDescription("Comments provided by users about anything");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS) == null) {
 			type.setCode(ConstantsDAO.TERMS_CONDITIONS);
 			type.setName("terms and conditions");
 			type.setDescription("the legal document for terms and conditions");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 		if (TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE) == null) {
 			type.setCode(ConstantsDAO.LIMITED_LIABLE);
 			type.setName("limited liablity");
 			type.setDescription("the legal document for limited liability waiver");
-			type.getAudit().setCreatedAt(new Date());
-			type.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			type.getAudit().setUpdatedAt(new Date());
-			type.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			type.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			type.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			type.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			TypeDAO.create(type);
 		}
 	}
@@ -194,10 +202,10 @@ public class CMSSeeds {
 			region.setName(ConstantsDAO.NAME_AMERICAS);
 			region.setRegionCode(ConstantsDAO.CODE_AMERICAS);
 			region.setDescription("North America, central, and South America");
-			region.getAudit().setCreatedAt(new Date());
-			region.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			region.getAudit().setUpdatedAt(new Date());
-			region.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			region.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			region.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			region.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			region.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			RegionDAO.create(region);
 		}
 	}
@@ -211,10 +219,10 @@ public class CMSSeeds {
 			country.setA2(ConstantsDAO.A2_UNITEDSTATES);
 			country.setA3(ConstantsDAO.A3_UNITEDSTATES);
 			country.setDescription("The United States of America");
-			country.getAudit().setCreatedAt(new Date());
-			country.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			country.getAudit().setUpdatedAt(new Date());
-			country.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			country.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			country.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			country.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			country.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			CountryDAO.create(country);
 		}
 
@@ -222,16 +230,16 @@ public class CMSSeeds {
 
 	public static void createDefaultStates() {
 
-		
 		List<String> lines = null;
 		try {
 			Path path = Paths.get(ClassLoader.getSystemResource("stateData.csv").toURI());
 			lines = Files.readAllLines(path);
-		}catch (InvalidPathException | IOException | URISyntaxException  e) {
+		} catch (InvalidPathException | IOException | URISyntaxException e) {
 			LOG.error(e);
 		}
-		for (int i=0; i < lines.size(); i++) {
-			if (i == 0) continue;
+		for (int i = 0; i < lines.size(); i++) {
+			if (i == 0)
+				continue;
 			String[] valuesArray = lines.get(i).split(",");
 			if (StateDAO.fetchByCode(valuesArray[2]) == null) {
 				State state = new State();
@@ -239,15 +247,15 @@ public class CMSSeeds {
 				state.setAbbreviation(valuesArray[1]);
 				state.setStateCode(valuesArray[2]);
 				state.setCountry(CountryDAO.fetchByA2(valuesArray[3]));
-				state.getAudit().setCreatedAt(new Date());
-				state.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-				state.getAudit().setUpdatedAt(new Date());
-				state.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+				state.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				state.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+				state.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				state.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 				State newState = StateDAO.create(state);
 				if (newState != null) {
 					LOG.info(valuesArray[0] + " : state created ");
 				}
-			}else {
+			} else {
 				LOG.warn(valuesArray[0] + " : state already exists ");
 			}
 		}
@@ -257,10 +265,10 @@ public class CMSSeeds {
 	public static void createDefaultAddress() {
 		if (AddressDAO.fetch(AddressDAO.ORIGINAL_LOCATION) == null) {
 			Address address = AddressDAO.ORIGINAL_LOCATION;
-			address.getAudit().setCreatedAt(new Date());
-			address.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			address.getAudit().setUpdatedAt(new Date());
-			address.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			address.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			address.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			address.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			address.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			AddressDAO.create(address);
 		}
 	}
@@ -274,10 +282,10 @@ public class CMSSeeds {
 			location.setManager("Zachary Sigmon");
 			location.setPhoneNum(4792632216L);
 			location.setEnabled(Boolean.TRUE);
-			location.getAudit().setCreatedAt(new Date());
-			location.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			location.getAudit().setUpdatedAt(new Date());
-			location.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			location.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			location.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			location.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			location.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			LocationDAO.create(location);
 		}
 	}
@@ -295,21 +303,21 @@ public class CMSSeeds {
 			user.setPassword(VirkadeEncryptor.hashEncode("123456"));
 			user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user.setType(TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE));
-			user.getAudit().setCreatedAt(new Date());
-			user.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			user.getAudit().setUpdatedAt(new Date());
-			user.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			user.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			user.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			UserDAO.createUpdate(user, false);
-			
+
 			Phone phone = new Phone();
 			phone.setUser(user);
 			phone.setCountryCode(1);
 			phone.setNumber("4795445445");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
-			phone.getAudit().setCreatedAt(new Date());
-			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Date());
-			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			PhoneDAO.create(phone);
 		}
 		if (UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME) == null) {
@@ -321,91 +329,114 @@ public class CMSSeeds {
 			user2.setPassword(VirkadeEncryptor.hashEncode(ConstantsDAO.DEFAULT_OWNER_PASSWORD));
 			user2.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user2.setType(TypeDAO.fetchByCode(ConstantsDAO.ADMIN_CODE));
-			user2.getAudit().setCreatedAt(new Date());
-			user2.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			user2.getAudit().setUpdatedAt(new Date());
-			user2.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			user2.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user2.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			user2.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user2.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			UserDAO.createUpdate(user2, false);
-			
+
 			Phone phone = new Phone();
 			phone.setUser(user2);
 			phone.setCountryCode(1);
 			phone.setNumber("4795445445");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
-			phone.getAudit().setCreatedAt(new Date());
-			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Date());
-			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			PhoneDAO.create(phone);
-			
+
 			phone.setUser(user);
 			phone.setCountryCode(1);
 			phone.setNumber("4792632216");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
-			phone.getAudit().setCreatedAt(new Date());
-			phone.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Date());
-			phone.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			PhoneDAO.create(phone);
-			
+
 		}
 	}
 
-	public static void createTestGame() {
-		
-		Activity activity = new Activity();
-		activity.setCostpm(0.85);
-		activity.setCreator("HTC");
-		activity.setName("Vive Port");
-		activity.setDescription("the default vr arcade for the vive");
-		activity.setEnabled(true);
-		activity.setSupportContact("https://service.viveport.com/hc/en-us/requests/new?v_to_v&");
-		activity.setWebSite("https://www.viveport.com");
-		activity.getAudit().setCreatedAt(new Date());
-		activity.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-		activity.getAudit().setUpdatedAt(new Date());
-		activity.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
-		Activity testActivity = ActivityDAO.fetchByName(activity.getName());
-		if (testActivity == null) {
+	public static void createDefaultActivity() {
+		if (ActivityDAO.fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME) == null) {
+			Activity activity = new Activity();
+			activity.setCostpm(0.85);
+			activity.setCreator("HTC");
+			activity.setName(ConstantsDAO.DEFAULT_ACTIVITY_NAME);
+			activity.setDescription("the default vr arcade for the vive");
+			activity.setEnabled(true);
+			activity.setSupportContact("https://service.viveport.com/hc/en-us/requests/new?v_to_v&");
+			activity.setWebSite("https://www.viveport.com");
+			activity.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			activity.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			activity.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			activity.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			LOG.info(String.format("creating default activity %s", activity.toString()));
 			ActivityDAO.create(activity);
+			
 		} else {
-			LOG.info(String.format("Seed name with %s already exists", activity.getName()));
+			LOG.info(String.format("default activity %s already exists", ConstantsDAO.DEFAULT_ACTIVITY_NAME));
 		}
-		
-
 	}
 
 	public static void createTestSession() {
 		List<Activity> activities = new ArrayList<>();
-		activities.add(ActivityDAO.fetchByName("Vive Port"));
+		activities.add(ActivityDAO.fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME));
 		User user = UserDAO.fetchByUsername(ConstantsDAO.GUEST_USER_NAME);
 		Location location = LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
-		
-		
 		PlaySession session = new PlaySession();
 		session.setUser(user);
 		session.setLocation(location);
 		session.setActivities(activities);
-		session.setStartDate(new Date());
-		session.setEndDate(new Date());
-		session.getAudit().setCreatedAt(new Date());
-		session.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-		session.getAudit().setUpdatedAt(new Date());
-		session.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+		session.setStartDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.setEndDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+		session.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 		SessionDAO.create(session);
-		
+
 		user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
 		session.setUser(user);
 		session.setLocation(location);
 		session.setActivities(activities);
-		session.setStartDate(new Date());
-		session.setEndDate(new Date());
-		session.getAudit().setCreatedAt(new Date());
-		session.getAudit().setCreatedBy(VirkadeHibernateConstants.SYSTEM);
-		session.getAudit().setUpdatedAt(new Date());
-		session.getAudit().setUpdatedBy(VirkadeHibernateConstants.SYSTEM);
+		session.setStartDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.setEndDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+		session.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		session.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 		SessionDAO.create(session);
 
+	}
+
+	public static void startWorkDay() {
+
+		if (OperatingHoursDAO.getTodayOperation() == null) {
+			OperatingHours opHours = new OperatingHours();
+			Calendar cal = Calendar.getInstance();
+			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
+			Audit audit = VirkadeModel.addAuditToModel(user, null);
+			
+			opHours.setAudit(audit);
+			opHours.setStartAt(new Timestamp(cal.getTimeInMillis()));
+			opHours.setOperatingDate(new Date(cal.getTimeInMillis()));
+
+			int endHour = Integer.valueOf(PropsUtil.getDefaultClosingTimeHour());
+			int endMin = Integer.valueOf(PropsUtil.getDefaultClosingTimeMin());
+			
+			cal.clear(Calendar.MILLISECOND);
+			cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), endHour, endMin, 0);
+			
+			opHours.setEndAt(new Timestamp(cal.getTimeInMillis()));
+
+			Location defaultLocation = LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
+			opHours.setLocation(defaultLocation);
+			
+			OperatingHoursDAO.create(opHours);
+		}
 	}
 
 }

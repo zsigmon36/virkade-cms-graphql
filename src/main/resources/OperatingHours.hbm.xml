@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+	<class name="com.virkade.cms.model.OperatingHours" table="OPERATING_HOURS">
+
+		<id name="operatingDate" type="java.sql.Date">
+			<column name="OPERATING_DATE" not-null="true" />
+		</id>
+		<property name="startAt" type="java.sql.Timestamp" index="idx_startat1,idx_startend1">
+			<column name="STARTAT" not-null="true" />
+		</property>
+		<property name="endAt" type="java.sql.Timestamp" index="idx_endat1,idx_startend1">
+			<column name="ENDAT" not-null="true" />
+		</property>
+
+		<many-to-one name="location" class="com.virkade.cms.model.Location" not-null="true" fetch="join">
+			<column name="LOCATIONID" />
+		</many-to-one>
+
+		<component name="audit">
+			<property name="createdAt" type="java.sql.Timestamp">
+				<column name="CREATEDAT" />
+			</property>
+			<property name="updatedAt" type="java.sql.Timestamp">
+				<column name="UPDATEDAT" />
+			</property>
+			<property name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" sql-type="varchar(75)" />
+			</property>
+			<property name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" sql-type="varchar(75)" />
+			</property>
+		</component>
+	</class>
+</hibernate-mapping>

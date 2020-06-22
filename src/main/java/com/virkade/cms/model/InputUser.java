@@ -1,5 +1,7 @@
 package com.virkade.cms.model;
 
+import java.sql.Date;
+
 public class InputUser {
 	private long userId;
 	private String typeCode;
@@ -17,6 +19,7 @@ public class InputUser {
 	private int height;
 	private int weight;
 	private float idp;
+	private Date birthday;
 	private Boolean tcAgree;
 	private Boolean liabilityAgree;
 	private Boolean emailVerified;
@@ -221,6 +224,18 @@ public class InputUser {
 	 */
 	public void setIdp(float idp) {
 		this.idp = idp;
+	}
+	/**
+	 * @return the birthday
+	 */
+	public Date getBirthday() {
+		return birthday;
+	}
+	/**
+	 * @param birthday the birthday to set
+	 */
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 	/**
 	 * @return the tcAgree

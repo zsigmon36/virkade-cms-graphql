@@ -3,7 +3,6 @@ package com.virkade.cms.graphql;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +29,8 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 	
 	public GraphQlRouter() {
 		super(buildSchema(), new DefaultExecutionStrategyProvider(), null, null, new CustomGraphQLErrorHandler(), null);
+		
+		
 		CMSSeeds.createDefaultTypes();
 		CMSSeeds.createDefaultStatus();
 		CMSSeeds.createDefaultRegions();
@@ -38,11 +39,12 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultAddress();
 		CMSSeeds.createDefaultUsers();
 		CMSSeeds.createDefaultLocation();
+		CMSSeeds.createDefaultActivity();
+		CMSSeeds.startWorkDay();
 		
 		//test
 		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting", "this is a test message for the email utility");
-		EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System Starting", "this is a test message for the email utility");
-		//CMSSeeds.createTestGame();
+		//EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System Starting", "this is a test message for the email utility");
 		//CMSSeeds.createTestSession();
 		
 		

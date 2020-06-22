@@ -47,4 +47,8 @@ public class LocationDAO {
 		return location;
 	}
 
+	public static Location getDefault() {
+		return fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
+	}
+
 }

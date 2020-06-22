@@ -1,6 +1,6 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class InputLegal {
 	
@@ -9,8 +9,8 @@ public class InputLegal {
 	private String typeCode;
 	
 	private boolean agree;
-	private Date activeDate;
-	private Date expireDate;
+	private Timestamp activeDate;
+	private Timestamp expireDate;
 	private boolean enabled;
 	
 	/**
@@ -65,25 +65,25 @@ public class InputLegal {
 	/**
 	 * @return the activeDate
 	 */
-	public Date getActiveDate() {
+	public Timestamp getActiveDate() {
 		return activeDate;
 	}
 	/**
 	 * @param activeDate the activeDate to set
 	 */
-	public void setActiveDate(Date activeDate) {
+	public void setActiveDate(Timestamp activeDate) {
 		this.activeDate = activeDate;
 	}
 	/**
 	 * @return the expireDate
 	 */
-	public Date getExpireDate() {
+	public Timestamp getExpireDate() {
 		return expireDate;
 	}
 	/**
 	 * @param expireDate the expireDate to set
 	 */
-	public void setExpireDate(Date expireDate) {
+	public void setExpireDate(Timestamp expireDate) {
 		this.expireDate = expireDate;
 	}
 	/**

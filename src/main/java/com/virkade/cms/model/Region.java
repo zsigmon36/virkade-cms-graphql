@@ -86,4 +86,12 @@ public class Region {
 		this.audit = audit;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Region [regionId=" + regionId + ", name=" + name + ", description=" + description + ", regionCode=" + regionCode + ", audit=" + audit + "]";
+	}
+
 }

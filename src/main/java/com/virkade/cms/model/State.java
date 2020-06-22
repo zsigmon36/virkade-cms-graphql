@@ -101,4 +101,12 @@ public class State {
 	public void setAudit(Audit audit) {
 		this.audit = audit;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "State [stateId=" + stateId + ", country=" + country + ", name=" + name + ", abbreviation=" + abbreviation + ", stateCode=" + stateCode + ", audit=" + audit + "]";
+	}
 }

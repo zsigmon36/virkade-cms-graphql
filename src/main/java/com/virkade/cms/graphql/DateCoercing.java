@@ -3,12 +3,15 @@
  */
 package com.virkade.cms.graphql;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
+
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
@@ -18,13 +21,13 @@ import graphql.schema.Coercing;
  *
  */
 public class DateCoercing implements Coercing<Object, String> {
-	
+
 	private static final Logger LOG = Logger.getLogger(Mutation.class);
-	
+
 	@Override
 	public String serialize(Object input) {
 		// serialize the ZonedDateTime into string on the way out
-		return ((Date)input).toString();
+		return ((Timestamp) input).toString();
 	}
 
 	@Override
@@ -33,23 +36,27 @@ public class DateCoercing implements Coercing<Object, String> {
 	}
 
 	@Override
-	public Date parseLiteral(Object input) {
+	public Timestamp parseLiteral(Object input) {
 		// parse the string values coming in
-		LOG.info("input for date is " +String.valueOf(input)+ " type of "+input.getClass().getTypeName());
+		LOG.info("input for date is " + String.valueOf(input) + " type of " + input.getClass().getTypeName());
 		if (input instanceof Timestamp) {
-			return new Date(((Timestamp) input).getTime());
+			return ((Timestamp) input);
 		} else if (input instanceof Date) {
-			return ((Date)input);
+			Date date = (Date) input;
+			Timestamp timestamp = new Timestamp(date.getTime());
+			return timestamp;
 		} else if (input instanceof StringValue) {
-			Date date = null;
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			Timestamp timestamp = null;
+			SimpleDateFormat format = new SimpleDateFormat(ConstantsDAO.COMMON_DATE_FORMAT); // "2020-06-20 23:00:00"
 			try {
+				Calendar cal = Calendar.getInstance();
 				StringValue typeInput = (StringValue) input;
-				date = format.parse(typeInput.getValue());
+				cal.setTime(format.parse(typeInput.getValue()));
+				timestamp = new Timestamp(cal.getTimeInMillis());
 			} catch (ParseException e) {
 				LOG.error(e);
 			}
-			return date;
+			return timestamp;
 		} else {
 			return null;
 		}

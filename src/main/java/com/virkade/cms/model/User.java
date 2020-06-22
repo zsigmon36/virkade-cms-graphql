@@ -1,14 +1,13 @@
 package com.virkade.cms.model;
 
 import java.security.InvalidKeyException;
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.SortedSet;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
-
-import org.apache.log4j.Logger;
 
 import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.hibernate.dao.AddressDAO;
@@ -16,7 +15,6 @@ import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 
 public class User extends VirkadeModel {
-	private static final Logger LOG = Logger.getLogger(User.class);
 
 	private long userId;
 	private Type type;
@@ -37,9 +35,10 @@ public class User extends VirkadeModel {
 	private int height;
 	private int weight;
 	private float idp;
+	private Date birthday;
 	private Boolean emailVerified;
 	private Boolean playedBefore;
-	private Date lastLogin;
+	private Timestamp lastLogin;
 	private Boolean reServices;
 	private Boolean canContact;
 	private Audit audit;
@@ -152,7 +151,8 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param phoneNumbers the phoneNumbers to set
+	 * @param phoneNumbers
+	 *            the phoneNumbers to set
 	 */
 	public void setPhoneNumbers(List<Phone> phoneNumbers) {
 		this.phoneNumbers = phoneNumbers;
@@ -342,6 +342,21 @@ public class User extends VirkadeModel {
 	}
 
 	/**
+	 * @return the birthday
+	 */
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	/**
+	 * @param birthday
+	 *            the birthday to set
+	 */
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	/**
 	 * @return the emailVerified
 	 */
 	public Boolean isEmailVerified() {
@@ -374,7 +389,7 @@ public class User extends VirkadeModel {
 	/**
 	 * @return the lastLogin
 	 */
-	public Date getLastLogin() {
+	public Timestamp getLastLogin() {
 		return lastLogin;
 	}
 
@@ -382,7 +397,7 @@ public class User extends VirkadeModel {
 	 * @param lastLogin
 	 *            the lastLogin to set
 	 */
-	public void setLastLogin(Date lastLogin) {
+	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
@@ -441,14 +456,10 @@ public class User extends VirkadeModel {
 	 */
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", type=" + type.toString() + ", address=" + address.toString() + ", status=" + status.toString() 
-		+ ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", firstName=" + firstName + ", lastName=" 
-				+ lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp
-				+ ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices 
-				+ ", canContact=" + canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt() + ", createdBy=" 
-				+ audit.getCreatedBy() + ", updatedBy=" + audit.getUpdatedBy() + "]";
+		return "User [userId=" + userId + ", type=" + type + ", address=" + address + ", status=" + status + ", sessions=" + sessions + ", comments=" + comments + ", phoneNumbers=" + phoneNumbers + ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", birthday=" + birthday + ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact + ", audit=" + audit + "]";
 	}
-	
+
 	/**
 	 * @return the attribute sorted list
 	 */
@@ -490,6 +501,7 @@ public class User extends VirkadeModel {
 		user.setGender(inputUser.getGender());
 		user.setHeight(inputUser.getHeight());
 		user.setIdp(inputUser.getIdp());
+		user.setBirthday(inputUser.getBirthday());
 		user.setLastName(inputUser.getLastName());
 		user.setPassword(inputUser.getPassword());
 		user.setSecurityQuestion(inputUser.getSecurityQuestion());
@@ -502,6 +514,5 @@ public class User extends VirkadeModel {
 		user.setWeight(inputUser.getWeight());
 		return user;
 	}
-
 
 }

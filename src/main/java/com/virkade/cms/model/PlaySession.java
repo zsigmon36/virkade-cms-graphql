@@ -1,6 +1,6 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class PlaySession {
@@ -9,8 +9,8 @@ public class PlaySession {
 	private User user;
 	private Location location;
 	private List<Activity> activities;
-	private Date startDate;
-	private Date endDate;
+	private Timestamp startDate;
+	private Timestamp endDate;
 	private Audit audit;
 
 	public PlaySession() {
@@ -115,7 +115,7 @@ public class PlaySession {
 	/**
 	 * @return the startDate
 	 */
-	public Date getStartDate() {
+	public Timestamp getStartDate() {
 		return startDate;
 	}
 
@@ -123,14 +123,14 @@ public class PlaySession {
 	 * @param startDate
 	 *            the startDate to set
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
 	 * @return the endDate
 	 */
-	public Date getEndDate() {
+	public Timestamp getEndDate() {
 		return endDate;
 	}
 
@@ -138,7 +138,7 @@ public class PlaySession {
 	 * @param endDate
 	 *            the endDate to set
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 	}
 

@@ -4,7 +4,9 @@
 package com.virkade.cms.graphql;
 
 import java.nio.file.AccessDeniedException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -161,6 +163,9 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.getIdp() != 0.0F) {
 			userToUpdate.setIdp(convertedInputUser.getIdp());
 		}
+		if (convertedInputUser.getBirthday() != null) {
+			userToUpdate.setBirthday(convertedInputUser.getBirthday());
+		}
 		if (convertedInputUser.getLastName() != null) {
 			userToUpdate.setLastName(convertedInputUser.getLastName());
 		}
@@ -199,7 +204,13 @@ public class Mutation implements GraphQLRootResolver {
 	}
 
 	public AuthToken signIn(AuthData authData) throws Exception {
-		return ClientSessionTracker.clientSignIn(authData);
+		 AuthToken authToken = ClientSessionTracker.clientSignIn(authData);
+		 if (authToken != null && authToken.getToken().length() > 0) {
+			 User user = UserDAO.getByUsername(authToken.getUsername());
+			 user.setLastLogin(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			 UserDAO.createUpdate(user, true);
+		 }
+		 return authToken;
 	}
 	
 	public boolean recoverySignIn(AuthData authData) throws Exception {

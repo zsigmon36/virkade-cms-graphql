@@ -99,5 +99,12 @@ public class Country {
 	public void setAudit(Audit audit) {
 		this.audit = audit;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Country [countryId=" + countryId + ", region=" + region + ", name=" + name + ", description=" + description + ", a2=" + a2 + ", a3=" + a3 + ", audit=" + audit + "]";
+	}
 	
 }

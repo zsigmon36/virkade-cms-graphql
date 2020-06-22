@@ -111,5 +111,12 @@ public class Location {
 	public void setAudit(Audit audit) {
 		this.audit = audit;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Location [locationId=" + locationId + ", address=" + address + ", name=" + name + ", description=" + description + ", phoneNum=" + phoneNum + ", manager=" + manager + ", enabled=" + enabled + ", audit=" + audit + "]";
+	}
 	
 }

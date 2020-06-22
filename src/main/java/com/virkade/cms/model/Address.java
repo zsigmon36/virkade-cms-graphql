@@ -8,7 +8,6 @@ import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 
 public class Address extends VirkadeModel {
-	private static final Logger LOG = Logger.getLogger(Address.class);
 	
 	private long addressId;
 	private State state;
@@ -166,5 +165,12 @@ public class Address extends VirkadeModel {
 		address.setUnit(inputAddress.getUnit());
 		
 		return address;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Address [addressId=" + addressId + ", state=" + state + ", type=" + type + ", street=" + street + ", unit=" + unit + ", apt=" + apt + ", city=" + city + ", postalCode=" + postalCode + ", audit=" + audit + "]";
 	}
 }

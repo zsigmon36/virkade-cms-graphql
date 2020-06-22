@@ -1,6 +1,7 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -29,11 +30,11 @@ public class VirkadeModel {
 	
 	public static Audit addAuditToModel(User requestingUser, Audit currentAudit) {
 		Audit auditInfo = new Audit();
-		auditInfo.setUpdatedAt(new Date());
+		auditInfo.setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		auditInfo.setUpdatedBy(requestingUser.getUsername());
 	    if (currentAudit == null) {
 	    	auditInfo.setCreatedBy(requestingUser.getUsername());
-			auditInfo.setCreatedAt(new Date());
+			auditInfo.setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 	    } else {
 	    	auditInfo.setCreatedBy(currentAudit.getCreatedBy());
 			auditInfo.setCreatedAt(currentAudit.getCreatedAt());

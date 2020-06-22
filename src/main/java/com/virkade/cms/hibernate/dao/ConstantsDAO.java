@@ -1,7 +1,10 @@
 package com.virkade.cms.hibernate.dao;
 
 public class ConstantsDAO {
+	
 	//common constants
+	public static final String COMMON_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss"; // "2020-06-20 23:00:00"
+	public static final String SYSTEM = "system";
 	public static final String TYPE_FIELD = "type";
 	public static final String NAME_FIELD = "name";
 	public static final String CODE_FIELD = "code";
@@ -70,6 +73,15 @@ public class ConstantsDAO {
 	public static final String COMMENT_CONTENT_FIELD = "commentContent";
 	
 	//activityDAO
+	public static final String DEFAULT_ACTIVITY_NAME = "Viveport";
 	
+	//operatingHoursDAO
+	public static final String START_AT_FIELD = "startAt";
+	public static final String END_AT_FIELD = "endAt";
+	public static final String OPERATING_DATE_FIELD = "operatingDate";
+	
+	//sessionDAO
+	public static final String START_DATE_FIELD = "startDate";
+	public static final String END_DATE_FIELD = "endDate";
 
 }

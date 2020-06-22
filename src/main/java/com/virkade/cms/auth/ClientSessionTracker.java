@@ -1,7 +1,7 @@
 package com.virkade.cms.auth;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +70,7 @@ public class ClientSessionTracker {
 				return results;
 			}
 			LOG.info("recovery session found for passcode=" + token + " the authToken on record is=" + recoverySession);
-			long curTime = new Date().getTime();
+			long curTime = Calendar.getInstance().getTimeInMillis();
 			long createdTime = recoverySession.getCreatedDate().getTime();
 			long diffMillis = curTime - createdTime;
 			if (diffMillis > RECOVERY_TOKEN_LIFE) {
@@ -89,7 +89,7 @@ public class ClientSessionTracker {
 				LOG.info("no active session found for username=" + username);
 				return results;
 			}
-			long curTime = new Date().getTime();
+			long curTime = Calendar.getInstance().getTimeInMillis();
 			long createdTime = activeSession.getCreatedDate().getTime();
 			long diffMillis = curTime - createdTime;
 			if (diffMillis > ACTIVE_TOKEN_LIFE) {

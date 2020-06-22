@@ -56,13 +56,16 @@
 		<property name="idp" type="float">
 			<column name="IDP" />
 		</property>
+		<property name="birthday" type="java.sql.Date">
+			<column name="BIRTHDAY" />
+		</property>
 		<property name="emailVerified" type="boolean">
 			<column name="EMAILVERIFIED" />
 		</property>
 		<property name="playedBefore" type="boolean">
 			<column name="PLAYEDBEFORE" />
 		</property>
-		<property name="lastLogin" type="java.util.Date">
+		<property name="lastLogin" type="java.sql.Timestamp">
 			<column name="LASTLOGIN" />
 		</property>
 		<property name="reServices" type="boolean">
@@ -72,11 +75,11 @@
 			<column name="CANCONTACT" />
 		</property>
 		
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

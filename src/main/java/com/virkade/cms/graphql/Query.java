@@ -1,14 +1,20 @@
 package com.virkade.cms.graphql;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.virkade.cms.hibernate.dao.ActivityDAO;
+import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
+import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Comment;
 import com.virkade.cms.model.Country;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
+import com.virkade.cms.model.Location;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.State;
@@ -40,21 +46,51 @@ public class Query implements GraphQLRootResolver {
 		return user;
 	}
 
-	public List<PlaySession> getUserSessions(String username) throws Exception {
-		User user = UserDAO.getByUsername(username);
+	public List<PlaySession> getUserSessions(User user) throws Exception {
 		List<PlaySession> playSessions = user.getSessions();
 		return playSessions;
 	}
 
+	public List<PlaySession> getUserSessions(String username, Timestamp dateRequested) throws Exception {
+		User user = UserDAO.getByUsername(username);
+		List<PlaySession> playSessions = null;
+		if (dateRequested != null) {
+			playSessions = SessionDAO.getUserSessions(user, dateRequested);
+		} else {
+			playSessions = getUserSessions(user);
+		}
+		return playSessions;
+	}
+
+	
 	public List<Country> getCountries() {
 		return null;
 	}
 
 	public List<State> getAllStates(DataFetchingEnvironment env) {
-		AuthContext context = env.getContext();
-		User curSessionUser = context.getAuthUser();
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
 		List<State> states = StateDAO.fetchAll();
 		return states;
+	}
+	
+	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Location location = null;
+		Activity activity = null;
+		if (activityName == null || activityName == "") {
+			activity = ActivityDAO.getDefault();
+		} else {
+			activity = ActivityDAO.fetchByName(activityName);
+		}
+		if (locationName == null || locationName == "") {
+			location = LocationDAO.getDefault();
+		} else {
+			LocationDAO.fetchByName(locationName);
+		}
+		List<PlaySession> sessions = SessionDAO.getAvailableSessions(dateRequested, location, activity);
+		return sessions;
 	}
 
 	public Type getTypeByCode(String code) {

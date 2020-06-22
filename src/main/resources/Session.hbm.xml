@@ -8,30 +8,30 @@
 			<column name="SESSIONID" />
 			<generator class="increment" />
 		</id>
-		
-		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true">
+
+		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="idx_user1">
 			<column name="USERID" />
 		</many-to-one>
 		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join">
 			<column name="LOCATIONID" />
 		</many-to-one>
-		
+
 		<bag cascade="save-update" lazy="false" name="activities" table="ACTIVITY_SESSION">
 			<key column="SESSIONID" />
-			<many-to-many class="com.virkade.cms.model.Activity" column="ACTIVITYID"/>
+			<many-to-many class="com.virkade.cms.model.Activity" column="ACTIVITYID" />
 		</bag>
-		
-		<property generated="never" lazy="false" name="startDate" type="java.util.Date">
+
+		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp" index="idx_startdate1">
 			<column name="STARTDATE" />
 		</property>
-		<property generated="never" lazy="false" name="endDate" type="java.util.Date">
+		<property generated="never" lazy="false" name="endDate" type="java.sql.Timestamp" index="idx_enddate1">
 			<column name="ENDDATE" />
 		</property>
-		<component name="audit">
-			<property generated="never" lazy="false" name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property generated="never" lazy="false" name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property generated="never" lazy="false" name="updatedAt" type="java.util.Date">
+			<property generated="never" lazy="false" name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property generated="never" lazy="false" name="createdBy" type="java.lang.String">

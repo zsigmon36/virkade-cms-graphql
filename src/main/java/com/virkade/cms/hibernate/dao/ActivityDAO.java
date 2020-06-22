@@ -33,19 +33,23 @@ public class ActivityDAO {
 		return activity;
 	}
 
-	public static Activity create(Activity game) {
+	public static Activity create(Activity activity) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
-			hs.save(game);
+			hs.save(activity);
 		} catch (HibernateException he) {
-			LOG.error("Hibernate exception creating game=" + game.toString(), he);
+			LOG.error("Hibernate exception creating activity=" + activity.toString(), he);
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();
 		}
-		return game;
+		return activity;
+	}
+
+	public static Activity getDefault() {
+		return fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME);
 	}
 
 }

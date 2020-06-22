@@ -3,12 +3,8 @@ package com.virkade.cms.auth;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.postgresql.util.MD5Digest;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javassist.bytecode.ByteArray;
 
 
 public class VirkadeEncryptor {

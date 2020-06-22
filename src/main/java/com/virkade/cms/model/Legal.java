@@ -1,6 +1,6 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.SortedSet;
 
 import com.virkade.cms.hibernate.dao.TypeDAO;
@@ -13,8 +13,8 @@ public class Legal extends VirkadeModel{
 	private Type type;
 	
 	private boolean agree;
-	private Date activeDate;
-	private Date expireDate;
+	private Timestamp activeDate;
+	private Timestamp expireDate;
 	private boolean enabled;
 	private Audit audit;
 	
@@ -45,25 +45,25 @@ public class Legal extends VirkadeModel{
 	/**
 	 * @return the activeDate
 	 */
-	public Date getActiveDate() {
+	public Timestamp getActiveDate() {
 		return activeDate;
 	}
 	/**
 	 * @param activeDate the activeDate to set
 	 */
-	public void setActiveDate(Date activeDate) {
+	public void setActiveDate(Timestamp activeDate) {
 		this.activeDate = activeDate;
 	}
 	/**
 	 * @return the expireDate
 	 */
-	public Date getExpireDate() {
+	public Timestamp getExpireDate() {
 		return expireDate;
 	}
 	/**
 	 * @param expireDate the expireDate to set
 	 */
-	public void setExpireDate(Date expireDate) {
+	public void setExpireDate(Timestamp expireDate) {
 		this.expireDate = expireDate;
 	}
 	/**

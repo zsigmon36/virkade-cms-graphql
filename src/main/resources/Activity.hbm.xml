@@ -33,11 +33,11 @@
 		<property generated="never" lazy="false" name="enabled" type="boolean">
 			<column name="ENABLED" />
 		</property>
-		<component name="audit">
-			<property generated="never" lazy="false" name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property generated="never" lazy="false" name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property generated="never" lazy="false" name="updatedAt" type="java.util.Date">
+			<property generated="never" lazy="false" name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property generated="never" lazy="false" name="createdBy" type="java.lang.String">

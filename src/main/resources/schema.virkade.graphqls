@@ -224,11 +224,12 @@ type AuthToken {
 type Query {
   getUsersByEmailAddress(emailAddress: String!): [User]
   getUserById(userId: Long!): User
-  getUserSessions(username: String!): [PlaySession]
+  getUserSessions(username: String!, dateRequested: Date): [PlaySession]
   getUserByUsername(username: String!): User
   getUserComments(username: String!): [Comment]
   getCountries: [Country]
   getAllStates: [State]
+  getAvailableSessions(dateRequested: Date, locationName: String, activityName: String): [PlaySession]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]
