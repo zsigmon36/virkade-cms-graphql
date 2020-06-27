@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.google.common.base.Strings;
+
 public class VirkadeModel {
 	
 	public static VirkadeModel convertObj(String className, Object objToConvert) throws Exception{
@@ -18,6 +20,8 @@ public class VirkadeModel {
 			return Comment.convertInput((InputComment) objToConvert);
 		} else if (className.equalsIgnoreCase(InputLegal.class.getName())) {
 			return Legal.convertInput((InputLegal) objToConvert);
+		} else if (className.equalsIgnoreCase(InputPlaySession.class.getName())) {
+			return PlaySession.convertInput((InputPlaySession) objToConvert);
 		}
 		return null;
 	}
@@ -32,7 +36,7 @@ public class VirkadeModel {
 		Audit auditInfo = new Audit();
 		auditInfo.setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		auditInfo.setUpdatedBy(requestingUser.getUsername());
-	    if (currentAudit == null) {
+	    if (currentAudit == null || Strings.isNullOrEmpty(currentAudit.getCreatedBy())) {
 	    	auditInfo.setCreatedBy(requestingUser.getUsername());
 			auditInfo.setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 	    } else {

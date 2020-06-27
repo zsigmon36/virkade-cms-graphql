@@ -26,7 +26,18 @@ public class SessionDAO {
 
 	private static final Logger LOG = Logger.getLogger(SessionDAO.class);
 
-	public static PlaySession create(PlaySession session) {
+	public static PlaySession create(PlaySession session) throws Exception {
+		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivities().get(0));
+		boolean isOpen = false;
+		for (PlaySession curAvailSession : possibleSessions) {
+			if (curAvailSession.getStartDate().equals(session.getStartDate()) && curAvailSession.getEndDate().equals(session.getEndDate())) {
+				isOpen = true;
+				break;
+			}
+		}
+		if (!isOpen) {
+			throw new Exception("requested time is not available, someone may have beaten you to it");
+		}
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
@@ -42,15 +53,15 @@ public class SessionDAO {
 
 	}
 
-	public static List<PlaySession> getAllSessions() {
-		return getAllSessions(null);
+	public static List<PlaySession> getAllSessions(Location location, Activity activity) {
+		return getAllSessions(null, location, activity);
 	}
 
-	public static List<PlaySession> getAllSessionsToday() {
-		return getAllSessions(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+	public static List<PlaySession> getAllSessionsToday(Location location, Activity activity) {
+		return getAllSessions(new Timestamp(Calendar.getInstance().getTimeInMillis()), location, activity);
 	}
 
-	public static List<PlaySession> getAllSessions(Timestamp dateRequested) {
+	public static List<PlaySession> getAllSessions(Timestamp dateRequested, Location location, Activity activity) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		List<PlaySession> playSessions = new ArrayList<PlaySession>();
@@ -67,6 +78,7 @@ public class SessionDAO {
 				cal.clear(Calendar.MILLISECOND);
 				cal.set(Calendar.DATE, (cal.get(Calendar.DATE) + 1));
 				Timestamp hiDate = new Timestamp(cal.getTimeInMillis());
+				//TODO add the activity and location restriction
 				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, dateRequested, hiDate));
 			}
 			criteria.addOrder(Order.asc(ConstantsDAO.START_DATE_FIELD));
@@ -88,10 +100,10 @@ public class SessionDAO {
 		if (dateRequested == null) {
 			dateRequested = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			opHours = OperatingHoursDAO.getTodayOperation();
-			curSessions = getAllSessionsToday();
+			curSessions = getAllSessionsToday(location, activity);
 		} else {
 			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()));
-			curSessions = getAllSessions(dateRequested);
+			curSessions = getAllSessions(dateRequested, location, activity);
 		}
 		List<PlaySession> availableSessions = null;
 		try {
@@ -103,7 +115,7 @@ public class SessionDAO {
 		return availableSessions;
 
 	}
-
+	
 	public static List<PlaySession> getUserSessions(User user, Timestamp dateRequested) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();

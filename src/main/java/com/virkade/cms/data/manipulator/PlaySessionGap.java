@@ -7,15 +7,19 @@ class PlaySessionGap {
 
 	private Timestamp startDate;
 	private Timestamp endDate;
+	private boolean isBookedBefore;
+	private boolean isBookedAfter;
 
 	protected PlaySessionGap() {
 		this.startDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		this.endDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
 	}
 
-	protected PlaySessionGap(Timestamp startDate, Timestamp endDate) {
+	protected PlaySessionGap(boolean isBookedBefore, Timestamp startDate, Timestamp endDate, boolean isBookedAfter) {
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.isBookedAfter = isBookedAfter;
+		this.isBookedBefore = isBookedBefore;
 	}
 
 	/**
@@ -46,5 +50,21 @@ class PlaySessionGap {
 	 */
 	void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
+	}
+
+	public boolean isBookedBefore() {
+		return isBookedBefore;
+	}
+
+	public void setBookedBefore(boolean isBookedBefore) {
+		this.isBookedBefore = isBookedBefore;
+	}
+
+	public boolean isBookedAfter() {
+		return isBookedAfter;
+	}
+
+	public void setBookedAfter(boolean isBookedAfter) {
+		this.isBookedAfter = isBookedAfter;
 	}
 }

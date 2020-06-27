@@ -6,7 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-@ComponentScan("com.virkade.cms.graphql")
+@ComponentScan("com.virkade.cms")
 @SpringBootApplication
 public class BootApplication {
 

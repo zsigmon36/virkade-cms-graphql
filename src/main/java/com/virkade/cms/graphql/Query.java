@@ -92,6 +92,26 @@ public class Query implements GraphQLRootResolver {
 		List<PlaySession> sessions = SessionDAO.getAvailableSessions(dateRequested, location, activity);
 		return sessions;
 	}
+	
+	public List<PlaySession> getPendingSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Location location = null;
+		Activity activity = null;
+		if (activityName == null || activityName == "") {
+			activity = ActivityDAO.getDefault();
+		} else {
+			activity = ActivityDAO.fetchByName(activityName);
+		}
+		if (locationName == null || locationName == "") {
+			location = LocationDAO.getDefault();
+		} else {
+			LocationDAO.fetchByName(locationName);
+		}
+		List<PlaySession> sessions = SessionDAO.getAllSessionsToday(location, activity);
+		return sessions;
+	}
+
 
 	public Type getTypeByCode(String code) {
 		return null;

@@ -49,9 +49,9 @@ public class ConstantsDAO {
 	public static final String NAME_AMERICAS = "Americas";
 	public static final String CODE_AMERICAS = "AMS";
 	public static final String REGION_CODE_FIELD = "regionCode";
-	public static final String ORIGINAL_LOCATION_NAME = "VirKade Prime";
 	
 	//locationDAO
+	public static final String ORIGINAL_LOCATION_NAME = "VirKade Prime";
 	
 	//countryDAO
 	public static final String NAME_UNITEDSTATES = "United States";

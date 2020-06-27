@@ -20,7 +20,7 @@ public class PSGThread implements Runnable {
 	private Location location;
 	private Activity activity;
 	
-	private static Calendar cal = Calendar.getInstance();
+	private Calendar cal = Calendar.getInstance();
 	private static final int SESSION_LENGTH = PropsUtil.getPlaySessionLength();
 	private static final int MINIMUM_SESSION_GAP = PropsUtil.getPlaySessionMinGap();
 	private static final int SESSION_GAP_BUFFER = PropsUtil.getDefaultSessionBuffer();
@@ -48,10 +48,12 @@ public class PSGThread implements Runnable {
 		cal.setTimeInMillis(this.gap.getStartDate().getTime());
 		cal.clear(Calendar.SECOND);
 		cal.clear(Calendar.MILLISECOND);
-		cal.set(Calendar.MINUTE, (cal.get(Calendar.MINUTE)+SESSION_GAP_BUFFER));
 		
 		// set the min gap rounded start time
 		int startGapMins = cal.get(Calendar.MINUTE);
+		if (!gap.isBookedBefore()) {
+			startGapMins += SESSION_GAP_BUFFER;
+		}
 		int startRemainGapMins = startGapMins % MINIMUM_SESSION_GAP;
 		int roundStartTime = startGapMins;
 		if (startRemainGapMins != 0) {
@@ -63,6 +65,7 @@ public class PSGThread implements Runnable {
 		// force end gap rounded, although this should really not have to be done every,
 		// if it does happen there is problem elsewhere
 		cal.setTimeInMillis(this.gap.getEndDate().getTime());
+		
 		cal.clear(Calendar.SECOND);
 		cal.clear(Calendar.MILLISECOND);
 		int endGapMins = cal.get(Calendar.MINUTE);

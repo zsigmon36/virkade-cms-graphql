@@ -19,11 +19,14 @@ import com.virkade.cms.auth.AuthToken;
 import com.virkade.cms.auth.ClientSessionTracker;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.auth.VirkadeEncryptor;
+import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CommentDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LegalDAO;
+import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
+import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
@@ -34,6 +37,7 @@ import com.virkade.cms.model.InputAddress;
 import com.virkade.cms.model.InputComment;
 import com.virkade.cms.model.InputLegal;
 import com.virkade.cms.model.InputPhone;
+import com.virkade.cms.model.InputPlaySession;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Phone;
@@ -369,13 +373,41 @@ public class Mutation implements GraphQLRootResolver {
 		return false;
 	}
 	
-	public PlaySession addSession(String username, DataFetchingEnvironment env) throws AccessDeniedException {
+	public PlaySession addUserSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		User userToUpdate = UserDAO.fetchByUsername(username);
-		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
+		
+		List<String> missingData = new ArrayList<String>();
+		PlaySession convertedInputPlaySession = (PlaySession) VirkadeModel.convertObj(inputPlaySession.getClass().getName(), inputPlaySession);
+	
+		if (convertedInputPlaySession.getStartDate() == null) {
+			missingData.add("StartDate");
+		}
+		if (convertedInputPlaySession.getEndDate() == null) {
+			missingData.add("EndDate");
+		}
+		if (convertedInputPlaySession.getUser() == null) {
+			missingData.add("User");
+		}
+		if (convertedInputPlaySession.getLocation() == null) {
+			missingData.add("Location");
+		}
+		if (convertedInputPlaySession.getActivities().isEmpty()) {
+			missingData.add("Activity");
+		}
+		if (!missingData.isEmpty()) {
+			throw new Exception("Creation of play session for user not allowed with the following missing data [" + missingData.toString() + "]");
+		}
+		
+		if (convertedInputPlaySession.getUser() == null || !AuthData.checkPermission(env, convertedInputPlaySession.getUser(), PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Session cannot be created by the requesting user");
 		}
+		
+		Audit audit = VirkadeModel.addAuditToModel(curSessionUser, convertedInputPlaySession.getAudit());
+		convertedInputPlaySession.setAudit(audit);
+
+		SessionDAO.create(convertedInputPlaySession);
+		
 		return null;
 	}
 

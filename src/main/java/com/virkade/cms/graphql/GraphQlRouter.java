@@ -24,13 +24,12 @@ import graphql.servlet.SimpleGraphQLServlet;
 @RestController
 @RequestMapping("/service")
 public class GraphQlRouter extends SimpleGraphQLServlet {
-	
+
 	private static final long serialVersionUID = 465489113L;
-	
+
 	public GraphQlRouter() {
 		super(buildSchema(), new DefaultExecutionStrategyProvider(), null, null, new CustomGraphQLErrorHandler(), null);
-		
-		
+
 		CMSSeeds.createDefaultTypes();
 		CMSSeeds.createDefaultStatus();
 		CMSSeeds.createDefaultRegions();
@@ -41,13 +40,14 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultLocation();
 		CMSSeeds.createDefaultActivity();
 		CMSSeeds.startWorkDay();
-		
-		//test
-		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting", "this is a test message for the email utility");
-		//EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System Starting", "this is a test message for the email utility");
-		//CMSSeeds.createTestSession();
-		
-		
+
+		// test
+		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting",
+				"this is a test message for the email utility");
+		// EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System
+		// Starting", "this is a test message for the email utility");
+		CMSSeeds.createTestSession(1);
+
 	}
 
 	private static GraphQLSchema buildSchema() {
@@ -60,21 +60,19 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		super.doPost(req, resp);
 
 	}
-	
-	@Override
-	protected GraphQLContext createContext(Optional<HttpServletRequest> request, Optional<HttpServletResponse> response) {
-		String authToken = request
-		        .map(req -> req.getHeader("Authorization"))
-		        .filter(id -> !id.isEmpty())
-		        .map(id -> id.replace("Bearer ", ""))
-		        .orElse(null);
-		String username = request
-		        .map(req -> req.getHeader("Username"))
-		        .filter(id -> !id.isEmpty())
-		        .orElse(null);
 
-		
+	@Override
+	protected GraphQLContext createContext(Optional<HttpServletRequest> request,
+			Optional<HttpServletResponse> response) {
+		String authToken = request.map(req -> req.getHeader("Authorization"))
+				.filter(id -> !id.isEmpty())
+				.map(id -> id.replace("Bearer ", ""))
+				.orElse(null);
+		String username = request.map(req -> req.getHeader("Username"))
+				.filter(id -> !id.isEmpty())
+				.orElse(null);
+
 		return new AuthContext(username, authToken, request, response);
 	}
-	
+
 }

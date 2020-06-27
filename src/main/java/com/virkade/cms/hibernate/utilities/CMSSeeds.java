@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -375,41 +374,33 @@ public class CMSSeeds {
 			activity.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			LOG.info(String.format("creating default activity %s", activity.toString()));
 			ActivityDAO.create(activity);
-			
+
 		} else {
 			LOG.info(String.format("default activity %s already exists", ConstantsDAO.DEFAULT_ACTIVITY_NAME));
 		}
 	}
 
-	public static void createTestSession() {
-		List<Activity> activities = new ArrayList<>();
-		activities.add(ActivityDAO.fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME));
-		User user = UserDAO.fetchByUsername(ConstantsDAO.GUEST_USER_NAME);
-		Location location = LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
-		PlaySession session = new PlaySession();
-		session.setUser(user);
-		session.setLocation(location);
-		session.setActivities(activities);
-		session.setStartDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.setEndDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-		session.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
-		SessionDAO.create(session);
-
-		user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
-		session.setUser(user);
-		session.setLocation(location);
-		session.setActivities(activities);
-		session.setStartDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.setEndDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-		session.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		session.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
-		SessionDAO.create(session);
-
+	public static void createTestSession(int numberOfSessions) {
+		while (numberOfSessions-- > 0) {
+			List<PlaySession> allSessionsAvail = SessionDAO.getAvailableSessions(null, LocationDAO.getDefault(),
+					ActivityDAO.getDefault());
+			if (allSessionsAvail.size() == 0) {
+				LOG.warn("no availible sessions so nothing to create");
+				break;
+			}
+			long randomSelection = (Math.round(Math.random() * (allSessionsAvail.size()-1))) ;
+			PlaySession session = allSessionsAvail.get((int) randomSelection);
+			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
+			session.setUser(user);
+			Audit audit = VirkadeModel.addAuditToModel(user, session.getAudit());
+			session.setAudit(audit);
+			session.setPayed(false);
+			try {
+				SessionDAO.create(session);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
+		}
 	}
 
 	public static void startWorkDay() {
@@ -419,22 +410,22 @@ public class CMSSeeds {
 			Calendar cal = Calendar.getInstance();
 			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
 			Audit audit = VirkadeModel.addAuditToModel(user, null);
-			
+
 			opHours.setAudit(audit);
 			opHours.setStartAt(new Timestamp(cal.getTimeInMillis()));
 			opHours.setOperatingDate(new Date(cal.getTimeInMillis()));
 
 			int endHour = Integer.valueOf(PropsUtil.getDefaultClosingTimeHour());
 			int endMin = Integer.valueOf(PropsUtil.getDefaultClosingTimeMin());
-			
+
 			cal.clear(Calendar.MILLISECOND);
 			cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), endHour, endMin, 0);
-			
+
 			opHours.setEndAt(new Timestamp(cal.getTimeInMillis()));
 
 			Location defaultLocation = LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
 			opHours.setLocation(defaultLocation);
-			
+
 			OperatingHoursDAO.create(opHours);
 		}
 	}

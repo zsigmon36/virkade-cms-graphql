@@ -20,6 +20,10 @@
 			<key column="SESSIONID" />
 			<many-to-many class="com.virkade.cms.model.Activity" column="ACTIVITYID" />
 		</bag>
+		
+		<property name="payed" type="boolean">
+			<column name="PAYED" />
+		</property>
 
 		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp" index="idx_startdate1">
 			<column name="STARTDATE" />

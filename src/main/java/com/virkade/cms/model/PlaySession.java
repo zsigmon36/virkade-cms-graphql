@@ -1,9 +1,17 @@
 package com.virkade.cms.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
-public class PlaySession {
+import com.virkade.cms.hibernate.dao.ActivityDAO;
+import com.virkade.cms.hibernate.dao.AddressDAO;
+import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.StatusDAO;
+import com.virkade.cms.hibernate.dao.TypeDAO;
+import com.virkade.cms.hibernate.dao.UserDAO;
+
+public class PlaySession extends VirkadeModel{
 
 	private long sessionId;
 	private User user;
@@ -11,6 +19,12 @@ public class PlaySession {
 	private List<Activity> activities;
 	private Timestamp startDate;
 	private Timestamp endDate;
+	private boolean payed;
+	private long userId;
+	private String emailAddress;
+	private String username;
+	private String firstName;
+	private String lastName;
 	private Audit audit;
 
 	public PlaySession() {
@@ -75,41 +89,46 @@ public class PlaySession {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+		this.userId = user.getUserId();
+		this.emailAddress = user.getEmailAddress();
+		this.username = user.getUsername();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
 	}
 
 	/**
 	 * @return the userId
 	 */
 	public long getUserId() {
-		return user.getUserId();
+		return this.userId;
 	}
 
 	/**
 	 * @return the emailAddress
 	 */
 	public String getEmailAddress() {
-		return user.getEmailAddress();
+		return this.emailAddress;
 	}
 
 	/**
 	 * @return the Username
 	 */
 	public String getUsername() {
-		return user.getUsername();
+		return this.username;
 	}
 
 	/**
 	 * @return the firstName
 	 */
 	public String getFirstName() {
-		return user.getFirstName();
+		return this.firstName;
 	}
 
 	/**
 	 * @return the lastName
 	 */
 	public String getLastName() {
-		return user.getLastName();
+		return this.lastName;
 	}
 
 	/**
@@ -142,6 +161,14 @@ public class PlaySession {
 		this.endDate = endDate;
 	}
 
+	public boolean isPayed() {
+		return payed;
+	}
+
+	public void setPayed(boolean payed) {
+		this.payed = payed;
+	}
+
 	/**
 	 * @return the audit
 	 */
@@ -158,6 +185,26 @@ public class PlaySession {
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
+	}
+
+	@Override
+	public String toString() {
+		return "PlaySession [sessionId=" + sessionId + ", user=" + user + ", location=" + location + ", activities=" + activities + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
+				+ payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
+	}
+	
+	static PlaySession convertInput(InputPlaySession inputPlaySession) {
+		PlaySession session = new PlaySession();
+		List<Activity> activities = new ArrayList<>();
+		Activity activity = ActivityDAO.fetchByName(inputPlaySession.getActivityName());
+		activities.add(activity);
+		session.setActivities(activities);
+		session.setEndDate(inputPlaySession.getEndDate());
+		session.setStartDate(inputPlaySession.getStartDate());
+		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName()));
+		session.setPayed(inputPlaySession.isPayed());
+		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));
+		return session;
 	}
 
 }

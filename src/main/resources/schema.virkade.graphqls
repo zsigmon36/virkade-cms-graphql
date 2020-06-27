@@ -113,11 +113,22 @@ type PlaySession {
     firstName: String
     lastName: String
 	location: Location
+	payed: Boolean
 	activities: [Activity]
 	startDate: Date
 	endDate: Date
 	audit: Audit
 }
+
+input InputPlaySession {
+ 	locationName: String!
+	activityName: String!
+	startDate: Date!
+	endDate: Date!
+	payed: Boolean!
+	username: String!
+}
+
 type Activity {
 	activityId: Long
 	name: String
@@ -230,6 +241,7 @@ type Query {
   getCountries: [Country]
   getAllStates: [State]
   getAvailableSessions(dateRequested: Date, locationName: String, activityName: String): [PlaySession]
+  getPendingSessions(dateRequested: Date, locationName: String, activityName: String): [PlaySession]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]
@@ -244,11 +256,11 @@ type Mutation {
   signOut(username: String!): String
   addPhone(inputPhone: InputPhone!): Phone
   addComment(inputComment: InputComment!): Comment
-  addSession(username: String!): PlaySession
   setNewPassword(username: String!, passCode: String!, password: String!): Boolean
   setSecurityQA(username: String!, securityQ: String!, securityA: String!): Boolean
   addUserAddress(inputAddress: InputAddress!): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
+  addUserSession(inputPlaySession: InputPlaySession!): PlaySession
 }
 
 schema {

@@ -29,6 +29,7 @@ public class PlaySessionCalculator {
 		// calculate gap options
 		List<Future<?>> futures = new ArrayList<Future<?>>();
 		for (PlaySessionGap gap : gaps) {
+			
 			PSGThread curThread = new PSGThread(gap, availableSessions, location, activity);
 			Future<?> future = executor.submit(curThread);
 			futures.add(future);
@@ -52,7 +53,9 @@ public class PlaySessionCalculator {
 		if (!futures.isEmpty()) {
 			LOG.warn("There was an issue getting all the available times, returning what we have");
 		}
-		availableSessions.sort(new PlaySessionComparator());
+		if (!availableSessions.isEmpty()) {
+			availableSessions.sort(new PlaySessionComparator());
+		}
 		return availableSessions;
 	}
 
@@ -62,14 +65,19 @@ public class PlaySessionCalculator {
 		List<PlaySessionGap> playSessionGaps = new ArrayList<>();
 
 		for (PlaySession curSession : currentSessions) {
-			PlaySessionGap sessionGap = new PlaySessionGap(previousSessionEnd, curSession.getStartDate());
+			if (previousSessionEnd.after(curSession.getStartDate())) {
+				LOG.info("The current time is in the middle of active session");
+				previousSessionEnd = curSession.getEndDate();
+				continue;
+			}
+			PlaySessionGap sessionGap = new PlaySessionGap((!previousSessionEnd.equals(curTime)), previousSessionEnd, curSession.getStartDate(), true);
 			playSessionGaps.add(sessionGap);
 			previousSessionEnd = curSession.getEndDate();
 		}
 
 		// previous end time is less than end of day
 		if (previousSessionEnd.before(opHours.getEndAt())) {
-			PlaySessionGap sessionGap = new PlaySessionGap(previousSessionEnd, opHours.getEndAt());
+			PlaySessionGap sessionGap = new PlaySessionGap((!previousSessionEnd.equals(curTime)), previousSessionEnd, opHours.getEndAt(), false);
 			playSessionGaps.add(sessionGap);
 		}
 		return playSessionGaps;
