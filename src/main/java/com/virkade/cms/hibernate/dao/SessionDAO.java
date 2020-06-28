@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,7 +28,7 @@ public class SessionDAO {
 	private static final Logger LOG = Logger.getLogger(SessionDAO.class);
 
 	public static PlaySession create(PlaySession session) throws Exception {
-		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivities().get(0));
+		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
 			if (curAvailSession.getStartDate().equals(session.getStartDate()) && curAvailSession.getEndDate().equals(session.getEndDate())) {
@@ -78,8 +79,9 @@ public class SessionDAO {
 				cal.clear(Calendar.MILLISECOND);
 				cal.set(Calendar.DATE, (cal.get(Calendar.DATE) + 1));
 				Timestamp hiDate = new Timestamp(cal.getTimeInMillis());
-				//TODO add the activity and location restriction
+				criteria.add(Restrictions.eq(ConstantsDAO.LOCATION_FIELD, location));
 				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, dateRequested, hiDate));
+				criteria.add(Restrictions.eq(ConstantsDAO.ACTIVITY_FIELD, activity));
 			}
 			criteria.addOrder(Order.asc(ConstantsDAO.START_DATE_FIELD));
 			playSessions = criteria.list();
@@ -99,10 +101,10 @@ public class SessionDAO {
 
 		if (dateRequested == null) {
 			dateRequested = new Timestamp(Calendar.getInstance().getTimeInMillis());
-			opHours = OperatingHoursDAO.getTodayOperation();
+			opHours = OperatingHoursDAO.getTodayOperation(location);
 			curSessions = getAllSessionsToday(location, activity);
 		} else {
-			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()));
+			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()),location);
 			curSessions = getAllSessions(dateRequested, location, activity);
 		}
 		List<PlaySession> availableSessions = null;

@@ -403,9 +403,12 @@ public class CMSSeeds {
 		}
 	}
 
-	public static void startWorkDay() {
+	public static void startWorkDay(Location location) {
 
-		if (OperatingHoursDAO.getTodayOperation() == null) {
+		if (location == null) {
+			location = LocationDAO.getDefault();
+		}
+		if (OperatingHoursDAO.getTodayOperation(location) == null) {
 			OperatingHours opHours = new OperatingHours();
 			Calendar cal = Calendar.getInstance();
 			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
@@ -422,9 +425,7 @@ public class CMSSeeds {
 			cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), endHour, endMin, 0);
 
 			opHours.setEndAt(new Timestamp(cal.getTimeInMillis()));
-
-			Location defaultLocation = LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
-			opHours.setLocation(defaultLocation);
+			opHours.setLocation(location);
 
 			OperatingHoursDAO.create(opHours);
 		}

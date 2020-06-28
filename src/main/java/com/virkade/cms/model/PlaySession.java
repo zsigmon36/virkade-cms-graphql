@@ -1,14 +1,9 @@
 package com.virkade.cms.model;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.virkade.cms.hibernate.dao.ActivityDAO;
-import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
-import com.virkade.cms.hibernate.dao.StatusDAO;
-import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 
 public class PlaySession extends VirkadeModel{
@@ -16,7 +11,7 @@ public class PlaySession extends VirkadeModel{
 	private long sessionId;
 	private User user;
 	private Location location;
-	private List<Activity> activities;
+	private Activity activity;
 	private Timestamp startDate;
 	private Timestamp endDate;
 	private boolean payed;
@@ -62,18 +57,18 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @return the activities
+	 * @return the activity
 	 */
-	public List<Activity> getActivities() {
-		return activities;
+	public Activity getActivity() {
+		return activity;
 	}
 
 	/**
-	 * @param activities
-	 *            the activities to set
+	 * @param activity
+	 *            the activity to set
 	 */
-	public void setActivities(List<Activity> activities) {
-		this.activities = activities;
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
 	/**
@@ -189,16 +184,14 @@ public class PlaySession extends VirkadeModel{
 
 	@Override
 	public String toString() {
-		return "PlaySession [sessionId=" + sessionId + ", user=" + user + ", location=" + location + ", activities=" + activities + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
+		return "PlaySession [sessionId=" + sessionId + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
 				+ payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
 	}
 	
 	static PlaySession convertInput(InputPlaySession inputPlaySession) {
 		PlaySession session = new PlaySession();
-		List<Activity> activities = new ArrayList<>();
 		Activity activity = ActivityDAO.fetchByName(inputPlaySession.getActivityName());
-		activities.add(activity);
-		session.setActivities(activities);
+		session.setActivity(activity);
 		session.setEndDate(inputPlaySession.getEndDate());
 		session.setStartDate(inputPlaySession.getStartDate());
 		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName()));

@@ -1,7 +1,6 @@
 package com.virkade.cms.data.manipulator;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -100,9 +99,7 @@ public class PSGThread implements Runnable {
 			int curOffset = PSGThread.MINIMUM_SESSION_GAP * numOffset;
 			for (int i = 0 ; i < maxSessionsPossible; i++) {
 				PlaySession session = new PlaySession();
-				List<Activity> activities = new ArrayList<>();
-				activities.add(this.activity);
-				session.setActivities(activities);
+				session.setActivity(this.activity);
 				session.setLocation(this.location);
 				
 				int offsetMillis = (curOffset * 60 * 1000);

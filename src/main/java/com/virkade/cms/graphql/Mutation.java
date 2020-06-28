@@ -392,7 +392,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputPlaySession.getLocation() == null) {
 			missingData.add("Location");
 		}
-		if (convertedInputPlaySession.getActivities().isEmpty()) {
+		if (convertedInputPlaySession.getActivity() == null) {
 			missingData.add("Activity");
 		}
 		if (!missingData.isEmpty()) {

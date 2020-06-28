@@ -74,7 +74,7 @@ public class Query implements GraphQLRootResolver {
 		return states;
 	}
 	
-	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) {
+	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();
 		Location location = null;
@@ -88,12 +88,15 @@ public class Query implements GraphQLRootResolver {
 			location = LocationDAO.getDefault();
 		} else {
 			LocationDAO.fetchByName(locationName);
+		}
+		if (location == null || activity == null) {
+			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
 		List<PlaySession> sessions = SessionDAO.getAvailableSessions(dateRequested, location, activity);
 		return sessions;
 	}
 	
-	public List<PlaySession> getPendingSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) {
+	public List<PlaySession> getPendingSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();
 		Location location = null;
@@ -106,7 +109,10 @@ public class Query implements GraphQLRootResolver {
 		if (locationName == null || locationName == "") {
 			location = LocationDAO.getDefault();
 		} else {
-			LocationDAO.fetchByName(locationName);
+			location = LocationDAO.fetchByName(locationName);
+		}
+		if (location == null || activity == null) {
+			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
 		List<PlaySession> sessions = SessionDAO.getAllSessionsToday(location, activity);
 		return sessions;

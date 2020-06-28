@@ -39,7 +39,7 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultUsers();
 		CMSSeeds.createDefaultLocation();
 		CMSSeeds.createDefaultActivity();
-		CMSSeeds.startWorkDay();
+		CMSSeeds.startWorkDay(null);
 
 		// test
 		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting",

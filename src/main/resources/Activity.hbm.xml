@@ -8,6 +8,10 @@
 			<column name="ACTIVITYID" />
 			<generator class="increment" />
 		</id>
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
+			<key column="ACTIVITYID" />
+			<one-to-many class="com.virkade.cms.model.PlaySession" />
+		</bag>
 		<property generated="never" lazy="false" name="name" type="java.lang.String" unique="true">
 			<column name="NAME" sql-type="varchar(75)" />
 		</property>
@@ -23,10 +27,6 @@
 		<property generated="never" lazy="false" name="costpm" type="double">
 			<column name="COSTPM" />
 		</property>
-		<bag cascade="save-update" lazy="false" name="sessions" table="ACTIVITY_SESSION">
-			<key column="ACTIVITYID" />
-			<many-to-many class="com.virkade.cms.model.PlaySession" column="SESSIONID" />
-		</bag>
 		<property generated="never" lazy="false" name="creator" type="java.lang.String">
 			<column name="CREATOR" sql-type="varchar(75)" />
 		</property>

@@ -83,5 +83,9 @@ public class ConstantsDAO {
 	//sessionDAO
 	public static final String START_DATE_FIELD = "startDate";
 	public static final String END_DATE_FIELD = "endDate";
+	public static final String LOCATION_FIELD = "location";
+	public static final String ACTIVITY_FIELD = "activity";
+	public static final String ACTIVITYID_FIELD = "activityid";
+	public static final String LOCATIONID_FIELD = "locationid";
 
 }

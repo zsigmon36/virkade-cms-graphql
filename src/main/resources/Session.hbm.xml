@@ -15,11 +15,10 @@
 		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join">
 			<column name="LOCATIONID" />
 		</many-to-one>
-
-		<bag cascade="save-update" lazy="false" name="activities" table="ACTIVITY_SESSION">
-			<key column="SESSIONID" />
-			<many-to-many class="com.virkade.cms.model.Activity" column="ACTIVITYID" />
-		</bag>
+		
+		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join">
+			<column name="ACTIVITYID" />
+		</many-to-one>
 		
 		<property name="payed" type="boolean">
 			<column name="PAYED" />

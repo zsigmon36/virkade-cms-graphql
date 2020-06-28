@@ -107,6 +107,7 @@ input InputPhone {
 }
 
 type PlaySession {
+	sessionId: Long
 	userId: Long
 	emailAddress: String
 	username: String
@@ -114,7 +115,7 @@ type PlaySession {
     lastName: String
 	location: Location
 	payed: Boolean
-	activities: [Activity]
+	activity: Activity
 	startDate: Date
 	endDate: Date
 	audit: Audit

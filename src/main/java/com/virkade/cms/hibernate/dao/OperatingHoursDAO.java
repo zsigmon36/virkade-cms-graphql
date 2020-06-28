@@ -11,13 +11,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
+import com.virkade.cms.model.Location;
 import com.virkade.cms.model.OperatingHours;
 
 public class OperatingHoursDAO {
 
 	private static final Logger LOG = Logger.getLogger(OperatingHoursDAO.class);
 
-	public static OperatingHours getOperation(Date date) {
+	public static OperatingHours getOperation(Date date, Location location) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		OperatingHours opHours = null;
@@ -25,6 +26,7 @@ public class OperatingHoursDAO {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(OperatingHours.class);
 			criteria.add(Restrictions.eq(ConstantsDAO.OPERATING_DATE_FIELD, date));
+			criteria.add(Restrictions.eq(ConstantsDAO.LOCATION_FIELD, location));
 			opHours = (OperatingHours) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting operating hours with date=" + date, he);
@@ -36,8 +38,8 @@ public class OperatingHoursDAO {
 	}
 	
 	
-	public static OperatingHours getTodayOperation() {
-		return getOperation(new Date(Calendar.getInstance().getTimeInMillis()));
+	public static OperatingHours getTodayOperation(Location location) {
+		return getOperation(new Date(Calendar.getInstance().getTimeInMillis()),location);
 	}
 
 	public static OperatingHours create(OperatingHours opHours) {
