@@ -8,6 +8,7 @@ public class Location {
 	private String name;
 	private String description;
 	private long phoneNum;
+	private float taxRate;
 	private String manager;
 	private boolean enabled;
 	private Audit audit;
@@ -71,6 +72,12 @@ public class Location {
 	 */
 	public void setPhoneNum(long phoneNum) {
 		this.phoneNum = phoneNum;
+	}
+	public float getTaxRate() {
+		return taxRate;
+	}
+	public void setTaxRate(float taxRate) {
+		this.taxRate = taxRate;
 	}
 	/**
 	 * @return the manager

@@ -277,6 +277,7 @@ public class CMSSeeds {
 			Location location = new Location();
 			location.setName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
 			location.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
+			location.setTaxRate(0.095f);
 			location.setDescription("the first VirKade");
 			location.setManager("Zachary Sigmon");
 			location.setPhoneNum(4792632216L);
@@ -361,7 +362,8 @@ public class CMSSeeds {
 	public static void createDefaultActivity() {
 		if (ActivityDAO.fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME) == null) {
 			Activity activity = new Activity();
-			activity.setCostpm(0.85);
+			activity.setCostpm(1.00f);
+			activity.setSetupMin(PropsUtil.getPlaySessionSetupMin());
 			activity.setCreator("HTC");
 			activity.setName(ConstantsDAO.DEFAULT_ACTIVITY_NAME);
 			activity.setDescription("the default vr arcade for the vive");

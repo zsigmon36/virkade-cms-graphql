@@ -406,9 +406,9 @@ public class Mutation implements GraphQLRootResolver {
 		Audit audit = VirkadeModel.addAuditToModel(curSessionUser, convertedInputPlaySession.getAudit());
 		convertedInputPlaySession.setAudit(audit);
 
-		SessionDAO.create(convertedInputPlaySession);
+		PlaySession playSession = SessionDAO.create(convertedInputPlaySession);
 		
-		return null;
+		return playSession;
 	}
 
 }

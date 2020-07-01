@@ -27,6 +27,9 @@
 		<property generated="never" lazy="false" name="costpm" type="double">
 			<column name="COSTPM" />
 		</property>
+		<property generated="never" lazy="false" name="setupMin" type="int">
+			<column name="SETUP_MIN" />
+		</property>
 		<property generated="never" lazy="false" name="creator" type="java.lang.String">
 			<column name="CREATOR" sql-type="varchar(75)" />
 		</property>

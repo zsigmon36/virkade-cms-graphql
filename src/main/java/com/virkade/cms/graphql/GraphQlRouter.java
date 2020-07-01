@@ -46,7 +46,7 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 				"this is a test message for the email utility");
 		// EmailUtil.sendSimpleMail("reid.alexander@live.com", "VirKade CMS System
 		// Starting", "this is a test message for the email utility");
-		CMSSeeds.createTestSession(1);
+		//CMSSeeds.createTestSession(1);
 
 	}
 

@@ -18,13 +18,15 @@ public class PropsUtil {
 	public final static String DEFAULT_SESSION_LENGTH_IN_MINUTES = "default.session.length.min";
 	public final static String DEFAULT_SESSION_MINIMUM_GAP = "default.session.minimum.gap";
 	public final static String DEFAULT_SESSION_BUFFER = "default.session.buffer";
+	public final static String PLAY_SESSION_SETUP_MIN = "session.setup.minutes";
 
 	private static int defaultClosingTimeHour = 0;
 	private static int defaultClosingTimeMin = 0;
 	private static int playSessionLength = 30;
 	private static int playSessionMinGap = 10;
 	private static int defaultSessionBuffer = 1;
-
+	private static int playSessionSetupMin = 5;
+	
 	static {
 		try {
 			InputStream stream = ClassLoader.getSystemResourceAsStream("app.cfg.properties");
@@ -43,11 +45,13 @@ public class PropsUtil {
 			String sessionLength = String.valueOf(props.get(DEFAULT_SESSION_LENGTH_IN_MINUTES));
 			String sessionMinGap = String.valueOf(props.get(DEFAULT_SESSION_MINIMUM_GAP));
 			String sessionBuffer = String.valueOf(props.get(DEFAULT_SESSION_BUFFER));
+			String sessionSetupMin = String.valueOf(props.get(PLAY_SESSION_SETUP_MIN));
 			PropsUtil.defaultClosingTimeHour = Integer.valueOf(closingParts[0]);
 			PropsUtil.defaultClosingTimeMin = Integer.valueOf(closingParts[1]);
 			PropsUtil.playSessionLength = Integer.valueOf(sessionLength);
 			PropsUtil.playSessionMinGap = Integer.valueOf(sessionMinGap);
 			PropsUtil.defaultSessionBuffer = Integer.valueOf(sessionBuffer);
+			PropsUtil.playSessionSetupMin = Integer.valueOf(sessionSetupMin);
 		} catch (RuntimeException e) {
 			LOG.error("There was a problem seperating out the min time, session time, & closing hour/min, details may be inaccurate", e);
 		}
@@ -95,6 +99,10 @@ public class PropsUtil {
 	 */
 	public static int getDefaultSessionBuffer() {
 		return defaultSessionBuffer;
+	}
+
+	public static int getPlaySessionSetupMin() {
+		return playSessionSetupMin;
 	}
 	
 

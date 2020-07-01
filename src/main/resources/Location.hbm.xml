@@ -13,6 +13,9 @@
 			<column name="ADDRESSID" />
 		</many-to-one>
 
+		<property name="taxRate" type="float">
+			<column name="TAX_RATE" />
+		</property>
 		<property name="name" type="java.lang.String">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>

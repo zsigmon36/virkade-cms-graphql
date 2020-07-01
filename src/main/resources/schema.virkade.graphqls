@@ -138,7 +138,7 @@ type Activity {
 	supportContact : String
 	creator: String
 	costpm: Float
-	sessions: [PlaySession]
+	setupMin: Int
 	enabled: Boolean
 	audit: Audit
 }
@@ -146,6 +146,7 @@ type Activity {
 type Location {
 	locationId: Long
 	address: Address
+	taxRate: Float
 	name: String
 	description: String
 	phoneNum : Int

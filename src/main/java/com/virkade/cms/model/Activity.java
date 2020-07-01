@@ -9,6 +9,7 @@ public class Activity {
 	private String webSite;
 	private String supportContact;
 	private double costpm;
+	private int setupMin;
 	private List<PlaySession> sessions;
 	private String creator;
 	private boolean enabled;
@@ -102,6 +103,14 @@ public class Activity {
 	 */
 	public void setCostpm(double costpm) {
 		this.costpm = costpm;
+	}
+
+	public int getSetupMin() {
+		return setupMin;
+	}
+
+	public void setSetupMin(int setupMin) {
+		this.setupMin = setupMin;
 	}
 
 	/**
