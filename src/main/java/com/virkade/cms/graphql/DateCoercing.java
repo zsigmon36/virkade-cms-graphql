@@ -38,7 +38,7 @@ public class DateCoercing implements Coercing<Object, String> {
 	@Override
 	public Timestamp parseLiteral(Object input) {
 		// parse the string values coming in
-		LOG.info("input for date is " + String.valueOf(input) + " type of " + input.getClass().getTypeName());
+		LOG.debug("input for date is " + String.valueOf(input) + " type of " + input.getClass().getTypeName());
 		if (input instanceof Timestamp) {
 			return ((Timestamp) input);
 		} else if (input instanceof Date) {

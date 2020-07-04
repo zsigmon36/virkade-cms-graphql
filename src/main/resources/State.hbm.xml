@@ -5,11 +5,11 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.State" table="STATE">
 		<id name="stateId" type="long">
-			<column name="STATEID" />
+			<column name="STATEID" index="IDX_STATE_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="country" class="com.virkade.cms.model.Country" not-null="true" fetch="join">
+		<many-to-one name="country" class="com.virkade.cms.model.Country" not-null="true" fetch="join" index="IDX_STATE_CNTRY_ID">
 			<column name="COUNTRYID" />
 		</many-to-one>
 
@@ -19,7 +19,7 @@
 		<property name="abbreviation" type="java.lang.String">
 			<column name="ABBREVIATION" sql-type="varchar(75)"/>
 		</property>
-		<property name="stateCode" type="java.lang.String" not-null="true" unique="true">
+		<property name="stateCode" type="java.lang.String" not-null="true" unique="true" index="IDX_STATE_CDE">
 			<column name="STATECODE" sql-type="varchar(3)"/>
 		</property>
 		

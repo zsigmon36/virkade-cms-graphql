@@ -4,22 +4,22 @@
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Transaction" table="TRANSACTION">
-		<id name="transactionId" type="long">
-			<column name="TRANSACTIONID" />
+		<id name="transactionId" type="long" >
+			<column name="TRANSACTIONID" index="IDX_TRNSACTN_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="session" class="com.virkade.cms.model.PlaySession" not-null="true" fetch="join">
+		<many-to-one name="session" class="com.virkade.cms.model.PlaySession" not-null="true" fetch="join" index="IDX_TRNSACTN_SESSN">
 			<column name="SESSIONID" />
 		</many-to-one>
 
-		<property name="serviceName" type="java.lang.String">
+		<property name="serviceName" type="java.lang.String" index="IDX_TRNSACTN_SRVCNME">
 			<column name="SERVICENAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="varchar(75)"/>
 		</property>
-		<property name="refId" type="java.lang.String">
+		<property name="refId" type="java.lang.String" index="IDX_TRNSACTN_REFID">
 			<column name="REFID" sql-type="varchar(75)"/>
 		</property>
 		<property name="payment" type="double">

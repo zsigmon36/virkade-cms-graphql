@@ -5,16 +5,16 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Status" table="STATUS">
 		<id name="statusId" type="long">
-			<column name="STATUSID" />
+			<column name="STATUSID" index="IDX_STTS_ID"/>
 			<generator class="increment" />
 		</id>
-		<property name="name" type="java.lang.String">
+		<property name="name" type="java.lang.String" index="IDX_STTS_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
-		<property name="code" type="java.lang.String">
+		<property name="code" type="java.lang.String" index="IDX_STTS_CDE">
 			<column name="CODE" sql-type="varchar(25)"/>
 		</property>
 		<component name="audit" class="com.virkade.cms.model.Audit">

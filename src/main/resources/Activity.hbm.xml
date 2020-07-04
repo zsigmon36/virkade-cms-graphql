@@ -5,14 +5,14 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Activity" table="ACTIVITY">
 		<id name="activityId" type="long">
-			<column name="ACTIVITYID" />
+			<column name="ACTIVITYID" index="IDX_ACTVTY_ID"/>
 			<generator class="increment" />
 		</id>
 		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
 			<key column="ACTIVITYID" />
 			<one-to-many class="com.virkade.cms.model.PlaySession" />
 		</bag>
-		<property generated="never" lazy="false" name="name" type="java.lang.String" unique="true">
+		<property generated="never" lazy="false" name="name" type="java.lang.String" unique="true" index="IDX_ACTVTY_NME, IDX_ACTVTY_NME_ENBLE">
 			<column name="NAME" sql-type="varchar(75)" />
 		</property>
 		<property generated="never" lazy="false" name="description" type="java.lang.String">
@@ -33,7 +33,7 @@
 		<property generated="never" lazy="false" name="creator" type="java.lang.String">
 			<column name="CREATOR" sql-type="varchar(75)" />
 		</property>
-		<property generated="never" lazy="false" name="enabled" type="boolean">
+		<property generated="never" lazy="false" name="enabled" type="boolean" index="IDX_ACTVTY_NME_ENBLE">
 			<column name="ENABLED" />
 		</property>
 		<component name="audit" class="com.virkade.cms.model.Audit">

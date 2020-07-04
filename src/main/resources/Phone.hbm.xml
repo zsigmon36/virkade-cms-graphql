@@ -5,19 +5,19 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Phone" table="PHONE">
 		<id name="phoneId" type="long">
-			<column name="PHONEID" />
+			<column name="PHONEID" index="IDX_PNE_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" >
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" index="IDX_PHN_USR_ID, IDX_PHN_USR_ID_TYP">
 			<column name="USERID"></column>
 		</many-to-one>
 		
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_PHN_TYP, IDX_PHN_NMBR_TYP, IDX_PHN_USR_ID_TYP">
 			<column name="TYPEID" />
 		</many-to-one>
 		
-		<property name="number" type="java.lang.String">
+		<property name="number" type="java.lang.String" index="IDX_PHN_NMBR, IDX_PHN_NMBR_TYP">
 			<column name="NUMBER" />
 		</property>
 		<property name="countryCode" type="int">

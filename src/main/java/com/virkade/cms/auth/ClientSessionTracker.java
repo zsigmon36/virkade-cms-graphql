@@ -13,8 +13,8 @@ import com.virkade.cms.model.User;
 
 public class ClientSessionTracker {
 	private static final Logger LOG = Logger.getLogger(ClientSessionTracker.class);
-	private static final long RECOVERY_TOKEN_LIFE = 300000; // in millis
-	private static final long ACTIVE_TOKEN_LIFE = 3600000; // in millis
+	private static final long RECOVERY_TOKEN_LIFE = 300000; // in millis, 5 min
+	private static final long ACTIVE_TOKEN_LIFE = 3600000; // in millis, 1 hour
 	private static Map<String, AuthToken> activeClientSessions;
 	private static Map<String, AuthToken> recoveryClientSessions;
 

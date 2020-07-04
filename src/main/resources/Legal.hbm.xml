@@ -5,28 +5,28 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Legal" table="LEGAL">
 		<id name="legalDocId" type="long">
-			<column name="LEGALDOCID" />
+			<column name="LEGALDOCID" index="IDX_LGL_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join" index="IDX_LGL_USR_ID">
 			<column name="USERID" />
 		</many-to-one>
 
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_LGL_USR_ID">
 			<column name="TYPEID" />
 		</many-to-one>
 
-		<property name="agree" type="boolean">
+		<property name="agree" type="boolean" index="IDX_LGL_USR_ID">
 			<column name="AGREE" />
 		</property>
-		<property name="activeDate" type="java.sql.Timestamp">
+		<property name="activeDate" type="java.sql.Timestamp" index="IDX_LGL_USR_ID">
 			<column name="ACTIVEDATE" />
 		</property>
-		<property name="expireDate" type="java.sql.Timestamp">
+		<property name="expireDate" type="java.sql.Timestamp" index="IDX_LGL_USR_ID">
 			<column name="EXPIREDATE" />
 		</property>
-		<property name="enabled" type="boolean">
+		<property name="enabled" type="boolean" index="IDX_LGL_ENBLE, IDX_LGL_ID, IDX_LGL_USR_ID">
 			<column name="ENABLED" />
 		</property>
 		<component name="audit" class="com.virkade.cms.model.Audit">

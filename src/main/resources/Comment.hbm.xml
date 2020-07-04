@@ -5,14 +5,14 @@
 <hibernate-mapping>
     <class name="com.virkade.cms.model.Comment" table="COMMENT">
         <id name="commentId" type="long">
-            <column name="COMMENTID" />
+            <column name="COMMENTID" index="IDX_CMNT_ID"/>
             <generator class="increment" />
         </id>
        
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true">
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" index="IDX_CMNT_USRID, IDX_CMNT_TYP_USRID,">
             <column name="USERID" />
         </many-to-one>
-        <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+        <many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_CMNT_TYP, IDX_CMNT_TYP_USRID" >
             <column name="TYPEID" />
         </many-to-one>
         

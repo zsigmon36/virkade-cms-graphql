@@ -5,29 +5,29 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.PlaySession" table="SESSION">
 		<id name="sessionId" type="long">
-			<column name="SESSIONID" />
+			<column name="SESSIONID" index="IDX_SESIN_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="idx_user1">
+		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="USERID" />
 		</many-to-one>
-		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join">
+		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join" index="IDX_SESIN_LOC, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="LOCATIONID" />
 		</many-to-one>
 		
-		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join">
+		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join" index="IDX_SESIN_ACTVTY, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="ACTIVITYID" />
 		</many-to-one>
 		
-		<property name="payed" type="boolean">
+		<property name="payed" type="boolean" index="IDX_SESIN_PYD">
 			<column name="PAYED" />
 		</property>
 
-		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp" index="idx_startdate1">
+		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp" index="IDX_SESIN_STRTDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_PYD, IDX_SESIN_USR_ID_DTE">
 			<column name="STARTDATE" />
 		</property>
-		<property generated="never" lazy="false" name="endDate" type="java.sql.Timestamp" index="idx_enddate1">
+		<property generated="never" lazy="false" name="endDate" type="java.sql.Timestamp" index="IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE,IDX_SESIN_PYD, IDX_SESIN_USR_ID_DTE">
 			<column name="ENDDATE" />
 		</property>
 		<component name="audit" class="com.virkade.cms.model.Audit">

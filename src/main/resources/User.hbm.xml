@@ -5,10 +5,10 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.User" table="USER">
 		<id name="userId" type="long">
-			<column name="USERID" />
+			<column name="USERID" index="IDX_USR_ID"/>
 			<generator class="increment" />
 		</id>
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_USR_TYP, IDX_USRNME_TYP, IDX_USRNME_STTS_TYP, IDX_EMAIL_TYP, IDX_EMAIL_STTS_TYP">
 			<column name="TYPEID" />
 		</many-to-one>
 
@@ -16,14 +16,14 @@
 			<column name="ADDRESSID" />
 		</many-to-one>
 
-		<many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join">
+		<many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join" index="IDX_USR_STTS, IDX_USRNME_STTUS, IDX_USRNME_STTS_TYP, IDX_EMAIL_STTUS, IDX_EMAIL_STTS_TYP">
 			<column name="STATUSID" />
 		</many-to-one>
 
-		<property name="emailAddress" type="java.lang.String" not-null="true">
+		<property name="emailAddress" type="java.lang.String" not-null="true" index="IDX_EMAIL, IDX_EMAIL_TYP, IDX_EMAIL_STTUS, IDX_EMAIL_STTS_TYP">
 			<column name="EMAILADDRESS" />
 		</property>
-		<property name="username" type="java.lang.String" not-null="true" unique="true">
+		<property name="username" type="java.lang.String" not-null="true" unique="true" index="IDX_USRNME, IDX_USRNME_STTUS, IDX_USRNME_TYP, IDX_USRNME_STTS_TYP">
 			<column name="USERNAME" sql-type="varchar(75)" />
 		</property>
 		<property name="password" type="java.lang.String" not-null="true">

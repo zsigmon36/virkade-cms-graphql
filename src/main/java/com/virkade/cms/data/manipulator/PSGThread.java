@@ -34,11 +34,11 @@ public class PSGThread implements Runnable {
 	@Override
 	public void run() {
 		cleanupGapTiming();
-		LOG.info(String.format("session gap cleanup done start=%s and end=%s", this.gap.getStartDate(), this.gap.getEndDate()));
+		LOG.debug(String.format("session gap cleanup done start=%s and end=%s", this.gap.getStartDate(), this.gap.getEndDate()));
 		calculateSessionOptions();
-		LOG.info(String.format("session options calculated, %s available", this.availableSessions.size()));
+		LOG.debug(String.format("session options calculated, %s available", this.availableSessions.size()));
 		
-		LOG.info(String.format("PSGThread [ id:%s, name:%s ] - done calculating, exiting", Thread.currentThread().getId(), Thread.currentThread().getName()));
+		LOG.debug(String.format("PSGThread [ id:%s, name:%s ] - done calculating, exiting", Thread.currentThread().getId(), Thread.currentThread().getName()));
 
 	}
 
@@ -61,7 +61,7 @@ public class PSGThread implements Runnable {
 		cal.set(Calendar.MINUTE, roundStartTime);
 		this.gap.setStartDate(new Timestamp(cal.getTimeInMillis()));
 
-		// force end gap rounded, although this should really not have to be done every,
+		// force end gap rounded, although this should really not have to be done ever,
 		// if it does happen there is problem elsewhere
 		cal.setTimeInMillis(this.gap.getEndDate().getTime());
 		
@@ -89,11 +89,11 @@ public class PSGThread implements Runnable {
 		double timeDiffMin = Math.floor((((double)(gapEndMillis - gapStartMillis) / 1000) / 60));
 		
 		int maxSessionsPossible =  (int) Math.floor(timeDiffMin / PSGThread.SESSION_LENGTH);
-		LOG.info(String.format("most sessions possible in this gap start=%s, end=%s is %s", gapStart, gapEnd, maxSessionsPossible));
+		LOG.debug(String.format("most sessions possible in this gap start=%s, end=%s is %s", gapStart, gapEnd, maxSessionsPossible));
 		
 		int sessionGapRemain =  (int) (timeDiffMin % PSGThread.SESSION_LENGTH);
 		int numOffset = (int) Math.floor(sessionGapRemain / PSGThread.MINIMUM_SESSION_GAP);
-		LOG.info(String.format("the session gap remainder is=%s, this will make the number of offsets=%s", sessionGapRemain, numOffset));
+		LOG.debug(String.format("the session gap remainder is=%s, this will make the number of offsets=%s", sessionGapRemain, numOffset));
 		
 		do {
 			int curOffset = PSGThread.MINIMUM_SESSION_GAP * numOffset;

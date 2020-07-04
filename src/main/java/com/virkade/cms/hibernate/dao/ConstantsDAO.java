@@ -3,7 +3,7 @@ package com.virkade.cms.hibernate.dao;
 public class ConstantsDAO {
 	
 	//common constants
-	public static final String COMMON_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss"; // "2020-06-20 23:00:00"
+	public static final String COMMON_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S"; // "2020-06-20 23:00:00"
 	public static final String SYSTEM = "system";
 	public static final String TYPE_FIELD = "type";
 	public static final String NAME_FIELD = "name";

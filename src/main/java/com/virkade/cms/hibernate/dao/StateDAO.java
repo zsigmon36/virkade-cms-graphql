@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
@@ -116,7 +117,9 @@ public class StateDAO {
 		List<State> states = null;
 		try {
 			hs.beginTransaction();
-			states = hs.createCriteria(State.class).list();
+			Criteria criteria = hs.createCriteria(State.class);
+			criteria.addOrder(Order.asc(ConstantsDAO.NAME_FIELD));
+			states = criteria.list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting all states", he);
 		} finally {
