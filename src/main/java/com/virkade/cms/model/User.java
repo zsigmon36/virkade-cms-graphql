@@ -3,6 +3,7 @@ package com.virkade.cms.model;
 import java.security.InvalidKeyException;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -11,6 +12,7 @@ import javax.crypto.IllegalBlockSizeException;
 
 import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.hibernate.dao.AddressDAO;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 
@@ -23,6 +25,7 @@ public class User extends VirkadeModel {
 	private List<PlaySession> sessions;
 	private List<Comment> comments;
 	private List<Phone> phoneNumbers;
+	private List<Legal> legals;
 	private String emailAddress;
 	private String username;
 	private String password;
@@ -61,8 +64,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param userId
-	 *            the userId to set
+	 * @param userId the userId to set
 	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
@@ -76,8 +78,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * @param type the type to set
 	 */
 	public void setType(Type type) {
 		this.type = type;
@@ -91,8 +92,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param address
-	 *            the address to set
+	 * @param address the address to set
 	 */
 	public void setAddress(Address address) {
 		this.address = address;
@@ -106,8 +106,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param status
-	 *            the status to set
+	 * @param status the status to set
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
@@ -121,8 +120,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param session
-	 *            the session to set
+	 * @param session the session to set
 	 */
 	public void setSessions(List<PlaySession> sessions) {
 		this.sessions = sessions;
@@ -136,8 +134,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param comments
-	 *            the comments to set
+	 * @param comments the comments to set
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
@@ -151,11 +148,46 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param phoneNumbers
-	 *            the phoneNumbers to set
+	 * @param phoneNumbers the phoneNumbers to set
 	 */
 	public void setPhoneNumbers(List<Phone> phoneNumbers) {
 		this.phoneNumbers = phoneNumbers;
+	}
+
+	public List<Legal> getLegals() {
+		return legals;
+	}
+
+	public void setLegals(List<Legal> legals) {
+		this.legals = legals;
+	}
+
+	//LIMITED_LIABLE = "LTD_LBLE"
+	public boolean isLiableAgree() {
+		boolean liableAgree = false;
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		for (Legal cur : this.legals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && 
+					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				liableAgree = true;
+			}
+		}
+		return liableAgree;
+	}
+
+	//TERMS_CONDITIONS - TRMS_CNDTN
+	public boolean isTcAgree() {
+		boolean tcAgree = false;
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		for (Legal cur : this.legals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && 
+					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				tcAgree = true;
+			}
+		}
+		return tcAgree;
 	}
 
 	/**
@@ -166,8 +198,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param emailAddress
-	 *            the emailAddress to set
+	 * @param emailAddress the emailAddress to set
 	 */
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
@@ -181,8 +212,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param username
-	 *            the username to set
+	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -196,8 +226,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param password
-	 *            the password to set
+	 * @param password the password to set
 	 * @throws BadPaddingException
 	 * @throws IllegalBlockSizeException
 	 * @throws InvalidKeyException
@@ -214,8 +243,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param securityQuestion
-	 *            the securityQuestion to set
+	 * @param securityQuestion the securityQuestion to set
 	 */
 	public void setSecurityQuestion(String securityQuestion) {
 		this.securityQuestion = securityQuestion;
@@ -229,8 +257,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param securityAnswer
-	 *            the securityAnswer to set
+	 * @param securityAnswer the securityAnswer to set
 	 */
 	public void setSecurityAnswer(String securityAnswer) {
 		this.securityAnswer = securityAnswer;
@@ -244,8 +271,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param firstName
-	 *            the firstName to set
+	 * @param firstName the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -259,8 +285,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param lastName
-	 *            the lastName to set
+	 * @param lastName the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -274,8 +299,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param gender
-	 *            the gender to set
+	 * @param gender the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -289,8 +313,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param age
-	 *            the age to set
+	 * @param age the age to set
 	 */
 	public void setAge(int age) {
 		this.age = age;
@@ -304,8 +327,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param height
-	 *            the height to set
+	 * @param height the height to set
 	 */
 	public void setHeight(int height) {
 		this.height = height;
@@ -319,8 +341,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param weight
-	 *            the weight to set
+	 * @param weight the weight to set
 	 */
 	public void setWeight(int weight) {
 		this.weight = weight;
@@ -334,8 +355,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param idp
-	 *            the idp to set
+	 * @param idp the idp to set
 	 */
 	public void setIdp(float idp) {
 		this.idp = idp;
@@ -349,8 +369,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param birthday
-	 *            the birthday to set
+	 * @param birthday the birthday to set
 	 */
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
@@ -364,8 +383,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param emailVerified
-	 *            the emailVerified to set
+	 * @param emailVerified the emailVerified to set
 	 */
 	public void setEmailVerified(Boolean emailVerified) {
 		this.emailVerified = emailVerified;
@@ -379,8 +397,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param playedBefore
-	 *            the playedBefore to set
+	 * @param playedBefore the playedBefore to set
 	 */
 	public void setPlayedBefore(Boolean playedBefore) {
 		this.playedBefore = playedBefore;
@@ -394,8 +411,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param lastLogin
-	 *            the lastLogin to set
+	 * @param lastLogin the lastLogin to set
 	 */
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
@@ -409,8 +425,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param reServices
-	 *            the reServices to set
+	 * @param reServices the reServices to set
 	 */
 	public void setReServices(Boolean reServices) {
 		this.reServices = reServices;
@@ -424,8 +439,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param canContact
-	 *            the canContact to set
+	 * @param canContact the canContact to set
 	 */
 	public void setCanContact(Boolean canContact) {
 		this.canContact = canContact;
@@ -442,8 +456,7 @@ public class User extends VirkadeModel {
 	}
 
 	/**
-	 * @param audit
-	 *            the audit to set
+	 * @param audit the audit to set
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
@@ -456,8 +469,11 @@ public class User extends VirkadeModel {
 	 */
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", type=" + type + ", address=" + address + ", status=" + status + ", sessions=" + sessions + ", comments=" + comments + ", phoneNumbers=" + phoneNumbers + ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", birthday=" + birthday + ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact + ", audit=" + audit + "]";
+		return "User [userId=" + userId + ", type=" + type + ", address=" + address + ", status=" + status + ", sessions=" + sessions + ", comments=" + comments + ", phoneNumbers=" + phoneNumbers
+				+ ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", birthday="
+				+ birthday + ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact
+				+ ", audit=" + audit + "]";
 	}
 
 	/**

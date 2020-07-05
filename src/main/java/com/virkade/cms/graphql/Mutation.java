@@ -19,15 +19,18 @@ import com.virkade.cms.auth.AuthToken;
 import com.virkade.cms.auth.ClientSessionTracker;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.auth.VirkadeEncryptor;
+import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CommentDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LegalDAO;
+import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
+import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
 import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Comment;
@@ -38,6 +41,7 @@ import com.virkade.cms.model.InputPhone;
 import com.virkade.cms.model.InputPlaySession;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
+import com.virkade.cms.model.Location;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.User;
@@ -407,6 +411,29 @@ public class Mutation implements GraphQLRootResolver {
 		PlaySession playSession = SessionDAO.create(convertedInputPlaySession);
 		
 		return playSession;
+	}
+	public boolean deleteAllSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) throws Exception{
+		boolean results = false;
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+		Location location = null;
+		Activity activity = null;
+		if (activityName == null || activityName == "") {
+			activity = ActivityDAO.getDefault();
+		} else {
+			activity = ActivityDAO.fetchByName(activityName);
+		}
+		if (locationName == null || locationName == "") {
+			location = LocationDAO.getDefault();
+		} else {
+			location = LocationDAO.fetchByName(locationName);
+		}
+		if (location == null || activity == null) {
+			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
+		}
+		results = SessionDAO.deleteAll(dateRequested, location, activity);
+		return results;
 	}
 
 }

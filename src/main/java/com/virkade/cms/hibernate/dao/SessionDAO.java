@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,7 +26,7 @@ public class SessionDAO {
 
 	private static final Logger LOG = Logger.getLogger(SessionDAO.class);
 
-	public static PlaySession create(PlaySession session) throws Exception {
+	public static synchronized PlaySession create(PlaySession session) throws Exception {
 		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
@@ -104,7 +103,7 @@ public class SessionDAO {
 			opHours = OperatingHoursDAO.getTodayOperation(location);
 			curSessions = getAllSessionsToday(location, activity);
 		} else {
-			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()),location);
+			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()), location);
 			curSessions = getAllSessions(dateRequested, location, activity);
 		}
 		List<PlaySession> availableSessions = null;
@@ -112,12 +111,12 @@ public class SessionDAO {
 			availableSessions = PlaySessionCalculator.getAvailableSessions(dateRequested, opHours.getEndAt(), curSessions, opHours, location, activity);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new HibernateException("There was a thread interupt and we could not get all the available sessions :(", e);
+			throw new HibernateException("There was a thread interrupt and we could not get all the available sessions :(", e);
 		}
 		return availableSessions;
 
 	}
-	
+
 	public static List<PlaySession> getUserSessions(User user, Timestamp dateRequested) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -151,6 +150,30 @@ public class SessionDAO {
 			hs.close();
 		}
 		return playSessions;
+
+	}
+
+	public static boolean deleteAll(Timestamp dateRequested, Location location, Activity activity) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		List<PlaySession> playSessions = getAllSessions(dateRequested, location, activity);
+		LOG.warn(String.format("%s play sessions will be deleted based on date requested:%s, location:%s, & activity:%s", playSessions.size(), (dateRequested == null ? "all" : dateRequested),
+				location.getName(), activity.getName()));
+		boolean results = false;
+		try {
+			hs.beginTransaction();
+			for (PlaySession session : playSessions) {
+				String entityName = session.getClass().getName();
+				hs.delete(entityName, session);
+			}
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception deleting PlaySessions", he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+			results = true;
+		}
+		return results;
 
 	}
 

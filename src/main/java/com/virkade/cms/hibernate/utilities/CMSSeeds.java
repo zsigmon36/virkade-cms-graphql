@@ -19,6 +19,7 @@ import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.CountryDAO;
+import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.OperatingHoursDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
@@ -32,6 +33,7 @@ import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
 import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Country;
+import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
 import com.virkade.cms.model.OperatingHours;
 import com.virkade.cms.model.Phone;
@@ -294,6 +296,13 @@ public class CMSSeeds {
 		User user = new User();
 		User user2 = new User();
 
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+
+		Calendar cal2 = Calendar.getInstance();
+		cal2.set(Calendar.YEAR, (cal2.get(Calendar.YEAR) + 99));
+		Timestamp expireDate = new Timestamp(cal2.getTimeInMillis());
+
 		if (UserDAO.fetchByUsername(ConstantsDAO.GUEST_USER_NAME) == null) {
 			user.setFirstName(ConstantsDAO.GUEST_USER_NAME);
 			user.setLastName(ConstantsDAO.GUEST_USER_NAME);
@@ -303,9 +312,9 @@ public class CMSSeeds {
 			user.setPassword(VirkadeEncryptor.hashEncode("123456"));
 			user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user.setType(TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE));
-			user.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user.getAudit().setCreatedAt(now);
 			user.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-			user.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user.getAudit().setUpdatedAt(now);
 			user.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			UserDAO.createUpdate(user, false);
 
@@ -314,11 +323,27 @@ public class CMSSeeds {
 			phone.setCountryCode(1);
 			phone.setNumber("4795445445");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
-			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setUpdatedAt(now);
 			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			PhoneDAO.create(phone);
+
+			Legal legal = new Legal();
+			legal.setActiveDate(now);
+			legal.setUser(user);
+			legal.setAgree(true);
+			legal.setEnabled(true);
+			legal.setExpireDate(expireDate);
+			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS));
+			legal.getAudit().setCreatedAt(now);
+			legal.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			legal.getAudit().setUpdatedAt(now);
+			legal.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			LegalDAO.create(legal);
+
+			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
+			LegalDAO.create(legal);
 		}
 		if (UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME) == null) {
 			user2.setFirstName(ConstantsDAO.OWNER_USER_NAME);
@@ -329,9 +354,9 @@ public class CMSSeeds {
 			user2.setPassword(VirkadeEncryptor.hashEncode(ConstantsDAO.DEFAULT_OWNER_PASSWORD));
 			user2.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user2.setType(TypeDAO.fetchByCode(ConstantsDAO.ADMIN_CODE));
-			user2.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user2.getAudit().setCreatedAt(now);
 			user2.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-			user2.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			user2.getAudit().setUpdatedAt(now);
 			user2.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			UserDAO.createUpdate(user2, false);
 
@@ -340,21 +365,32 @@ public class CMSSeeds {
 			phone.setCountryCode(1);
 			phone.setNumber("4795445445");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
-			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			phone.getAudit().setUpdatedAt(now);
 			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
 			PhoneDAO.create(phone);
 
-			phone.setUser(user);
-			phone.setCountryCode(1);
+			phone.setUser(user2);
 			phone.setNumber("4792632216");
-			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
-			phone.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
-			phone.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			phone.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
 			PhoneDAO.create(phone);
+
+			Legal legal = new Legal();
+			legal.setActiveDate(now);
+			legal.setUser(user2);
+			legal.setAgree(true);
+			legal.setEnabled(true);
+			legal.setExpireDate(expireDate);
+			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS));
+			legal.getAudit().setCreatedAt(now);
+			legal.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			legal.getAudit().setUpdatedAt(now);
+			legal.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			LegalDAO.create(legal);
+
+			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
+			LegalDAO.create(legal);
 
 		}
 	}
@@ -384,13 +420,12 @@ public class CMSSeeds {
 
 	public static void createTestSession(int numberOfSessions) {
 		while (numberOfSessions-- > 0) {
-			List<PlaySession> allSessionsAvail = SessionDAO.getAvailableSessions(null, LocationDAO.getDefault(),
-					ActivityDAO.getDefault());
+			List<PlaySession> allSessionsAvail = SessionDAO.getAvailableSessions(null, LocationDAO.getDefault(), ActivityDAO.getDefault());
 			if (allSessionsAvail.size() == 0) {
 				LOG.warn("no availible sessions so nothing to create");
 				break;
 			}
-			long randomSelection = (Math.round(Math.random() * (allSessionsAvail.size()-1))) ;
+			long randomSelection = (Math.round(Math.random() * (allSessionsAvail.size() - 1)));
 			PlaySession session = allSessionsAvail.get((int) randomSelection);
 			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
 			session.setUser(user);

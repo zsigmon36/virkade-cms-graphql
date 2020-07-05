@@ -183,7 +183,7 @@ public class Activity {
 	 */
 	@Override
 	public String toString() {
-		return "Activity [activityId=" + activityId + ", name=" + name + ", description=" + description + ", webSite=" + webSite + ", supportContact=" + supportContact + ", costpm=" + costpm + ", sessions=" + sessions + ", creator=" + creator + ", enabled=" + enabled + ", audit=" + audit + "]";
+		return "Activity [activityId=" + activityId + ", name=" + name + ", description=" + description + ", webSite=" + webSite + ", supportContact=" + supportContact + ", costpm=" + costpm + ", creator=" + creator + ", enabled=" + enabled + ", audit=" + audit + "]";
 	}
 
 }

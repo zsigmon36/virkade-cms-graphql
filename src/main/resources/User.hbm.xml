@@ -99,6 +99,11 @@
 			<key column="USERID" />
 			<one-to-many class="com.virkade.cms.model.Phone" />
 		</bag>
+		
+		<bag name="legals" table="LEGAL" lazy="false" cascade="save-update">
+			<key column="USERID" />
+			<one-to-many class="com.virkade.cms.model.Legal" />
+		</bag>
 
 		<bag name="comments" table="COMMENT" lazy="false" cascade="save-update">
 			<key column="USERID" />

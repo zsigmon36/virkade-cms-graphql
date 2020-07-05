@@ -36,10 +36,9 @@ public class OperatingHoursDAO {
 		}
 		return opHours;
 	}
-	
-	
+
 	public static OperatingHours getTodayOperation(Location location) {
-		return getOperation(new Date(Calendar.getInstance().getTimeInMillis()),location);
+		return getOperation(new Date(Calendar.getInstance().getTimeInMillis()), location);
 	}
 
 	public static OperatingHours create(OperatingHours opHours) {

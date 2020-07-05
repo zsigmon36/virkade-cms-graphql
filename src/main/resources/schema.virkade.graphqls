@@ -21,6 +21,8 @@ type User {
 	lastLogin: Date
 	reServices: Boolean
 	canContact: Boolean
+	liableAgree: Boolean
+	tcAgree: Boolean
 	audit: Audit
 }
 
@@ -263,6 +265,7 @@ type Mutation {
   addUserAddress(inputAddress: InputAddress!): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
 }
 
 schema {
