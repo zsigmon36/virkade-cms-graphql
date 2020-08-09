@@ -19,6 +19,7 @@ public class PropsUtil {
 	public final static String DEFAULT_SESSION_MINIMUM_GAP = "default.session.minimum.gap";
 	public final static String DEFAULT_SESSION_BUFFER = "default.session.buffer";
 	public final static String PLAY_SESSION_SETUP_MIN = "session.setup.minutes";
+	public final static String CROSS_ORIGIN_HOSTS = "cross.origin.hosts";
 
 	private static int defaultClosingTimeHour = 0;
 	private static int defaultClosingTimeMin = 0;
@@ -26,6 +27,7 @@ public class PropsUtil {
 	private static int playSessionMinGap = 10;
 	private static int defaultSessionBuffer = 1;
 	private static int playSessionSetupMin = 5;
+	private static String crossOriginHosts = "http://localhost:80";
 	
 	static {
 		try {
@@ -46,12 +48,14 @@ public class PropsUtil {
 			String sessionMinGap = String.valueOf(props.get(DEFAULT_SESSION_MINIMUM_GAP));
 			String sessionBuffer = String.valueOf(props.get(DEFAULT_SESSION_BUFFER));
 			String sessionSetupMin = String.valueOf(props.get(PLAY_SESSION_SETUP_MIN));
+			String crossOriginHosts = String.valueOf(props.get(CROSS_ORIGIN_HOSTS));
 			PropsUtil.defaultClosingTimeHour = Integer.valueOf(closingParts[0]);
 			PropsUtil.defaultClosingTimeMin = Integer.valueOf(closingParts[1]);
 			PropsUtil.playSessionLength = Integer.valueOf(sessionLength);
 			PropsUtil.playSessionMinGap = Integer.valueOf(sessionMinGap);
 			PropsUtil.defaultSessionBuffer = Integer.valueOf(sessionBuffer);
 			PropsUtil.playSessionSetupMin = Integer.valueOf(sessionSetupMin);
+			PropsUtil.crossOriginHosts = String.valueOf(crossOriginHosts);
 		} catch (RuntimeException e) {
 			LOG.error("There was a problem seperating out the min time, session time, & closing hour/min, details may be inaccurate", e);
 		}
@@ -103,6 +107,10 @@ public class PropsUtil {
 
 	public static int getPlaySessionSetupMin() {
 		return playSessionSetupMin;
+	}
+
+	public static String getCrossOriginHosts() {
+		return crossOriginHosts;
 	}
 	
 
