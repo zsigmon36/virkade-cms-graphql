@@ -250,6 +250,7 @@ type Query {
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]
   getPhonesByUsername(username: String!): [Phone]
+  checkSession: Boolean
 }
 
 type Mutation {

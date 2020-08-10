@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
+import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Comment;
@@ -116,6 +118,15 @@ public class Query implements GraphQLRootResolver {
 		}
 		List<PlaySession> sessions = SessionDAO.getAllSessionsToday(location, activity);
 		return sessions;
+	}
+	
+	public boolean checkSession(DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curUser = context.getAuthUser();
+		if (curUser.getType().getTypeId() == TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE).getTypeId()) {
+			return false;
+		}
+		return true;
 	}
 
 
