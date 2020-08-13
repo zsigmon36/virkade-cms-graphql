@@ -244,8 +244,10 @@ type Query {
   getUserComments(username: String!): [Comment]
   getCountries: [Country]
   getAllStates: [State]
-  getAvailableSessions(dateRequested: Date, locationName: String, activityName: String): [PlaySession]
-  getPendingSessions(dateRequested: Date, locationName: String, activityName: String): [PlaySession]
+  getAllActivities: [Activity]
+  getAllLocations: [Location]
+  getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
+  getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]

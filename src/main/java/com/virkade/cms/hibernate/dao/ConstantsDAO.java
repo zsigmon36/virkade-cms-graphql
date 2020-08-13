@@ -8,6 +8,7 @@ public class ConstantsDAO {
 	public static final String TYPE_FIELD = "type";
 	public static final String NAME_FIELD = "name";
 	public static final String CODE_FIELD = "code";
+	public static final String ENABLED_FIELD = "enabled";
 	
 	//statusDAO
 	public static final String ACTIVE_CODE = "ACTV";
@@ -52,6 +53,7 @@ public class ConstantsDAO {
 	
 	//locationDAO
 	public static final String ORIGINAL_LOCATION_NAME = "VirKade Prime";
+	public static final String LOCATION_ID_FIELD = "locationId";
 	
 	//countryDAO
 	public static final String NAME_UNITEDSTATES = "United States";
@@ -74,6 +76,7 @@ public class ConstantsDAO {
 	
 	//activityDAO
 	public static final String DEFAULT_ACTIVITY_NAME = "Viveport";
+	public static final String ACTIVITY_ID_FIELD = "activityId";
 	
 	//operatingHoursDAO
 	public static final String START_AT_FIELD = "startAt";
@@ -87,5 +90,5 @@ public class ConstantsDAO {
 	public static final String ACTIVITY_FIELD = "activity";
 	public static final String ACTIVITYID_FIELD = "activityid";
 	public static final String LOCATIONID_FIELD = "locationid";
-
+	public static final String PAYED_FIELD = "payed";
 }

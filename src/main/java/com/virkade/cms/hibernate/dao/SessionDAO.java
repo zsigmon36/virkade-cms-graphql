@@ -53,15 +53,15 @@ public class SessionDAO {
 
 	}
 
-	public static List<PlaySession> getAllSessions(Location location, Activity activity) {
-		return getAllSessions(null, location, activity);
+	public static List<PlaySession> getAllSessions(Location location, Activity activity, Boolean payed) {
+		return getAllSessions(null, location, activity, payed);
 	}
 
-	public static List<PlaySession> getAllSessionsToday(Location location, Activity activity) {
-		return getAllSessions(new Timestamp(Calendar.getInstance().getTimeInMillis()), location, activity);
+	public static List<PlaySession> getAllSessionsToday(Location location, Activity activity, Boolean payed) {
+		return getAllSessions(new Timestamp(Calendar.getInstance().getTimeInMillis()), location, activity, payed);
 	}
 
-	public static List<PlaySession> getAllSessions(Timestamp dateRequested, Location location, Activity activity) {
+	public static List<PlaySession> getAllSessions(Timestamp dateRequested, Location location, Activity activity, Boolean payed) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		List<PlaySession> playSessions = new ArrayList<PlaySession>();
@@ -81,6 +81,9 @@ public class SessionDAO {
 				criteria.add(Restrictions.eq(ConstantsDAO.LOCATION_FIELD, location));
 				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, dateRequested, hiDate));
 				criteria.add(Restrictions.eq(ConstantsDAO.ACTIVITY_FIELD, activity));
+				if (payed != null) {
+					criteria.add(Restrictions.eq(ConstantsDAO.PAYED_FIELD, payed));
+				}
 			}
 			criteria.addOrder(Order.asc(ConstantsDAO.START_DATE_FIELD));
 			playSessions = criteria.list();
@@ -101,10 +104,10 @@ public class SessionDAO {
 		if (dateRequested == null) {
 			dateRequested = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			opHours = OperatingHoursDAO.getTodayOperation(location);
-			curSessions = getAllSessionsToday(location, activity);
+			curSessions = getAllSessionsToday(location, activity, null);
 		} else {
 			opHours = OperatingHoursDAO.getOperation(new Date(dateRequested.getTime()), location);
-			curSessions = getAllSessions(dateRequested, location, activity);
+			curSessions = getAllSessions(dateRequested, location, activity, null);
 		}
 		List<PlaySession> availableSessions = null;
 		try {
@@ -156,7 +159,7 @@ public class SessionDAO {
 	public static boolean deleteAll(Timestamp dateRequested, Location location, Activity activity) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
-		List<PlaySession> playSessions = getAllSessions(dateRequested, location, activity);
+		List<PlaySession> playSessions = getAllSessions(dateRequested, location, activity, null);
 		LOG.warn(String.format("%s play sessions will be deleted based on date requested:%s, location:%s, & activity:%s", playSessions.size(), (dateRequested == null ? "all" : dateRequested),
 				location.getName(), activity.getName()));
 		boolean results = false;

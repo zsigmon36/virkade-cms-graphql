@@ -1,5 +1,8 @@
 package com.virkade.cms.hibernate.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -25,6 +28,44 @@ public class ActivityDAO {
 			activity = (Activity) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get Game by name=" + name, he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+
+		return activity;
+	}
+	
+	public static Activity fetchById(Long id) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		Activity activity = new Activity();
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(Activity.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.ACTIVITY_ID_FIELD, id));
+			activity = (Activity) criteria.uniqueResult();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception get Game by id=" + id, he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+
+		return activity;
+	}
+	
+	public static List<Activity> fetchAll() {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		List<Activity> activity = new ArrayList<Activity>();
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(Activity.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.ENABLED_FIELD, true));
+			activity = criteria.list();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception get All activities", he);
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();
