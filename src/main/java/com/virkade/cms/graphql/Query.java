@@ -14,6 +14,7 @@ import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Comment;
 import com.virkade.cms.model.Country;
+import com.virkade.cms.model.InputAddress;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
@@ -132,6 +133,10 @@ public class Query implements GraphQLRootResolver {
 		}
 		List<PlaySession> sessions = SessionDAO.getAllSessionsToday(location, activity, payed);
 		return sessions;
+	}
+	
+	public List<User> searchUsers(String firstName, String lastName, String emailAddress, String username, InputAddress inputAddress){
+		return UserDAO.fetchAll();
 	}
 	
 	public boolean checkSession(DataFetchingEnvironment env) throws Exception {
