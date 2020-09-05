@@ -246,9 +246,10 @@ type Query {
   getAllStates: [State]
   getAllActivities: [Activity]
   getAllLocations: [Location]
+  getLocation(locationId: Long!): Location
   getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
-  searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress): [User]
+  searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
   getPhonesByUser(user: InputUser!): [Phone]

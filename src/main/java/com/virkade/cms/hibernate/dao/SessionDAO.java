@@ -142,7 +142,6 @@ public class SessionDAO {
 				Timestamp hiDate = new Timestamp(cal.getTimeInMillis());
 				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, loDate, hiDate));
 			}
-			criteria.addOrder(Order.asc(ConstantsDAO.START_DATE_FIELD));
 			criteria.add(Restrictions.eq(ConstantsDAO.USER_FIELD, user));
 			criteria.addOrder(Order.asc(ConstantsDAO.START_DATE_FIELD));
 			playSessions = criteria.list();

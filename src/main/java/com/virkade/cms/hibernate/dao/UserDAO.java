@@ -4,18 +4,25 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
+import com.virkade.cms.model.Address;
 import com.virkade.cms.model.User;
+import com.virkade.cms.model.search.UserSearchFilter;
 
 public class UserDAO {
 
 	private static final Logger LOG = Logger.getLogger(UserDAO.class);
-	
+
 	private UserDAO() {
 	}
 
@@ -57,7 +64,7 @@ public class UserDAO {
 
 		return user;
 	}
-	
+
 	public static User getByUsername(String username) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -67,7 +74,8 @@ public class UserDAO {
 			Criteria criteria = hs.createCriteria(User.class);
 			criteria.add(Restrictions.eq(ConstantsDAO.USER_NAME_FIELD, username));
 			user = (User) criteria.uniqueResult();
-			if (user == null) throw new HibernateException("No user found");
+			if (user == null)
+				throw new HibernateException("No user found");
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting user by username=" + username, he);
 		} finally {
@@ -79,8 +87,7 @@ public class UserDAO {
 	}
 
 	/**
-	 * @param user
-	 *            Pass in a user object to see if there is a match persisted the User requires at least a userName, userId, or emailAddress;
+	 * @param user Pass in a user object to see if there is a match persisted the User requires at least a userName, userId, or emailAddress;
 	 * @return
 	 */
 	public static User fetch(User user) {
@@ -139,6 +146,73 @@ public class UserDAO {
 			users = hs.createCriteria(User.class).list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting all users", he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return users;
+	}
+
+	public static List<User> searchUsers(UserSearchFilter userSearchFilter, int count, int offset) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		List<User> users = null;
+		List<Address> addresses= null;
+		try {
+			hs.beginTransaction();
+			
+			Criteria addressCriteria = hs.createCriteria(Address.class);
+			
+			//ProjectionList selects = Projections.projectionList();
+			//selects.add(Projections.property(ConstantsDAO.ADDRESS_ID));
+			//addressCriteria.setProjection(selects);
+			boolean executeQuery = false;
+			if (userSearchFilter.getStreet() != null) {
+				addressCriteria.add(Restrictions.ilike(ConstantsDAO.STREET_FIELD, userSearchFilter.getStreet(), MatchMode.ANYWHERE));
+				executeQuery = true;
+			}
+			if (userSearchFilter.getCity() != null) {
+				addressCriteria.add(Restrictions.ilike(ConstantsDAO.CITY_FIELD, userSearchFilter.getCity(), MatchMode.ANYWHERE));
+				executeQuery = true;
+			}
+			if (userSearchFilter.getState() != null) {
+				addressCriteria.add(Restrictions.eq(ConstantsDAO.STATE_FIELD, userSearchFilter.getState()));
+				executeQuery = true;
+			}
+			if (userSearchFilter.getPostalCode() != null) {
+				addressCriteria.add(Restrictions.eq(ConstantsDAO.ZIP_FIELD, userSearchFilter.getPostalCode()));
+				executeQuery = true;
+			}
+			if (executeQuery) {
+				addresses = addressCriteria.list();
+			}	
+			
+			Criteria userCriteria = hs.createCriteria(User.class);
+			
+			userCriteria.setFirstResult(offset);
+			userCriteria.setMaxResults(count);
+
+			userCriteria.addOrder(Order.asc(ConstantsDAO.LAST_NAME_FIELD));
+			
+			if (userSearchFilter.getFistName() != null) {
+				userCriteria.add(Restrictions.ilike(ConstantsDAO.FIRST_NAME_FIELD, userSearchFilter.getFistName(), MatchMode.ANYWHERE));
+			}
+			if (userSearchFilter.getLastName() != null) {
+				userCriteria.add(Restrictions.ilike(ConstantsDAO.LAST_NAME_FIELD, userSearchFilter.getLastName(), MatchMode.ANYWHERE));
+			}
+			if (userSearchFilter.getEmailAddress() != null) {
+				userCriteria.add(Restrictions.ilike(ConstantsDAO.EMAIL_ADDRESS_FIELD, userSearchFilter.getEmailAddress(), MatchMode.ANYWHERE));
+			}
+			if (userSearchFilter.getUsername() != null) {
+				userCriteria.add(Restrictions.ilike(ConstantsDAO.USER_NAME_FIELD, userSearchFilter.getUsername(), MatchMode.ANYWHERE));
+			}
+			if (addresses != null) {
+				userCriteria.add(Restrictions.in(ConstantsDAO.ADDRESS, addresses));
+			}
+				
+			users = userCriteria.list();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting users with search filters", he);
 		} finally {
 			hs.getTransaction().commit();
 			hs.close();

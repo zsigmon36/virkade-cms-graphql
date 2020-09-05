@@ -1,9 +1,12 @@
 package com.virkade.cms.graphql;
 
+import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
 import java.util.List;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.virkade.cms.auth.AuthData;
+import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
@@ -23,6 +26,7 @@ import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.State;
 import com.virkade.cms.model.Type;
 import com.virkade.cms.model.User;
+import com.virkade.cms.model.search.UserSearchFilter;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -91,6 +95,13 @@ public class Query implements GraphQLRootResolver {
 		return location;
 	}
 	
+	public Location getLocation(long locationId, DataFetchingEnvironment env) {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Location location = LocationDAO.fetchById(locationId);
+		return location;
+	}
+	
 	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, Long locationId, Long activityId, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();
@@ -135,8 +146,15 @@ public class Query implements GraphQLRootResolver {
 		return sessions;
 	}
 	
-	public List<User> searchUsers(String firstName, String lastName, String emailAddress, String username, InputAddress inputAddress){
-		return UserDAO.fetchAll();
+	public List<User> searchUsers(String firstName, String lastName, String emailAddress, String username, InputAddress inputAddress, int count, int offset, DataFetchingEnvironment env) throws AccessDeniedException{
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+		//this object checks nulls and empty
+		UserSearchFilter userSearchFilter = new UserSearchFilter(firstName, lastName, emailAddress, username, 
+				inputAddress.getStreet(), inputAddress.getStateId(), inputAddress.getCity(), inputAddress.getPostalCode());
+		
+		return UserDAO.searchUsers(userSearchFilter, count, offset);
 	}
 	
 	public boolean checkSession(DataFetchingEnvironment env) throws Exception {

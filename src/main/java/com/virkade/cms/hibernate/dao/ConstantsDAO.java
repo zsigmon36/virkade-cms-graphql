@@ -17,6 +17,8 @@ public class ConstantsDAO {
 	public static final String INACTIVE_NAME = "InActive";
 	
 	//userDAO
+	public static final String FIRST_NAME_FIELD = "firstName";
+	public static final String LAST_NAME_FIELD = "lastName";
 	public static final String USER_FIELD = "user";
 	public static final String USER_NAME_FIELD = "username";
 	public static final String USERID_FIELD = "userId";
@@ -68,6 +70,8 @@ public class ConstantsDAO {
 	public static final String UNIT_FIELD = "unit";
 	public static final String STATE_FIELD = "state";
 	public static final String ZIP_FIELD = "postalCode";
+	public static final String ADDRESS_ID = "addressId";
+	public static final String ADDRESS = "address";
 	
 	//phoneDAO
 	public static final String PHONE_COUNTRY_FIELD = "countryCode";
@@ -91,4 +95,5 @@ public class ConstantsDAO {
 	public static final String ACTIVITYID_FIELD = "activityid";
 	public static final String LOCATIONID_FIELD = "locationid";
 	public static final String PAYED_FIELD = "payed";
+
 }
