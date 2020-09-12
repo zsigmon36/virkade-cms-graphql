@@ -34,7 +34,7 @@ public class LocationDAO {
 		}
 		return location;
 	}
-	
+
 	public static Location fetchById(Long id) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -52,7 +52,7 @@ public class LocationDAO {
 		}
 		return location;
 	}
-	
+
 	public static List<Location> fetchAll() {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
@@ -86,8 +86,31 @@ public class LocationDAO {
 		return location;
 	}
 
+	public static Location update(Location location) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		try {
+			hs.beginTransaction();
+			hs.update(location);
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception updating location=" + location.toString(), he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return location;
+	}
+
 	public static Location getDefault() {
 		return fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
+	}
+
+	public static Location upsert(Location location) {
+		if (location.getLocationId() <= 0) {
+			return create(location);
+		} else {
+			return update(location);
+		}
 	}
 
 }

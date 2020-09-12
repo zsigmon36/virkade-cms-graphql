@@ -282,7 +282,7 @@ public class CMSSeeds {
 			location.setTaxRate(0.095f);
 			location.setDescription("the first VirKade");
 			location.setManager("Zachary Sigmon");
-			location.setPhoneNum(4792632216L);
+			location.setPhoneNum("4792632216");
 			location.setEnabled(Boolean.TRUE);
 			location.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			location.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);

@@ -22,6 +22,8 @@ public class VirkadeModel {
 			return Legal.convertInput((InputLegal) objToConvert);
 		} else if (className.equalsIgnoreCase(InputPlaySession.class.getName())) {
 			return PlaySession.convertInput((InputPlaySession) objToConvert);
+		} else if (className.equalsIgnoreCase(InputLocation.class.getName())) {
+			return Location.convertInput((InputLocation) objToConvert);
 		}
 		return null;
 	}

@@ -37,6 +37,7 @@ import com.virkade.cms.model.Comment;
 import com.virkade.cms.model.InputAddress;
 import com.virkade.cms.model.InputComment;
 import com.virkade.cms.model.InputLegal;
+import com.virkade.cms.model.InputLocation;
 import com.virkade.cms.model.InputPhone;
 import com.virkade.cms.model.InputPlaySession;
 import com.virkade.cms.model.InputUser;
@@ -121,10 +122,10 @@ public class Mutation implements GraphQLRootResolver {
 		user.setWeight(0);
 		user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 		user.setType(TypeDAO.getByCode(ConstantsDAO.PROSPECT_CODE));
-		
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 		user.setAudit(updatedAuditInfo);
-		
+
 		UserDAO.createUpdate(user, false);
 
 		return user;
@@ -210,15 +211,15 @@ public class Mutation implements GraphQLRootResolver {
 	}
 
 	public AuthToken signIn(AuthData authData) throws Exception {
-		 AuthToken authToken = ClientSessionTracker.clientSignIn(authData);
-		 if (authToken != null && authToken.getToken().length() > 0) {
-			 User user = UserDAO.getByUsername(authToken.getUsername());
-			 user.setLastLogin(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			 UserDAO.createUpdate(user, true);
-		 }
-		 return authToken;
+		AuthToken authToken = ClientSessionTracker.clientSignIn(authData);
+		if (authToken != null && authToken.getToken().length() > 0) {
+			User user = UserDAO.getByUsername(authToken.getUsername());
+			user.setLastLogin(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			UserDAO.createUpdate(user, true);
+		}
+		return authToken;
 	}
-	
+
 	public boolean recoverySignIn(AuthData authData) throws Exception {
 		boolean results = false;
 		AuthToken authToken = ClientSessionTracker.recoverySignIn(authData);
@@ -246,9 +247,9 @@ public class Mutation implements GraphQLRootResolver {
 		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("User cannot be modified by the requesting user");
 		}
-		
+
 		Phone convertedInputPhone = (Phone) VirkadeModel.convertObj(phoneInput.getClass().getName(), phoneInput);
-		
+
 		List<String> missingData = new ArrayList<String>();
 		if (phoneInput.getTypeCode() == null || phoneInput.getTypeCode().equalsIgnoreCase("")) {
 			missingData.add("Type Code");
@@ -259,10 +260,10 @@ public class Mutation implements GraphQLRootResolver {
 		if (!missingData.isEmpty()) {
 			throw new Exception("Creation of phone not allowed with the following missing data [" + missingData.toString() + "]");
 		}
-		
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 		convertedInputPhone.setAudit(updatedAuditInfo);
-		
+
 		Phone phone = new Phone();
 		User user = UserDAO.fetch(userToUpdate);
 		convertedInputPhone.setUser(user);
@@ -285,14 +286,14 @@ public class Mutation implements GraphQLRootResolver {
 			Matcher matcher = regex.matcher(inputAddress.getPostalCode());
 			if (!matcher.matches()) {
 				throw new Exception("Postal code does not match expected pattern of 55555 or 55555-5555");
-			}		
+			}
 		}
-		
+
 		Address convertedInputAddress = (Address) VirkadeModel.convertObj(inputAddress.getClass().getName(), inputAddress);
-		
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 		convertedInputAddress.setAudit(updatedAuditInfo);
-		
+
 		Address address = AddressDAO.fetch(convertedInputAddress);
 		if (address == null) {
 			address = AddressDAO.create(convertedInputAddress);
@@ -314,10 +315,10 @@ public class Mutation implements GraphQLRootResolver {
 		}
 
 		Comment convertedInputComment = (Comment) Comment.convertObj(inputComment.getClass().getName(), inputComment);
-		
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 		convertedInputComment.setAudit(updatedAuditInfo);
-		
+
 		Comment comment = CommentDAO.fetch(convertedInputComment);
 		if (comment == null) {
 			comment = CommentDAO.create(convertedInputComment);
@@ -332,9 +333,9 @@ public class Mutation implements GraphQLRootResolver {
 		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Legal document association cannot be modified by the requesting user");
 		}
-		
+
 		Legal convertedInputLegal = (Legal) VirkadeModel.convertObj(InputLegal.class.getName(), inputLegal);
-		
+
 		Legal legal = LegalDAO.fetch(convertedInputLegal);
 		if (legal == null) {
 			Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
@@ -374,14 +375,14 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		return false;
 	}
-	
+
 	public PlaySession addUserSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
-		
+
 		List<String> missingData = new ArrayList<String>();
 		PlaySession convertedInputPlaySession = (PlaySession) VirkadeModel.convertObj(inputPlaySession.getClass().getName(), inputPlaySession);
-	
+
 		if (convertedInputPlaySession.getStartDate() == null) {
 			missingData.add("StartDate");
 		}
@@ -400,19 +401,20 @@ public class Mutation implements GraphQLRootResolver {
 		if (!missingData.isEmpty()) {
 			throw new Exception("Creation of play session for user not allowed with the following missing data [" + missingData.toString() + "]");
 		}
-		
+
 		if (convertedInputPlaySession.getUser() == null || !AuthData.checkPermission(env, convertedInputPlaySession.getUser(), PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Session cannot be created by the requesting user");
 		}
-		
+
 		Audit audit = VirkadeModel.addAuditToModel(curSessionUser, convertedInputPlaySession.getAudit());
 		convertedInputPlaySession.setAudit(audit);
 
 		PlaySession playSession = SessionDAO.create(convertedInputPlaySession);
-		
+
 		return playSession;
 	}
-	public boolean deleteAllSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) throws Exception{
+
+	public boolean deleteAllSessions(Timestamp dateRequested, String locationName, String activityName, DataFetchingEnvironment env) throws Exception {
 		boolean results = false;
 		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
 			throw new AccessDeniedException("You must be logged in as admin to perform this function");
@@ -434,6 +436,71 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		results = SessionDAO.deleteAll(dateRequested, location, activity);
 		return results;
+	}
+
+	public Location addUpdateLocation(InputLocation inputLocation, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
+		List<String> missingData = new ArrayList<String>();
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+		if (inputLocation.getPostalCode() != null) {
+			Pattern regex = Pattern.compile("^[0-9]{5}(?:-[0-9]{4})?$");
+			Matcher matcher = regex.matcher(inputLocation.getPostalCode());
+			if (!matcher.matches()) {
+				missingData.add("postal code does not match expected pattern of 55555 or 55555-5555");
+			}
+		} else {
+			missingData.add("postal code cannot be empty");
+		}
+		if (inputLocation.getName() == null || inputLocation.getName() == "" || inputLocation.getName().length() < 6) {
+			missingData.add("name cannot be empty and must be at least 6 characters");
+		}
+		if (inputLocation.getDescription() == null || inputLocation.getDescription() == "" || inputLocation.getDescription().length() < 15) {
+			missingData.add("description cannot be empty and must be at least 15 characters");
+
+		}
+		if (inputLocation.getCity() == null || inputLocation.getCity() == "") {
+			missingData.add("city cannot be empty");
+		}
+		if (inputLocation.getStreet() == null || inputLocation.getStreet() == "") {
+			missingData.add("street cannot be empty");
+		}
+		if (inputLocation.getPhoneNum() == null || inputLocation.getPhoneNum() == "" || inputLocation.getPhoneNum().length() < 7) {
+			missingData.add("phone number needs to be a valid mobile phone number");
+		}
+		if (inputLocation.getManager() == null || inputLocation.getManager() == "") {
+			missingData.add("manager cannot be empty");
+		}
+		if (inputLocation.getTaxRate() <= 0) {
+			missingData.add("tax rate cannot be lesthan or equal to 0");
+		}
+		if (inputLocation.getStateId() <= 0) {
+			missingData.add("must be a valid state id");
+		}
+
+		if (!missingData.isEmpty()) {
+			throw new Exception("location creation or update not allowed with the following data issues [" + missingData.toString() + "]");
+		}
+
+		Location existLocation = LocationDAO.fetchById(inputLocation.getLocationId());
+		if (existLocation == null) {
+			existLocation = new Location();
+		}
+		Location location = (Location) VirkadeModel.convertObj(inputLocation.getClass().getName(), inputLocation);
+		
+		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existLocation.getAudit());
+		location.setAudit(auditInfo);
+
+		if (location.getAddress().getAddressId() <= 0) {
+			Address address = location.getAddress();
+			Audit addressAudit = VirkadeModel.addAuditToModel(curSessionUser, address.getAudit());
+			address.setAudit(addressAudit);
+			location.setAddress(AddressDAO.create(address));
+		}
+		
+		return LocationDAO.upsert(location);
 	}
 
 }

@@ -151,7 +151,7 @@ type Location {
 	taxRate: Float
 	name: String
 	description: String
-	phoneNum : Int
+	phoneNum : String
 	manager: String
 	enabled: Boolean
 	audit: Audit
@@ -174,6 +174,21 @@ input InputAddress {
 	stateId: Long
 	stateCode: String
 	typeCode: String
+	street: String
+	unit: String
+	apt: String
+	city: String
+	postalCode: String
+}
+
+input InputLocation {
+	locationId: Long
+	taxRate: Float
+	name: String
+	description: String
+	phoneNum : String
+	manager: String
+	stateId: Long
 	street: String
 	unit: String
 	apt: String
@@ -271,6 +286,7 @@ type Mutation {
   addUserLegalDoc(inputLegal: InputLegal!): Legal
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
   deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
+  addUpdateLocation(inputLocation: InputLocation!): Location
 }
 
 schema {

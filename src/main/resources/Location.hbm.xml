@@ -22,7 +22,7 @@
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
-		<property name="phoneNum" type="long">
+		<property name="phoneNum" type="java.lang.String">
 			<column name="PHONENUM" />
 		</property>
 		<property name="manager" type="java.lang.String">
