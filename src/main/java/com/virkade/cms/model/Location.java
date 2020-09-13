@@ -171,7 +171,7 @@ public class Location extends VirkadeModel {
 
 		location.setAddress(address);
 		location.setDescription(inputLocation.getDescription());
-		location.setEnabled(true);
+		location.setEnabled(inputLocation.isEnabled());
 		location.setLocationId(inputLocation.getLocationId());
 		location.setManager(inputLocation.getManager());
 		location.setName(inputLocation.getName());

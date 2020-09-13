@@ -3,21 +3,29 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
-	<class name="com.virkade.cms.model.OperatingHours" table="OPERATING_HOURS">
+	<class name="com.virkade.cms.model.OperatingHours"
+		table="OPERATING_HOURS">
 
-		<id name="operatingDate" type="java.sql.Date">
-			<column name="OPERATING_DATE" not-null="true" index="IDX_OPPDTE_ID, IDX_OPPDTE_LOC"/>
-		</id>
-		<property name="startAt" type="java.sql.Timestamp" index="IDX_STRTAT, IDX_STRTAT_ENDAT">
+		<composite-id>
+			<key-property name="operatingDate" type="java.sql.Date">
+				<column name="OPERATING_DATE" not-null="true"
+					index="IDX_OPPDTE_ID, IDX_OPPDTE_LOC" />
+			</key-property>
+			<key-many-to-one name="location"
+				class="com.virkade.cms.model.Location">
+				<column name="LOCATIONID"
+					index="IDX_STRTAT_ENDAT, IDX_ENDAT, IDX_STRTAT, IDX_OPPDTE_LOC" />
+			</key-many-to-one>
+		</composite-id>
+
+		<property name="startAt" type="java.sql.Timestamp"
+			index="IDX_STRTAT, IDX_STRTAT_ENDAT">
 			<column name="STARTAT" not-null="true" />
 		</property>
-		<property name="endAt" type="java.sql.Timestamp" index="IDX_ENDAT, IDX_STRTAT_ENDAT">
+		<property name="endAt" type="java.sql.Timestamp"
+			index="IDX_ENDAT, IDX_STRTAT_ENDAT">
 			<column name="ENDAT" not-null="true" />
 		</property>
-
-		<many-to-one name="location" class="com.virkade.cms.model.Location" not-null="true" fetch="join" index="IDX_STRTAT_ENDAT, IDX_ENDAT, IDX_STRTAT, IDX_OPPDTE_LOC">
-			<column name="LOCATIONID" />
-		</many-to-one>
 
 		<component name="audit">
 			<property name="createdAt" type="java.sql.Timestamp">

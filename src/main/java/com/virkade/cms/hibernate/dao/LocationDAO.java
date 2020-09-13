@@ -17,13 +17,16 @@ public class LocationDAO {
 
 	private static final Logger LOG = Logger.getLogger(LocationDAO.class);
 
-	public static Location fetchByName(String name) {
+	public static Location fetchByName(String name, Boolean enabled) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		Location location = new Location();
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Location.class);
+			if (enabled != null) {
+				criteria.add(Restrictions.eq(ConstantsDAO.ENABLED_FIELD, enabled.booleanValue()));
+			}
 			criteria.add(Restrictions.eq(ConstantsDAO.NAME_FIELD, name));
 			location = (Location) criteria.uniqueResult();
 		} catch (HibernateException he) {
@@ -102,7 +105,7 @@ public class LocationDAO {
 	}
 
 	public static Location getDefault() {
-		return fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
+		return fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME, true);
 	}
 
 	public static Location upsert(Location location) {

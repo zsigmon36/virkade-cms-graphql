@@ -194,6 +194,19 @@ input InputLocation {
 	apt: String
 	city: String
 	postalCode: String
+	enabled: Boolean
+}
+
+input InputActivity {
+	activityId: Long
+	name: String
+	description: String
+	webSite: String
+	supportContact : String
+	creator: String
+	costpm: Float
+	setupMin: Int
+	enabled: Boolean
 }
 
 type Region {
@@ -262,6 +275,7 @@ type Query {
   getAllActivities: [Activity]
   getAllLocations: [Location]
   getLocation(locationId: Long!): Location
+  getActivity(activityId: Long!): Activity
   getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
@@ -287,6 +301,7 @@ type Mutation {
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
   deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
   addUpdateLocation(inputLocation: InputLocation!): Location
+  addUpdateActivity(inputActivity: InputActivity!): Activity
 }
 
 schema {

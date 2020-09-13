@@ -12,6 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.Activity;
+import com.virkade.cms.model.Location;
 
 public class ActivityDAO {
 
@@ -88,9 +89,32 @@ public class ActivityDAO {
 		}
 		return activity;
 	}
+	
+	public static Activity update(Activity activity) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		try {
+			hs.beginTransaction();
+			hs.update(activity);
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception updating activity=" + activity.toString(), he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return activity;
+	}
 
 	public static Activity getDefault() {
 		return fetchByName(ConstantsDAO.DEFAULT_ACTIVITY_NAME);
+	}
+
+	public static Activity upsert(Activity activity) {
+		if (activity.getActivityId() <= 0) {
+			return create(activity);
+		} else {
+			return update(activity);
+		}
 	}
 
 }

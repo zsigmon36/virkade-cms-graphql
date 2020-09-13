@@ -194,7 +194,7 @@ public class PlaySession extends VirkadeModel{
 		session.setActivity(activity);
 		session.setEndDate(inputPlaySession.getEndDate());
 		session.setStartDate(inputPlaySession.getStartDate());
-		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName()));
+		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName(), true));
 		session.setPayed(inputPlaySession.isPayed());
 		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));
 		return session;

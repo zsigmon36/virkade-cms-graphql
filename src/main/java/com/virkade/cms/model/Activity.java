@@ -2,7 +2,12 @@ package com.virkade.cms.model;
 
 import java.util.List;
 
-public class Activity {
+import com.virkade.cms.hibernate.dao.AddressDAO;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
+import com.virkade.cms.hibernate.dao.StateDAO;
+import com.virkade.cms.hibernate.dao.TypeDAO;
+
+public class Activity extends VirkadeModel {
 	private long activityId;
 	private String name;
 	private String description;
@@ -184,6 +189,20 @@ public class Activity {
 	@Override
 	public String toString() {
 		return "Activity [activityId=" + activityId + ", name=" + name + ", description=" + description + ", webSite=" + webSite + ", supportContact=" + supportContact + ", costpm=" + costpm + ", creator=" + creator + ", enabled=" + enabled + ", audit=" + audit + "]";
+	}
+
+	static Activity convertInput(InputActivity inputActivity) {
+		Activity activity = new Activity();
+		activity.setActivityId(inputActivity.getActivityId());
+		activity.setCostpm(inputActivity.getCostpm()); 
+		activity.setCreator(inputActivity.getCreator()); 
+		activity.setDescription(inputActivity.getDescription());
+		activity.setEnabled(inputActivity.isEnabled());  
+		activity.setName(inputActivity.getName());  
+		activity.setSetupMin(inputActivity.getSetupMin()); 
+		activity.setSupportContact(inputActivity.getSupportContact());
+		activity.setWebSite(inputActivity.getWebSite());
+		return activity;
 	}
 
 }

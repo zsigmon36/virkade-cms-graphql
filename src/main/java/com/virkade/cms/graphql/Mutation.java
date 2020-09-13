@@ -34,6 +34,7 @@ import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
 import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Comment;
+import com.virkade.cms.model.InputActivity;
 import com.virkade.cms.model.InputAddress;
 import com.virkade.cms.model.InputComment;
 import com.virkade.cms.model.InputLegal;
@@ -429,7 +430,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (locationName == null || locationName == "") {
 			location = LocationDAO.getDefault();
 		} else {
-			location = LocationDAO.fetchByName(locationName);
+			location = LocationDAO.fetchByName(locationName, true);
 		}
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
@@ -474,7 +475,7 @@ public class Mutation implements GraphQLRootResolver {
 			missingData.add("manager cannot be empty");
 		}
 		if (inputLocation.getTaxRate() <= 0) {
-			missingData.add("tax rate cannot be lesthan or equal to 0");
+			missingData.add("tax rate cannot be less than or equal to 0");
 		}
 		if (inputLocation.getStateId() <= 0) {
 			missingData.add("must be a valid state id");
@@ -502,5 +503,50 @@ public class Mutation implements GraphQLRootResolver {
 		
 		return LocationDAO.upsert(location);
 	}
+	public Activity addUpdateActivity(InputActivity inputActivity, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
+		List<String> missingData = new ArrayList<String>();
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+		if (inputActivity.getName() == null || inputActivity.getName() == "" || inputActivity.getName().length() < 6) {
+			missingData.add("name cannot be empty and must be at least 6 characters");
+		}
+		if (inputActivity.getDescription() == null || inputActivity.getDescription() == "" || inputActivity.getDescription().length() < 15) {
+			missingData.add("description cannot be empty and must be at least 15 characters");
+		}
+		if (inputActivity.getCostpm() <= 0) {
+			missingData.add("cost per min cannot be less than or equal to 0");
+		}
+		if (inputActivity.getSetupMin() <= 0) {
+			missingData.add("setup minutes cannot be less than or equal to 0");
+		}
+		if (inputActivity.getSupportContact() == null || inputActivity.getSupportContact() == "") {
+			missingData.add("support contact cannot be empty");
+		}
+		if (inputActivity.getWebSite() == null || inputActivity.getWebSite() == "") {
+			missingData.add("website cannot be empty");
+		}
+		if (inputActivity.getCreator() == null || inputActivity.getCreator() == "") {
+			missingData.add("creator cannot be empty");
+		}
+
+		if (!missingData.isEmpty()) {
+			throw new Exception("activity creation or update not allowed with the following data issues [" + missingData.toString() + "]");
+		}
+
+		Activity existActivity = ActivityDAO.fetchById(inputActivity.getActivityId());
+		if (existActivity == null) {
+			existActivity = new Activity();
+		}
+		Activity activity = (Activity) VirkadeModel.convertObj(inputActivity.getClass().getName(), inputActivity);
+		
+		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existActivity.getAudit());
+		activity.setAudit(auditInfo);
+		
+		return ActivityDAO.upsert(activity);
+	}
+
 
 }

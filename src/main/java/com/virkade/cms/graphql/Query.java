@@ -102,6 +102,13 @@ public class Query implements GraphQLRootResolver {
 		return location;
 	}
 	
+	public Activity getActivity(long activityId, DataFetchingEnvironment env) {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Activity activity = ActivityDAO.fetchById(activityId);
+		return activity;
+	}
+	
 	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, Long locationId, Long activityId, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();

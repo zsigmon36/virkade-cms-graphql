@@ -24,7 +24,7 @@ public class ConstantsDAO {
 	public static final String USERID_FIELD = "userId";
 	public static final String EMAIL_ADDRESS_FIELD = "emailAddress";
 	public static final String GUEST_USER_NAME = "guest";
-	public static final String OWNER_USER_NAME = "Virkade Experience";
+	public static final String OWNER_USER_NAME = "VirkadeExperience";
 	public static final String GUEST_EMAIL_ADDRESS = "virkadeexperience@gmail.com";
 	public static final String DEFAULT_OWNER_PASSWORD = "Reid.Zac36";
 

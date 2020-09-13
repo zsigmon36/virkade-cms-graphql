@@ -275,7 +275,7 @@ public class CMSSeeds {
 	}
 
 	public static void createDefaultLocation() {
-		if (LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME) == null) {
+		if (LocationDAO.fetchByName(ConstantsDAO.ORIGINAL_LOCATION_NAME, true) == null) {
 			Location location = new Location();
 			location.setName(ConstantsDAO.ORIGINAL_LOCATION_NAME);
 			location.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
