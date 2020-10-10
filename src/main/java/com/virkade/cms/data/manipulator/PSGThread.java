@@ -11,6 +11,13 @@ import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Location;
 import com.virkade.cms.model.PlaySession;
 
+
+/**
+ * @author sigmon
+ * 
+ * Desc: Play session generator thread, 
+ * 	this thread is used to provide the available session for a given gap 
+ */
 public class PSGThread implements Runnable {
 
 	private static final Logger LOG = Logger.getLogger(PSGThread.class);

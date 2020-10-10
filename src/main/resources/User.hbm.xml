@@ -90,7 +90,7 @@
 			</property>
 		</component>
 
-		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update" order-by="startDate">
 			<key column="USERID" />
 			<one-to-many class="com.virkade.cms.model.PlaySession" />
 		</bag>
