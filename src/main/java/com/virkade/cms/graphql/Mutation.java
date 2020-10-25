@@ -7,6 +7,7 @@ import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +47,7 @@ import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
+import com.virkade.cms.model.Type;
 import com.virkade.cms.model.User;
 import com.virkade.cms.model.VirkadeModel;
 
@@ -147,7 +149,7 @@ public class Mutation implements GraphQLRootResolver {
 
 		User convertedInputUser = (User) VirkadeModel.convertObj(inputUser.getClass().getName(), inputUser);
 
-		if (convertedInputUser.getUsername() != null) {
+		if (convertedInputUser.getUsername() != null && convertedInputUser.getUsername().length() > 5) {
 			userToUpdate.setUsername(convertedInputUser.getUsername());
 		}
 		if (convertedInputUser.getAddress() != null) {
@@ -177,13 +179,13 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.getLastName() != null) {
 			userToUpdate.setLastName(convertedInputUser.getLastName());
 		}
-		if (convertedInputUser.getPassword() != null) {
+		if (convertedInputUser.getPassword() != null && convertedInputUser.getPassword().length() > 7) {
 			userToUpdate.setPassword(VirkadeEncryptor.hashEncode(convertedInputUser.getPassword()));
 		}
 		if (convertedInputUser.getSecurityQuestion() != null) {
 			userToUpdate.setSecurityQuestion(convertedInputUser.getSecurityQuestion());
 		}
-		if (convertedInputUser.getSecurityAnswer() != null) {
+		if (convertedInputUser.getSecurityAnswer() != null && !convertedInputUser.getSecurityAnswer().equals("")) {
 			userToUpdate.setSecurityAnswer(VirkadeEncryptor.hashEncode(convertedInputUser.getSecurityAnswer()));
 		}
 		if (convertedInputUser.getStatus() != null) {
@@ -204,7 +206,64 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.isPlayedBefore() != null) {
 			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
 		}
-
+		
+		boolean refreshLegals = false;
+		if (inputUser.isTcAgree() != userToUpdate.isTcAgree()) {
+			Calendar cal = Calendar.getInstance();
+			Timestamp now = new Timestamp(cal.getTimeInMillis());
+			
+			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR)+1));
+			Timestamp exp = new Timestamp(cal.getTimeInMillis());
+			
+			if (inputUser.isTcAgree()) {
+				InputLegal newLegal = new InputLegal();
+				newLegal.setActiveDate(now);
+				newLegal.setAgree(true);
+				newLegal.setEnabled(true);
+				newLegal.setExpireDate(exp);
+				newLegal.setTypeCode(ConstantsDAO.TERMS_CONDITIONS);
+				newLegal.setUsername(userToUpdate.getUsername());
+				addUserLegalDoc(newLegal, env);
+			} else {
+				List<Legal> tcLegal = userToUpdate.getActiveTCLegal();
+				for (Legal curLegal : tcLegal) {
+					curLegal.setAgree(inputUser.isTcAgree());
+					LegalDAO.update(curLegal);
+				}
+			}
+			refreshLegals = true;
+		}
+		
+		if (inputUser.isLiableAgree() != userToUpdate.isLiableAgree()) {
+			Calendar cal = Calendar.getInstance();
+			Timestamp now = new Timestamp(cal.getTimeInMillis());
+			
+			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR)+1));
+			Timestamp exp = new Timestamp(cal.getTimeInMillis());
+			
+			if (inputUser.isLiableAgree()) {
+				InputLegal newLegal = new InputLegal();
+				newLegal.setActiveDate(now);
+				newLegal.setAgree(true);
+				newLegal.setEnabled(true);
+				newLegal.setExpireDate(exp);
+				newLegal.setTypeCode(ConstantsDAO.LIMITED_LIABLE);
+				newLegal.setUsername(userToUpdate.getUsername());
+				addUserLegalDoc(newLegal, env);
+			} else {
+				List<Legal> liabLegal = userToUpdate.getActiveLiabLegal();
+				for (Legal curLegal : liabLegal) {
+					curLegal.setAgree(inputUser.isLiableAgree());
+					LegalDAO.update(curLegal);
+				}
+			}
+			refreshLegals = true;
+			
+		}
+		if (refreshLegals) {
+			userToUpdate.setLegals(UserDAO.fetchByUsername(convertedInputUser.getUsername()).getLegals());
+		}
+		
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, userToUpdate.getAudit());
 		userToUpdate.setAudit(updatedAuditInfo);
 
@@ -220,7 +279,32 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		return authToken;
 	}
+	
+	public User updateUserType(long userId, String typeCode, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
 
+		User userToUpdate = new User();
+		userToUpdate.setUserId(userId);
+		userToUpdate = UserDAO.fetch(userToUpdate);
+
+		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("User cannot be modified by the requesting user");
+		}
+
+		if (typeCode != null) {
+			Type type = TypeDAO.getByCode(typeCode);
+			userToUpdate.setType(type);
+		} else {
+			throw new Exception("User type to update is not valid");
+		}
+	
+		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, userToUpdate.getAudit());
+		userToUpdate.setAudit(updatedAuditInfo);
+
+		return UserDAO.createUpdate(userToUpdate, true);
+	}
+	
 	public boolean recoverySignIn(AuthData authData) throws Exception {
 		boolean results = false;
 		AuthToken authToken = ClientSessionTracker.recoverySignIn(authData);
@@ -276,13 +360,13 @@ public class Mutation implements GraphQLRootResolver {
 
 	}
 
-	public Address addUserAddress(InputAddress inputAddress, DataFetchingEnvironment env) throws Exception {
+	public Address addUserAddress(InputAddress inputAddress, long userId,  DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
 		if (!AuthData.checkPermission(env, curSessionUser, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Comment cannot be added by the requesting user");
 		}
-		if (inputAddress.getPostalCode() != null) {
+		if (inputAddress.getPostalCode() != null && inputAddress.getPostalCode().length() > 0) {
 			Pattern regex = Pattern.compile("^[0-9]{5}(?:-[0-9]{4})?$");
 			Matcher matcher = regex.matcher(inputAddress.getPostalCode());
 			if (!matcher.matches()) {
@@ -301,15 +385,24 @@ public class Mutation implements GraphQLRootResolver {
 		} else {
 			LOG.warn(String.format("Address was found, assigning user: %s to address: %s ", curSessionUser.getUsername(), address.getAddressId()));
 		}
-		User user = UserDAO.fetch(curSessionUser);
-		user.setAddress(address);
-		UserDAO.createUpdate(user, true);
+		User userToUpdate = new User();
+		if (userId == 0) {
+			userToUpdate = curSessionUser;
+		} else {
+			userToUpdate.setUserId(userId);
+		}
+		userToUpdate = UserDAO.fetch(userToUpdate);
+		userToUpdate.setAddress(address);
+		UserDAO.createUpdate(userToUpdate, true);
 		return address;
 	}
 
 	public Comment addComment(InputComment inputComment, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
+		if (inputComment.getCommentContent() == null || inputComment.getCommentContent() == "") {
+			throw new InputMismatchException("Comment content cannot be empty");
+		}
 		User userToUpdate = UserDAO.fetchByUsername(inputComment.getUsername());
 		if (userToUpdate == null || !AuthData.checkPermission(env, userToUpdate, PermissionType.NORMAL)) {
 			throw new AccessDeniedException("Comment cannot be added by the requesting user");

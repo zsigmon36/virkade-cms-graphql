@@ -47,6 +47,8 @@ input InputUser {
 	playedBefore: Boolean
 	reServices: Boolean
 	canContact: Boolean
+	liableAgree: Boolean
+	tcAgree: Boolean
 }
 
 type Legal {
@@ -289,6 +291,7 @@ type Query {
 type Mutation {
   createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
   updateUser(inputUser: InputUser!): User
+  updateUserType(userId: Long!, typeCode: String!): User
   signIn(authData: AuthData!): AuthToken
   recoverySignIn(authData: AuthData!): Boolean
   signOut(username: String!): String
@@ -296,7 +299,7 @@ type Mutation {
   addComment(inputComment: InputComment!): Comment
   setNewPassword(username: String!, passCode: String!, password: String!): Boolean
   setSecurityQA(username: String!, securityQ: String!, securityA: String!): Boolean
-  addUserAddress(inputAddress: InputAddress!): Address
+  addUserAddress(inputAddress: InputAddress!, userId: Long = 0): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
   deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean

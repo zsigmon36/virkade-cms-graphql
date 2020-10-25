@@ -21,7 +21,7 @@ public class InputUser {
 	private float idp;
 	private Date birthday;
 	private Boolean tcAgree;
-	private Boolean liabilityAgree;
+	private Boolean liableAgree;
 	private Boolean emailVerified;
 	private Boolean playedBefore;
 	private Boolean reServices;
@@ -252,14 +252,14 @@ public class InputUser {
 	/**
 	 * @return the liabilityAgree
 	 */
-	public Boolean isLiabilityAgree() {
-		return liabilityAgree;
+	public Boolean isLiableAgree() {
+		return liableAgree;
 	}
 	/**
 	 * @param liabilityAgree the liabilityAgree to set
 	 */
-	public void setLiabilityAgree(Boolean liabilityAgree) {
-		this.liabilityAgree = liabilityAgree;
+	public void setLiableAgree(Boolean liableAgree) {
+		this.liableAgree = liableAgree;
 	}
 	/**
 	 * @return the emailVerified

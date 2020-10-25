@@ -16,7 +16,7 @@
 		<property name="taxRate" type="float">
 			<column name="TAX_RATE" />
 		</property>
-		<property name="name" type="java.lang.String" index="IDX_LOC_NME">
+		<property name="name" type="java.lang.String" unique="true" index="IDX_LOC_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">

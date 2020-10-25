@@ -3,6 +3,7 @@ package com.virkade.cms.model;
 import java.security.InvalidKeyException;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.SortedSet;
@@ -157,6 +158,44 @@ public class User extends VirkadeModel {
 	public List<Legal> getLegals() {
 		return legals;
 	}
+	
+	public List<Legal> getActiveLegals() {
+		List<Legal> activeLegals = new ArrayList<Legal>();
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		for (Legal cur : this.legals) {
+			if (cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				activeLegals.add(cur);
+			}
+		}
+		return legals;
+	}
+	
+	public List<Legal> getActiveTCLegal() {
+		List<Legal> activeLegals = new ArrayList<Legal>();
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				activeLegals.add(cur);
+			}
+		}
+		return curlegals;
+	}
+	
+	public List<Legal> getActiveLiabLegal() {
+		List<Legal> activeLegals = new ArrayList<Legal>();
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				activeLegals.add(cur);
+			}
+		}
+		return curlegals;
+	}
 
 	public void setLegals(List<Legal> legals) {
 		this.legals = legals;
@@ -167,7 +206,8 @@ public class User extends VirkadeModel {
 		boolean liableAgree = false;
 		Calendar cal = Calendar.getInstance();
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
-		for (Legal cur : this.legals) {
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
 			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && 
 					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
 				liableAgree = true;
@@ -181,7 +221,8 @@ public class User extends VirkadeModel {
 		boolean tcAgree = false;
 		Calendar cal = Calendar.getInstance();
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
-		for (Legal cur : this.legals) {
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
 			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && 
 					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
 				tcAgree = true;
