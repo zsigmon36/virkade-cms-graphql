@@ -23,7 +23,6 @@ public class PhoneDAO {
 			criteria.add(Restrictions.eqOrIsNull(ConstantsDAO.PHONE_COUNTRY_FIELD, phone.getCountryCode()));
 			criteria.add(Restrictions.eqOrIsNull(ConstantsDAO.NUMBER_FIELD, phone.getNumber()));
 			criteria.add(Restrictions.eqOrIsNull(ConstantsDAO.TYPE_FIELD, phone.getType()));
-			criteria.add(Restrictions.eqOrIsNull(ConstantsDAO.USER_FIELD, phone.getUser()));
 			phone = (Phone) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception phone with phone number="+phone.getNumber()+" for userId="+phone.getUserId(), he);

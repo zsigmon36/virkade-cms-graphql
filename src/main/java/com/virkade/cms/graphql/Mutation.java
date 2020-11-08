@@ -208,7 +208,7 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		
 		boolean refreshLegals = false;
-		if (inputUser.isTcAgree() != userToUpdate.isTcAgree()) {
+		if (inputUser.isTcAgree() != null && inputUser.isTcAgree() != userToUpdate.isTcAgree()) {
 			Calendar cal = Calendar.getInstance();
 			Timestamp now = new Timestamp(cal.getTimeInMillis());
 			
@@ -234,7 +234,7 @@ public class Mutation implements GraphQLRootResolver {
 			refreshLegals = true;
 		}
 		
-		if (inputUser.isLiableAgree() != userToUpdate.isLiableAgree()) {
+		if (inputUser.isLiableAgree() != null && inputUser.isLiableAgree() != userToUpdate.isLiableAgree()) {
 			Calendar cal = Calendar.getInstance();
 			Timestamp now = new Timestamp(cal.getTimeInMillis());
 			
@@ -349,15 +349,34 @@ public class Mutation implements GraphQLRootResolver {
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 		convertedInputPhone.setAudit(updatedAuditInfo);
 
-		Phone phone = new Phone();
 		User user = UserDAO.fetch(userToUpdate);
-		convertedInputPhone.setUser(user);
-		phone = PhoneDAO.fetch(convertedInputPhone);
+		List<Phone> curPhoneNumbers = user.getPhoneNumbers();
+		Phone phone = PhoneDAO.fetch(convertedInputPhone);
+
 		if (phone == null) {
+			convertedInputPhone.setUser(user);
 			phone = PhoneDAO.create(convertedInputPhone);
+		} else {
+			List<Phone> newPhoneNumbers = new ArrayList<>();
+			for (Phone curPhone : curPhoneNumbers) {
+				if (curPhone.getType().getTypeId() != convertedInputPhone.getType().getTypeId()){
+					newPhoneNumbers.add(curPhone);
+				}
+			}
+			phone.setUser(user);
+			newPhoneNumbers.add(phone);
+			user.setPhoneNumbers(newPhoneNumbers);
+			user = UserDAO.createUpdate(user, true);
+		}
+		
+		for (Phone curPhone : user.getPhoneNumbers()) {
+			if (curPhone.getType().getTypeId() == convertedInputPhone.getType().getTypeId() 
+					&& curPhone.getNumber().equals(convertedInputPhone.getNumber()) 
+					&& curPhone.getCountryCode() == convertedInputPhone.getCountryCode()){
+				phone = curPhone;
+			}
 		}
 		return phone;
-
 	}
 
 	public Address addUserAddress(InputAddress inputAddress, long userId,  DataFetchingEnvironment env) throws Exception {
