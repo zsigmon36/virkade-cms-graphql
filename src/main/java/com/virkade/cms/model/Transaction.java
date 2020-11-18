@@ -1,9 +1,11 @@
 package com.virkade.cms.model;
 
+import java.util.List;
+
 public class Transaction {
 	
 	private long transactionId;
-	private PlaySession session;
+	private List<PlaySession> sessions;
 	private String serviceName;
 	private String description;
 	private String refId;
@@ -72,14 +74,14 @@ public class Transaction {
 	/**
 	 * @return the session
 	 */
-	public PlaySession getSession() {
-		return session;
+	public List<PlaySession> getSessions() {
+		return sessions;
 	}
 	/**
 	 * @param session the session to set
 	 */
-	public void setSession(PlaySession session) {
-		this.session = session;
+	public void setSessions(List<PlaySession> sessions) {
+		this.sessions = sessions;
 	}
 	/**
 	 * @return the audit

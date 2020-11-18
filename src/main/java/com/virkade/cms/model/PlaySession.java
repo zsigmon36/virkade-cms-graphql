@@ -9,6 +9,7 @@ import com.virkade.cms.hibernate.dao.UserDAO;
 public class PlaySession extends VirkadeModel{
 
 	private long sessionId;
+	private Transaction transaction;
 	private User user;
 	private Location location;
 	private Activity activity;
@@ -39,6 +40,14 @@ public class PlaySession extends VirkadeModel{
 	 */
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public Transaction getTransaction() {
+		return transaction;
+	}
+
+	public void setTransaction(Transaction transaction) {
+		this.transaction = transaction;
 	}
 
 	/**
@@ -184,7 +193,7 @@ public class PlaySession extends VirkadeModel{
 
 	@Override
 	public String toString() {
-		return "PlaySession [sessionId=" + sessionId + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
+		return "PlaySession [sessionId=" + sessionId + ", transactionId=" + transaction.getTransactionId() + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
 				+ payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
 	}
 	

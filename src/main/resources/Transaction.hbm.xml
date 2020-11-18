@@ -9,9 +9,10 @@
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="session" class="com.virkade.cms.model.PlaySession" not-null="true" fetch="join" index="IDX_TRNSACTN_SESSN">
-			<column name="SESSIONID" />
-		</many-to-one>
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
+			<key column="TRANSACTIONID" />
+			<one-to-many class="com.virkade.cms.model.PlaySession" />
+		</bag>
 
 		<property name="serviceName" type="java.lang.String" index="IDX_TRNSACTN_SRVCNME">
 			<column name="SERVICENAME" sql-type="varchar(75)"/>

@@ -12,12 +12,17 @@
 		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="USERID" />
 		</many-to-one>
+		
 		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join" index="IDX_SESIN_LOC, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="LOCATIONID" />
 		</many-to-one>
 		
 		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join" index="IDX_SESIN_ACTVTY, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
 			<column name="ACTIVITYID" />
+		</many-to-one>
+		
+		<many-to-one name="transaction" class="com.virkade.cms.model.Transaction" not-null="false" fetch="join" index="IDX_SESIN_TRNSACTN">
+			<column name="TRANSACTIONID" />
 		</many-to-one>
 		
 		<property name="payed" type="boolean" index="IDX_SESIN_PYD">
