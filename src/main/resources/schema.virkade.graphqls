@@ -1,3 +1,21 @@
+type Transaction {
+	transactionId: Long
+	serviceName: String
+	description: String
+	refId: String
+	payment: Float
+	audit: Audit
+}
+
+input InputTransaction {
+	transactionId: Long
+	sessionIds: [Long]!
+	serviceName: String!
+	description: String
+	refId: String!
+	payment: Float!
+}
+
 type User {
 	userId: Long!
     type: Type
@@ -280,6 +298,7 @@ type Query {
   getActivity(activityId: Long!): Activity
   getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
+  getAllSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
@@ -302,6 +321,7 @@ type Mutation {
   addUserAddress(inputAddress: InputAddress!, userId: Long = 0): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  addUpdateTransaction(inputTransaction: InputTransaction!): Transaction
   deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
   addUpdateLocation(inputLocation: InputLocation!): Location
   addUpdateActivity(inputActivity: InputActivity!): Activity

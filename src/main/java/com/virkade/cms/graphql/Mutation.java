@@ -27,8 +27,9 @@ import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
-import com.virkade.cms.hibernate.dao.SessionDAO;
+import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
+import com.virkade.cms.hibernate.dao.TransactionDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Activity;
@@ -42,11 +43,13 @@ import com.virkade.cms.model.InputLegal;
 import com.virkade.cms.model.InputLocation;
 import com.virkade.cms.model.InputPhone;
 import com.virkade.cms.model.InputPlaySession;
+import com.virkade.cms.model.InputTransaction;
 import com.virkade.cms.model.InputUser;
 import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
+import com.virkade.cms.model.Transaction;
 import com.virkade.cms.model.Type;
 import com.virkade.cms.model.User;
 import com.virkade.cms.model.VirkadeModel;
@@ -206,15 +209,15 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.isPlayedBefore() != null) {
 			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
 		}
-		
+
 		boolean refreshLegals = false;
 		if (inputUser.isTcAgree() != null && inputUser.isTcAgree() != userToUpdate.isTcAgree()) {
 			Calendar cal = Calendar.getInstance();
 			Timestamp now = new Timestamp(cal.getTimeInMillis());
-			
-			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR)+1));
+
+			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR) + 1));
 			Timestamp exp = new Timestamp(cal.getTimeInMillis());
-			
+
 			if (inputUser.isTcAgree()) {
 				InputLegal newLegal = new InputLegal();
 				newLegal.setActiveDate(now);
@@ -233,14 +236,14 @@ public class Mutation implements GraphQLRootResolver {
 			}
 			refreshLegals = true;
 		}
-		
+
 		if (inputUser.isLiableAgree() != null && inputUser.isLiableAgree() != userToUpdate.isLiableAgree()) {
 			Calendar cal = Calendar.getInstance();
 			Timestamp now = new Timestamp(cal.getTimeInMillis());
-			
-			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR)+1));
+
+			cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR) + 1));
 			Timestamp exp = new Timestamp(cal.getTimeInMillis());
-			
+
 			if (inputUser.isLiableAgree()) {
 				InputLegal newLegal = new InputLegal();
 				newLegal.setActiveDate(now);
@@ -258,12 +261,12 @@ public class Mutation implements GraphQLRootResolver {
 				}
 			}
 			refreshLegals = true;
-			
+
 		}
 		if (refreshLegals) {
 			userToUpdate.setLegals(UserDAO.fetchByUsername(convertedInputUser.getUsername()).getLegals());
 		}
-		
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, userToUpdate.getAudit());
 		userToUpdate.setAudit(updatedAuditInfo);
 
@@ -279,7 +282,7 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		return authToken;
 	}
-	
+
 	public User updateUserType(long userId, String typeCode, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
@@ -298,13 +301,13 @@ public class Mutation implements GraphQLRootResolver {
 		} else {
 			throw new Exception("User type to update is not valid");
 		}
-	
+
 		Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, userToUpdate.getAudit());
 		userToUpdate.setAudit(updatedAuditInfo);
 
 		return UserDAO.createUpdate(userToUpdate, true);
 	}
-	
+
 	public boolean recoverySignIn(AuthData authData) throws Exception {
 		boolean results = false;
 		AuthToken authToken = ClientSessionTracker.recoverySignIn(authData);
@@ -359,7 +362,7 @@ public class Mutation implements GraphQLRootResolver {
 		} else {
 			List<Phone> newPhoneNumbers = new ArrayList<>();
 			for (Phone curPhone : curPhoneNumbers) {
-				if (curPhone.getType().getTypeId() != convertedInputPhone.getType().getTypeId()){
+				if (curPhone.getType().getTypeId() != convertedInputPhone.getType().getTypeId()) {
 					newPhoneNumbers.add(curPhone);
 				}
 			}
@@ -368,18 +371,17 @@ public class Mutation implements GraphQLRootResolver {
 			user.setPhoneNumbers(newPhoneNumbers);
 			user = UserDAO.createUpdate(user, true);
 		}
-		
+
 		for (Phone curPhone : user.getPhoneNumbers()) {
-			if (curPhone.getType().getTypeId() == convertedInputPhone.getType().getTypeId() 
-					&& curPhone.getNumber().equals(convertedInputPhone.getNumber()) 
-					&& curPhone.getCountryCode() == convertedInputPhone.getCountryCode()){
+			if (curPhone.getType().getTypeId() == convertedInputPhone.getType().getTypeId() && curPhone.getNumber().equals(convertedInputPhone.getNumber())
+					&& curPhone.getCountryCode() == convertedInputPhone.getCountryCode()) {
 				phone = curPhone;
 			}
 		}
 		return phone;
 	}
 
-	public Address addUserAddress(InputAddress inputAddress, long userId,  DataFetchingEnvironment env) throws Exception {
+	public Address addUserAddress(InputAddress inputAddress, long userId, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
 		if (!AuthData.checkPermission(env, curSessionUser, PermissionType.NORMAL)) {
@@ -522,7 +524,7 @@ public class Mutation implements GraphQLRootResolver {
 		Audit audit = VirkadeModel.addAuditToModel(curSessionUser, convertedInputPlaySession.getAudit());
 		convertedInputPlaySession.setAudit(audit);
 
-		PlaySession playSession = SessionDAO.create(convertedInputPlaySession);
+		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession);
 
 		return playSession;
 	}
@@ -547,7 +549,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
-		results = SessionDAO.deleteAll(dateRequested, location, activity);
+		results = PlaySessionDAO.deleteAll(dateRequested, location, activity);
 		return results;
 	}
 
@@ -602,7 +604,7 @@ public class Mutation implements GraphQLRootResolver {
 			existLocation = new Location();
 		}
 		Location location = (Location) VirkadeModel.convertObj(inputLocation.getClass().getName(), inputLocation);
-		
+
 		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existLocation.getAudit());
 		location.setAudit(auditInfo);
 
@@ -612,9 +614,10 @@ public class Mutation implements GraphQLRootResolver {
 			address.setAudit(addressAudit);
 			location.setAddress(AddressDAO.create(address));
 		}
-		
+
 		return LocationDAO.upsert(location);
 	}
+
 	public Activity addUpdateActivity(InputActivity inputActivity, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
@@ -653,12 +656,72 @@ public class Mutation implements GraphQLRootResolver {
 			existActivity = new Activity();
 		}
 		Activity activity = (Activity) VirkadeModel.convertObj(inputActivity.getClass().getName(), inputActivity);
-		
+
 		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existActivity.getAudit());
 		activity.setAudit(auditInfo);
-		
+
 		return ActivityDAO.upsert(activity);
 	}
 
+	public Transaction addUpdateTransaction(InputTransaction inputTransaction, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
+		List<String> missingData = new ArrayList<String>();
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+		if (inputTransaction.getSessionIds() == null || inputTransaction.getSessionIds().isEmpty()) {
+			missingData.add("session ids cannot be empty");
+		}
+		if (inputTransaction.getPayment() <= 1) {
+			missingData.add("payment must be a valid amount");
+		}
+		if (inputTransaction.getRefId() == null || inputTransaction.getRefId() == "" || inputTransaction.getRefId().length() < 4) {
+			missingData.add("reference id must be a valid identifier");
+		}
+		if (inputTransaction.getServiceName() == null || inputTransaction.getServiceName().length() < 3) {
+			missingData.add("must be a valid payment type");
+		}
+		if (!missingData.isEmpty()) {
+			throw new Exception("transaction creation or update not allowed with the following data issues [" + missingData.toString() + "]");
+		}
+
+		Transaction transaction = (Transaction) VirkadeModel.convertObj(inputTransaction.getClass().getName(), inputTransaction);
+
+		if (transaction.getSessions().size() != inputTransaction.getSessionIds().size()) {
+			List<Long> missingSessions = inputTransaction.getSessionIds();
+			for (PlaySession curSession : transaction.getSessions()) {
+				if (missingSessions.contains(curSession.getSessionId())) {
+					missingSessions.remove(curSession.getSessionId());
+				}
+			}
+			throw new Exception("transaction creation or update cannot occur if corresponding sessions for sessionIds cannot be found, missing sessions for IDs: " + missingSessions.toString());
+		}
+
+		Transaction existTransaction = TransactionDAO.fetchById(inputTransaction.getTransactionId());
+		if (existTransaction == null) {
+			existTransaction = new Transaction();
+		} else {
+			transaction.setTransactionId(existTransaction.getTransactionId());
+		}
+
+		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existTransaction.getAudit());
+		transaction.setAudit(auditInfo);
+
+		List<PlaySession> existingSessions = transaction.getSessions();
+		List<PlaySession> payedSessions = new ArrayList<>();
+		for (PlaySession curSession : existingSessions) {
+			curSession.setPayed(true);
+			payedSessions.add(curSession);
+		}
+		transaction.setSessions(payedSessions);
+
+		Transaction updatedTransaction = TransactionDAO.upsert(transaction);
+		/*
+		 * List<PlaySession> payedSessions = updatedTransaction.getSessions(); for (PlaySession curSession : payedSessions) { curSession.setPayed(true);
+		 * SessionDAO.update(curSession); }
+		 */
+		return updatedTransaction;
+	}
 
 }

@@ -23,8 +23,8 @@ import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.OperatingHoursDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
+import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.RegionDAO;
-import com.virkade.cms.hibernate.dao.SessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
@@ -420,7 +420,7 @@ public class CMSSeeds {
 
 	public static void createTestSession(int numberOfSessions) {
 		while (numberOfSessions-- > 0) {
-			List<PlaySession> allSessionsAvail = SessionDAO.getAvailableSessions(null, LocationDAO.getDefault(), ActivityDAO.getDefault());
+			List<PlaySession> allSessionsAvail = PlaySessionDAO.getAvailableSessions(null, LocationDAO.getDefault(), ActivityDAO.getDefault());
 			if (allSessionsAvail.size() == 0) {
 				LOG.warn("no availible sessions so nothing to create");
 				break;
@@ -433,7 +433,7 @@ public class CMSSeeds {
 			session.setAudit(audit);
 			session.setPayed(false);
 			try {
-				SessionDAO.create(session);
+				PlaySessionDAO.create(session);
 			} catch (Exception e) {
 				LOG.error(e);
 			}

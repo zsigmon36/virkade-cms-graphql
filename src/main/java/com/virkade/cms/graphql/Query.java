@@ -10,7 +10,7 @@ import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
-import com.virkade.cms.hibernate.dao.SessionDAO;
+import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
@@ -62,7 +62,7 @@ public class Query implements GraphQLRootResolver {
 		User user = UserDAO.getByUsername(username);
 		List<PlaySession> playSessions = null;
 		if (dateRequested != null) {
-			playSessions = SessionDAO.getUserSessions(user, dateRequested);
+			playSessions = PlaySessionDAO.getUserSessions(user, dateRequested);
 		} else {
 			playSessions = getUserSessions(user);
 		}
@@ -127,7 +127,7 @@ public class Query implements GraphQLRootResolver {
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
-		List<PlaySession> sessions = SessionDAO.getAvailableSessions(dateRequested, location, activity);
+		List<PlaySession> sessions = PlaySessionDAO.getAvailableSessions(dateRequested, location, activity);
 		return sessions;
 	}
 	
@@ -149,7 +149,29 @@ public class Query implements GraphQLRootResolver {
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
-		List<PlaySession> sessions = SessionDAO.getAllSessionsToday(location, activity, payed);
+		List<PlaySession> sessions = PlaySessionDAO.getAllSessionsToday(location, activity, payed);
+		return sessions;
+	}
+	
+	public List<PlaySession> getAllSessions(Timestamp dateRequested, Long locationId, Long activityId, Boolean payed, DataFetchingEnvironment env) throws Exception {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Location location = null;
+		Activity activity = null;
+		if (activityId == null || activityId == 0) {
+			activity = ActivityDAO.getDefault();
+		} else {
+			activity = ActivityDAO.fetchById(activityId);
+		}
+		if (locationId == null || locationId == 0) {
+			location = LocationDAO.getDefault();
+		} else {
+			location = LocationDAO.fetchById(locationId);
+		}
+		if (location == null || activity == null) {
+			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
+		}
+		List<PlaySession> sessions = PlaySessionDAO.getAllSessions(dateRequested, location, activity, payed);
 		return sessions;
 	}
 	
