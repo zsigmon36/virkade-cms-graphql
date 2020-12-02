@@ -140,6 +140,7 @@ type PlaySession {
 	activity: Activity
 	startDate: Date
 	endDate: Date
+	transaction: Transaction
 	audit: Audit
 }
 
@@ -299,6 +300,7 @@ type Query {
   getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   getAllSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
+  getSessionById(sessionId: Long!): PlaySession
   searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
   getTypeByCode(code: String!): Type
   getLegalsByUser(user: InputUser!): [Legal] 
@@ -321,6 +323,7 @@ type Mutation {
   addUserAddress(inputAddress: InputAddress!, userId: Long = 0): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  deleteUserSession(sessionId: Long!): PlaySession
   addUpdateTransaction(inputTransaction: InputTransaction!): Transaction
   deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
   addUpdateLocation(inputLocation: InputLocation!): Location

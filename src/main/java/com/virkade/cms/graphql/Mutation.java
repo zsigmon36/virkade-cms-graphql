@@ -20,6 +20,7 @@ import com.virkade.cms.auth.AuthToken;
 import com.virkade.cms.auth.ClientSessionTracker;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.auth.VirkadeEncryptor;
+import com.virkade.cms.communication.SessionNotificationBean;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.CommentDAO;
@@ -526,6 +527,25 @@ public class Mutation implements GraphQLRootResolver {
 
 		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession);
 
+		if (playSession != null) {
+			SessionNotificationBean.addSessionNotification(playSession);
+		}
+		return playSession;
+	}
+	
+	public PlaySession deleteUserSession(long playSessionId, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
+
+		if (!AuthData.checkPermission(env, null, PermissionType.ADMIN)) {
+			throw new AccessDeniedException("You must be logged in as admin to perform this function");
+		}
+
+		PlaySession playSession = PlaySessionDAO.deleteById(playSessionId);
+
+		if (playSession != null) {
+			SessionNotificationBean.removeSessionNotification(playSession);
+		}
 		return playSession;
 	}
 
@@ -550,6 +570,9 @@ public class Mutation implements GraphQLRootResolver {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
 		results = PlaySessionDAO.deleteAll(dateRequested, location, activity);
+		if (results) {
+			SessionNotificationBean.clear();
+		}
 		return results;
 	}
 

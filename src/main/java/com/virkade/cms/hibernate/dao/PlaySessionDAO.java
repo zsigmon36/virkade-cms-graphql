@@ -109,11 +109,11 @@ public class PlaySessionDAO {
 			Criteria criteria = hs.createCriteria(PlaySession.class);
 			if (dateRequested != null) {
 				Calendar cal = Calendar.getInstance();
-				cal.setTime(dateRequested);
-				cal.clear(Calendar.HOUR);
-				cal.clear(Calendar.MINUTE);
-				cal.clear(Calendar.SECOND);
-				cal.clear(Calendar.MILLISECOND);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
 				cal.set(Calendar.DATE, (cal.get(Calendar.DATE) + 1));
 				Timestamp hiDate = new Timestamp(cal.getTimeInMillis());
 				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, dateRequested, hiDate));
@@ -234,6 +234,39 @@ public class PlaySessionDAO {
 		}
 		return session;
 
+	}
+
+	public static PlaySession getById(long playSessionId) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		PlaySession pSession = null;
+		try {
+			hs.beginTransaction();
+			pSession = hs.get(PlaySession.class, playSessionId);
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting play session by sessionId=" + playSessionId, he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return pSession;
+	}
+	
+	public static PlaySession deleteById(long playSessionId) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		PlaySession pSession = null;
+		try {
+			hs.beginTransaction();
+			pSession = getById(playSessionId);
+			hs.delete(PlaySession.class.getName(), pSession);
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception deleteing play session by sessionId=" + playSessionId, he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return pSession;
 	}
 
 }

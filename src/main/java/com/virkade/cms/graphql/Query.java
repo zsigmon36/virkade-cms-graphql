@@ -2,6 +2,7 @@ package com.virkade.cms.graphql;
 
 import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
@@ -171,8 +172,26 @@ public class Query implements GraphQLRootResolver {
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
+		//default 1 day prior
+		if (dateRequested == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 1);
+			dateRequested = new Timestamp(cal.getTimeInMillis());
+		}
+		
 		List<PlaySession> sessions = PlaySessionDAO.getAllSessions(dateRequested, location, activity, payed);
 		return sessions;
+	}
+	
+	public PlaySession getSessionById(long sessionId, DataFetchingEnvironment env) throws Exception {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		PlaySession session = PlaySessionDAO.getById(sessionId);
+		return session;
 	}
 	
 	public List<User> searchUsers(String firstName, String lastName, String emailAddress, String username, InputAddress inputAddress, int count, int offset, DataFetchingEnvironment env) throws AccessDeniedException{
