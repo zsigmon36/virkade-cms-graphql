@@ -9,6 +9,7 @@ public class Transaction extends VirkadeModel {
 
 	private long transactionId;
 	private List<PlaySession> sessions;
+	private List<Long> sessionIds;
 	private String serviceName;
 	private String description;
 	private String refId;
@@ -99,6 +100,18 @@ public class Transaction extends VirkadeModel {
 		this.sessions = sessions;
 	}
 
+	public List<Long> getSessionIds() {
+		List<Long> ids = new ArrayList<>();
+		for (PlaySession session : sessions) {
+			ids.add(session.getSessionId());
+		}
+		return ids;
+	}
+
+	public void setSessionIds(List<Long> sessionIds) {
+		this.sessionIds = sessionIds;
+	}
+
 	/**
 	 * @return the audit
 	 */
@@ -127,6 +140,7 @@ public class Transaction extends VirkadeModel {
 		transaction.setPayment(inputTransaction.getPayment());
 		transaction.setRefId(inputTransaction.getRefId());
 		transaction.setServiceName(inputTransaction.getServiceName());
+		transaction.setTransactionId(inputTransaction.getTransactionId());
 		return transaction;
 	}
 }

@@ -88,7 +88,33 @@ public class PlaySessionDAO {
 			hs.close();
 		}
 		return session;
-
+	}
+	
+	public static PlaySession update(PlaySession session) throws Exception {
+		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
+		boolean isOpen = false;
+		for (PlaySession curAvailSession : possibleSessions) {
+			if (curAvailSession.getStartDate().equals(session.getStartDate()) && curAvailSession.getEndDate().equals(session.getEndDate())) {
+				isOpen = true;
+				break;
+			}
+		}
+		PlaySession curPlaySession = getById(session.getSessionId());
+		if (!isOpen && !curPlaySession.getStartDate().equals(session.getStartDate()) && !curPlaySession.getEndDate().equals(session.getEndDate())) {
+			throw new Exception("requested time is not available, someone may have beaten you to it");
+		}
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		try {
+			hs.beginTransaction();
+			hs.update(session);
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception creating PlaySession=" + session.toString(), he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return session;
 	}
 
 	public static List<PlaySession> getAllSessions(Location location, Activity activity, Boolean payed) {
@@ -137,6 +163,46 @@ public class PlaySessionDAO {
 		return playSessions;
 
 	}
+	
+	public static List<PlaySession> getAllUserSessions(Timestamp dateRequested, User user, Location location, Activity activity, Boolean payed) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		List<PlaySession> playSessions = new ArrayList<PlaySession>();
+
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(PlaySession.class);
+			if (dateRequested != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				cal.set(Calendar.DATE, (cal.get(Calendar.DATE) + 1));
+				Timestamp hiDate = new Timestamp(cal.getTimeInMillis());
+				criteria.add(Restrictions.between(ConstantsDAO.END_DATE_FIELD, dateRequested, hiDate));
+			}
+			
+			criteria.add(Restrictions.eq(ConstantsDAO.LOCATION_FIELD, location));
+			criteria.add(Restrictions.eq(ConstantsDAO.ACTIVITY_FIELD, activity));
+			criteria.add(Restrictions.eq(ConstantsDAO.USER_FIELD, user));
+			
+			if (payed != null) {
+				criteria.add(Restrictions.eq(ConstantsDAO.PAYED_FIELD, payed));
+			}
+			//criteria.addOrder(Order.desc(ConstantsDAO.START_DATE_FIELD));
+			playSessions = criteria.list();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting PlaySessions", he);
+		} finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return playSessions;
+
+	}
+	
 
 	public static List<PlaySession> getAvailableSessions(Timestamp dateRequested, Location location, Activity activity) {
 		List<PlaySession> curSessions = null;
@@ -217,22 +283,6 @@ public class PlaySessionDAO {
 			results = true;
 		}
 		return results;
-
-	}
-
-	public static PlaySession update(PlaySession session) {
-		SessionFactory hsf = HibernateUtilities.getSessionFactory();
-		Session hs = hsf.openSession();
-		try {
-			hs.beginTransaction();
-			hs.update(session);
-		} catch (HibernateException he) {
-			LOG.error("Hibernate exception updating PlaySession=" + session.toString(), he);
-		} finally {
-			hs.getTransaction().commit();
-			hs.close();
-		}
-		return session;
 
 	}
 

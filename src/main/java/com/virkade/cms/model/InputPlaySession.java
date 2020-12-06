@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 public class InputPlaySession {
 
+	private long sessionId;
+	private long transactionId;
 	private String locationName;
 	private String activityName;
 	private Timestamp startDate;
@@ -13,6 +15,22 @@ public class InputPlaySession {
 
 	public InputPlaySession() {
 
+	}
+
+	public long getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(long sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public long getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(long transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	public String getLocationName() {

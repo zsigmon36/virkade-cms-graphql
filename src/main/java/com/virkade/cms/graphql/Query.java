@@ -187,6 +187,44 @@ public class Query implements GraphQLRootResolver {
 		return sessions;
 	}
 	
+	public List<PlaySession> getAllUserSessions(Timestamp dateRequested, Long userId, Long locationId, Long activityId, Boolean payed, DataFetchingEnvironment env) throws Exception {
+		Location location = null;
+		Activity activity = null;
+		User user = null;
+		if (userId == null || userId <= 0) {
+			throw new Exception("user id must be valid to get the sessions for that user");
+		}
+		user = UserDAO.getById(userId);
+		
+		if (activityId == null || activityId == 0) {
+			activity = ActivityDAO.getDefault();
+		} else {
+			activity = ActivityDAO.fetchById(activityId);
+		}
+		if (locationId == null || locationId == 0) {
+			location = LocationDAO.getDefault();
+		} else {
+			location = LocationDAO.fetchById(locationId);
+		}
+		if (location == null || activity == null) {
+			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
+		}
+		//default 1 day prior
+		if (dateRequested == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			cal.set(Calendar.DATE, cal.get(Calendar.DATE) - 1);
+			dateRequested = new Timestamp(cal.getTimeInMillis());
+		}
+		
+		List<PlaySession> sessions = PlaySessionDAO.getAllUserSessions(dateRequested, user, location, activity, payed);
+		return sessions;
+	}
+	
+	
 	public PlaySession getSessionById(long sessionId, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();

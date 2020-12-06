@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.TransactionDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 
 public class PlaySession extends VirkadeModel{
@@ -199,6 +200,9 @@ public class PlaySession extends VirkadeModel{
 	
 	static PlaySession convertInput(InputPlaySession inputPlaySession) {
 		PlaySession session = new PlaySession();
+		Transaction transaction = TransactionDAO.fetchById(inputPlaySession.getTransactionId());
+		session.setTransaction(transaction);
+		session.setSessionId(inputPlaySession.getSessionId());
 		Activity activity = ActivityDAO.fetchByName(inputPlaySession.getActivityName());
 		session.setActivity(activity);
 		session.setEndDate(inputPlaySession.getEndDate());
@@ -206,6 +210,7 @@ public class PlaySession extends VirkadeModel{
 		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName(), true));
 		session.setPayed(inputPlaySession.isPayed());
 		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));
+		session.setSessionId(inputPlaySession.getSessionId());
 		return session;
 	}
 

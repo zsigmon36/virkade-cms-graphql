@@ -28,6 +28,11 @@ public class SessionNotificationBean {
 		}
 	}
 	
+	public static boolean existsSessionNotification(PlaySession session) {
+		boolean result = firstWarningList.contains(session) && secondWarningList.contains(session) && startingList.contains(session);
+		return result;
+	}
+	
 	public static void removeSessionNotification(PlaySession session) {
 		firstWarningList.remove(session);
 		secondWarningList.remove(session);

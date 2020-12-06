@@ -210,6 +210,8 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.isPlayedBefore() != null) {
 			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
 		}
+		userToUpdate.setEmailVerified(convertedInputUser.isEmailVerified());
+
 
 		boolean refreshLegals = false;
 		if (inputUser.isTcAgree() != null && inputUser.isTcAgree() != userToUpdate.isTcAgree()) {
@@ -360,18 +362,18 @@ public class Mutation implements GraphQLRootResolver {
 		if (phone == null) {
 			convertedInputPhone.setUser(user);
 			phone = PhoneDAO.create(convertedInputPhone);
-		} else {
-			List<Phone> newPhoneNumbers = new ArrayList<>();
-			for (Phone curPhone : curPhoneNumbers) {
-				if (curPhone.getType().getTypeId() != convertedInputPhone.getType().getTypeId()) {
-					newPhoneNumbers.add(curPhone);
-				}
+		} 
+		
+		List<Phone> newPhoneNumbers = new ArrayList<>();
+		for (Phone curPhone : curPhoneNumbers) {
+			if (curPhone.getType().getTypeId() != convertedInputPhone.getType().getTypeId()) {
+				newPhoneNumbers.add(curPhone);
 			}
-			phone.setUser(user);
-			newPhoneNumbers.add(phone);
-			user.setPhoneNumbers(newPhoneNumbers);
-			user = UserDAO.createUpdate(user, true);
 		}
+		phone.setUser(user);
+		newPhoneNumbers.add(phone);
+		user.setPhoneNumbers(newPhoneNumbers);
+		user = UserDAO.createUpdate(user, true);
 
 		for (Phone curPhone : user.getPhoneNumbers()) {
 			if (curPhone.getType().getTypeId() == convertedInputPhone.getType().getTypeId() && curPhone.getNumber().equals(convertedInputPhone.getNumber())
@@ -496,6 +498,33 @@ public class Mutation implements GraphQLRootResolver {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
 
+		PlaySession convertedInputPlaySession = convertPlaySession(env, curSessionUser, inputPlaySession);
+
+		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession);
+
+		if (playSession != null) {
+			SessionNotificationBean.addSessionNotification(playSession);
+		}
+		return playSession;
+	}
+	
+	public PlaySession updateUserSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
+		AuthContext context = env.getContext();
+		User curSessionUser = context.getAuthUser();
+		if (inputPlaySession.getSessionId() <= 0) {
+			throw new Exception("Must have play session Id to update");
+		}
+		PlaySession convertedInputPlaySession = convertPlaySession(env, curSessionUser, inputPlaySession);
+
+		PlaySession playSession = PlaySessionDAO.update(convertedInputPlaySession);
+
+		if (playSession != null && !SessionNotificationBean.existsSessionNotification(playSession)) {
+			SessionNotificationBean.addSessionNotification(playSession);
+		}
+		return playSession;
+	}
+	
+	private PlaySession convertPlaySession(DataFetchingEnvironment env, User curSessionUser, InputPlaySession inputPlaySession) throws Exception {
 		List<String> missingData = new ArrayList<String>();
 		PlaySession convertedInputPlaySession = (PlaySession) VirkadeModel.convertObj(inputPlaySession.getClass().getName(), inputPlaySession);
 
@@ -524,13 +553,8 @@ public class Mutation implements GraphQLRootResolver {
 
 		Audit audit = VirkadeModel.addAuditToModel(curSessionUser, convertedInputPlaySession.getAudit());
 		convertedInputPlaySession.setAudit(audit);
-
-		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession);
-
-		if (playSession != null) {
-			SessionNotificationBean.addSessionNotification(playSession);
-		}
-		return playSession;
+		
+		return convertedInputPlaySession;
 	}
 	
 	public PlaySession deleteUserSession(long playSessionId, DataFetchingEnvironment env) throws Exception {

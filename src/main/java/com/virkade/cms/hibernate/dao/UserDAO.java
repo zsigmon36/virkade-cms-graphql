@@ -85,6 +85,13 @@ public class UserDAO {
 
 		return user;
 	}
+	
+	public static User getById(long userId) {
+		User user = fetchById(userId);
+		if (user == null)
+			throw new HibernateException("No user found");
+		return user;
+	}
 
 	/**
 	 * @param user Pass in a user object to see if there is a match persisted the User requires at least a userName, userId, or emailAddress;
@@ -103,7 +110,7 @@ public class UserDAO {
 		return user;
 	}
 
-	private static User fetchById(long userId) {
+	public static User fetchById(long userId) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		User user = null;
