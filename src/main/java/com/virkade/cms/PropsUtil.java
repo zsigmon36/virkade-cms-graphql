@@ -1,10 +1,18 @@
 package com.virkade.cms;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 public class PropsUtil {
 
@@ -28,17 +36,33 @@ public class PropsUtil {
 	private static int defaultSessionBuffer = 1;
 	private static int playSessionSetupMin = 5;
 	private static String crossOriginHosts = "http://localhost:80";
-	
+
 	static {
 		try {
-			InputStream stream = ClassLoader.getSystemResourceAsStream("app.cfg.properties");
-			props.load(stream);
+			LOG.info("getting state data resource: app.cfg.properties");
+			Path resource = Paths.get("config", "app.cfg.properties");
+			InputStream propStream = null;
+			if (!Files.exists(resource)) {
+				LOG.warn("could not find external resource, looking in project");
+				propStream = PropsUtil.class.getClassLoader().getResourceAsStream(resource.toString());
+			} else {
+				propStream = Files.newInputStream(resource, StandardOpenOption.READ);
+			}
+			props.load(propStream);
 		} catch (IOException e) {
 			LOG.error("could not load app config properties", e);
 		}
 		try {
-			InputStream stream = ClassLoader.getSystemResourceAsStream("email.cfg.properties");
-			props.load(stream);
+			LOG.info("getting state data resource: email.cfg.properties");
+			Path resource = Paths.get("config", "email.cfg.properties");
+			InputStream propStream = null;
+			if (!Files.exists(resource)) {
+				LOG.warn("could not find external resource, looking in project");
+				propStream = PropsUtil.class.getClassLoader().getResourceAsStream(resource.toString());
+			} else {
+				propStream = Files.newInputStream(resource, StandardOpenOption.READ);
+			}
+			props.load(propStream);
 		} catch (IOException e) {
 			LOG.error("could not load email config properties", e);
 		}
@@ -112,6 +136,5 @@ public class PropsUtil {
 	public static String getCrossOriginHosts() {
 		return crossOriginHosts;
 	}
-	
 
 }

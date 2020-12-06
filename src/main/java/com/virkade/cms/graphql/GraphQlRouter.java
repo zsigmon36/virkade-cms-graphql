@@ -1,7 +1,11 @@
 package com.virkade.cms.graphql;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
+import com.virkade.cms.BootApplication;
 import com.virkade.cms.communication.EmailUtil;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
 import com.virkade.cms.hibernate.utilities.CMSSeeds;
@@ -39,7 +44,26 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultUsers();
 		CMSSeeds.createDefaultLocation();
 		CMSSeeds.createDefaultActivity();
-		CMSSeeds.startWorkDay(null);
+		
+		//start work day and start over each day at midnight
+		Timer timer = new Timer();
+		
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				BootApplication.startWorkDay(null);
+			}
+		};
+		
+		Calendar firstTime = Calendar.getInstance();
+		firstTime.set(Calendar.HOUR, 0);
+		firstTime.set(Calendar.MINUTE, 0);
+		firstTime.set(Calendar.SECOND, 0);
+		firstTime.set(Calendar.MILLISECOND, 0);
+		
+		//one day
+		long period = 1000 * 60 * 60 * 24;
+		timer.schedule(task, new Date(firstTime.getTimeInMillis()), period);
 
 		// test
 		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting",

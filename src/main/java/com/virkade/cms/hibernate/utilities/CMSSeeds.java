@@ -1,7 +1,9 @@
 package com.virkade.cms.hibernate.utilities;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -12,6 +14,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 
 import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.VirkadeEncryptor;
@@ -233,8 +237,14 @@ public class CMSSeeds {
 
 		List<String> lines = null;
 		try {
-			Path path = Paths.get(ClassLoader.getSystemResource("stateData.csv").toURI());
-			lines = Files.readAllLines(path);
+			LOG.info("getting state data resource: stateData.csv");
+			Path resource = Paths.get("config", "stateData.csv");
+			if (!Files.exists(resource)) {
+				LOG.warn("could not find external resource, looking in project");
+				URL internalResource = CMSSeeds.class.getClassLoader().getResource(resource.toString());
+				resource = Paths.get(internalResource.toURI());
+			}
+			lines = Files.readAllLines(resource);
 		} catch (InvalidPathException | IOException | URISyntaxException e) {
 			LOG.error(e);
 		}
@@ -439,33 +449,4 @@ public class CMSSeeds {
 			}
 		}
 	}
-
-	public static void startWorkDay(Location location) {
-
-		if (location == null) {
-			location = LocationDAO.getDefault();
-		}
-		if (OperatingHoursDAO.getTodayOperation(location) == null) {
-			OperatingHours opHours = new OperatingHours();
-			Calendar cal = Calendar.getInstance();
-			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
-			Audit audit = VirkadeModel.addAuditToModel(user, null);
-
-			opHours.setAudit(audit);
-			opHours.setStartAt(new Timestamp(cal.getTimeInMillis()));
-			opHours.setOperatingDate(new Date(cal.getTimeInMillis()));
-
-			int endHour = Integer.valueOf(PropsUtil.getDefaultClosingTimeHour());
-			int endMin = Integer.valueOf(PropsUtil.getDefaultClosingTimeMin());
-
-			cal.clear(Calendar.MILLISECOND);
-			cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), endHour, endMin, 0);
-
-			opHours.setEndAt(new Timestamp(cal.getTimeInMillis()));
-			opHours.setLocation(location);
-
-			OperatingHoursDAO.create(opHours);
-		}
-	}
-
 }
