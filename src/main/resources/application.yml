@@ -1,5 +1,5 @@
 server: 
-  port: 80
+  port: 136
  # ssl:
  #   key-store: C:/Program Files/Java/jdk1.8.0_151/jre/lib/security/cacerts
  #   key-store-password: changeit
