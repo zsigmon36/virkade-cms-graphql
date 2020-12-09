@@ -80,6 +80,7 @@ public class ActivityDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating activity entry"+activity.getName());
 			hs.save(activity);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating activity=" + activity.toString(), he);
@@ -95,6 +96,7 @@ public class ActivityDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("updating activity entry"+activity.getName());
 			hs.update(activity);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception updating activity=" + activity.toString(), he);

@@ -41,11 +41,15 @@ public class OperatingHoursDAO {
 		return getOperation(new Date(Calendar.getInstance().getTimeInMillis()), location);
 	}
 
-	public static OperatingHours create(OperatingHours opHours) {
+	public static OperatingHours create(OperatingHours opHours) throws Exception {
+		if (opHours.getLocation() == null) {
+			throw new Exception("location must be selected and valid");
+		}
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating operating hours entry"+opHours.getOperatingDate()+" for location:"+opHours.getLocation().getName());
 			hs.save(opHours);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating operating hours=" + opHours.toString(), he);

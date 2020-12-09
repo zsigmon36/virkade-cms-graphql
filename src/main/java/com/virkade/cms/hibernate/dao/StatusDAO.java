@@ -35,6 +35,7 @@ public class StatusDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating status with status code:"+status.getCode());
 			hs.save(status);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating Status with statusCode=" + status.getCode(), he);

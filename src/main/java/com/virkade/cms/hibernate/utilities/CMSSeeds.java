@@ -350,10 +350,18 @@ public class CMSSeeds {
 			legal.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
 			legal.getAudit().setUpdatedAt(now);
 			legal.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
-			LegalDAO.create(legal);
+			try {
+				LegalDAO.create(legal);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
-			LegalDAO.create(legal);
+			try {
+				LegalDAO.create(legal);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 		}
 		if (UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME) == null) {
 			user2.setFirstName(ConstantsDAO.OWNER_USER_NAME);
@@ -397,10 +405,18 @@ public class CMSSeeds {
 			legal.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
 			legal.getAudit().setUpdatedAt(now);
 			legal.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
-			LegalDAO.create(legal);
+			try {
+				LegalDAO.create(legal);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
-			LegalDAO.create(legal);
+			try {
+				LegalDAO.create(legal);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 
 		}
 	}

@@ -65,6 +65,9 @@ public class PlaySessionDAO {
 	}
 	
 	public static synchronized PlaySession create(PlaySession session) throws Exception {
+		if (session.getLocation() == null || session.getActivity() == null) {
+			throw new Exception("location and activity must be selected and valid");
+		}
 		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
@@ -80,6 +83,7 @@ public class PlaySessionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating play session with start date:"+session.getStartDate() + " for username:"+session.getUsername() + "at location:"+session.getLocation().getName()+ " and activity:"+session.getActivity().getName());
 			hs.save(session);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating PlaySession=" + session.toString(), he);
@@ -91,6 +95,9 @@ public class PlaySessionDAO {
 	}
 	
 	public static PlaySession update(PlaySession session) throws Exception {
+		if (session.getLocation() == null || session.getActivity() == null) {
+			throw new Exception("location and activity must be selected and valid");
+		}
 		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
@@ -107,6 +114,7 @@ public class PlaySessionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("updating play session with start date:"+session.getStartDate() + " for username:"+session.getUsername() + "at location:"+session.getLocation().getName()+ " and activity:"+session.getActivity().getName());
 			hs.update(session);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating PlaySession=" + session.toString(), he);
@@ -271,6 +279,7 @@ public class PlaySessionDAO {
 		boolean results = false;
 		try {
 			hs.beginTransaction();
+			LOG.info("deleting all play session at location:"+location.getName()+ " and activity:"+activity.getName());
 			for (PlaySession session : playSessions) {
 				String entityName = session.getClass().getName();
 				hs.delete(entityName, session);
@@ -308,6 +317,7 @@ public class PlaySessionDAO {
 		PlaySession pSession = null;
 		try {
 			hs.beginTransaction();
+			LOG.info("deleting play session by id:"+playSessionId);
 			pSession = getById(playSessionId);
 			hs.delete(PlaySession.class.getName(), pSession);
 		} catch (HibernateException he) {

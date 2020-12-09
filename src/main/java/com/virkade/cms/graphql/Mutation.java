@@ -703,7 +703,9 @@ public class Mutation implements GraphQLRootResolver {
 			existActivity = new Activity();
 		}
 		Activity activity = (Activity) VirkadeModel.convertObj(inputActivity.getClass().getName(), inputActivity);
-
+		
+		activity.setSessions(existActivity.getSessions());
+		
 		Audit auditInfo = VirkadeModel.addAuditToModel(curSessionUser, existActivity.getAudit());
 		activity.setAudit(auditInfo);
 

@@ -38,6 +38,7 @@ public class RegionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating region with region name:"+region.getName());
 			hs.save(region);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating region=" + region.toString(), he);

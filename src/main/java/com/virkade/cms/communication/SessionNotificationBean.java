@@ -6,10 +6,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
+import com.virkade.cms.auth.ClientSessionTracker;
 import com.virkade.cms.model.PlaySession;
 
 public class SessionNotificationBean {
 
+	private static final Logger LOG = Logger.getLogger(SessionNotificationBean.class);
 	static List<PlaySession> firstWarningList = new Vector<>();
 	static  List<PlaySession> secondWarningList = new Vector<>();
 	static  List<PlaySession> startingList = new Vector<>();
@@ -20,6 +24,7 @@ public class SessionNotificationBean {
 	}
 	
 	public static void addSessionNotification(PlaySession session) {
+		LOG.info("adding session to notification list id: "+session.getSessionId());
 		firstWarningList.add(session);
 		secondWarningList.add(session);
 		startingList.add(session);
@@ -34,12 +39,14 @@ public class SessionNotificationBean {
 	}
 	
 	public static void removeSessionNotification(PlaySession session) {
+		LOG.info("removing session from notification list id: "+session.getSessionId());
 		firstWarningList.remove(session);
 		secondWarningList.remove(session);
 		startingList.remove(session);
 	}
 	
 	public static void clear() {
+		LOG.info("crearing notification list");
 		firstWarningList.clear();
 		secondWarningList.clear();
 		startingList.clear();

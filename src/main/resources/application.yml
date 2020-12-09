@@ -1,5 +1,5 @@
 server: 
-  port: 136
+  port: 80
  # ssl:
  #   key-store: C:/Program Files/Java/jdk1.8.0_151/jre/lib/security/cacerts
  #   key-store-password: changeit
@@ -7,10 +7,10 @@ server:
  
 logging:
   level:
-    root: ERROR
+    root: INFO
     org.springframework: INFO
-    com.virkade: DEBUG
-    org.hibernate: ERROR
+    com.virkade: INFO
+    org.hibernate: WARN
   file: logs/virkade-cms-app.log
    
 security:

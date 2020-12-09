@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class OperatingHours extends VirkadeModel implements Serializable {
+public class OperatingHours implements Serializable {
 
 	private static final long serialVersionUID = -7851431078202209522L;
 	private Date operatingDate;
@@ -18,6 +18,37 @@ public class OperatingHours extends VirkadeModel implements Serializable {
 	 */
 	public Date getOperatingDate() {
 		return operatingDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((operatingDate == null) ? 0 : operatingDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OperatingHours other = (OperatingHours) obj;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (operatingDate == null) {
+			if (other.operatingDate != null)
+				return false;
+		} else if (!operatingDate.equals(other.operatingDate))
+			return false;
+		return true;
 	}
 
 	/**

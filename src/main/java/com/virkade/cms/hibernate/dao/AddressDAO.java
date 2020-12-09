@@ -72,6 +72,7 @@ public class AddressDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating address entry type:"+address.getType()+", with street:"+ address.getStreet());
 			hs.save(address);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception get creating Address=" + address.toString(), he);

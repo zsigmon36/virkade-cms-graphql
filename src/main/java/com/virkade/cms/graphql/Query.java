@@ -251,24 +251,4 @@ public class Query implements GraphQLRootResolver {
 		}
 		return true;
 	}
-
-	public Type getTypeByCode(String code) {
-		return null;
-	}
-
-	public List<Comment> getUserComments(String username) {
-		return null;
-	}
-
-	public List<Legal> getLegalsByUser(InputUser user) {
-		return null;
-	}
-
-	public List<Phone> getPhonesByUser(InputUser user) {
-		return null;
-	}
-
-	public List<Phone> getPhonesByUsername(String username) {
-		return null;
-	}
 }

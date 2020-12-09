@@ -79,6 +79,7 @@ public class LocationDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating locations entry"+location.getName());
 			hs.save(location);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating location=" + location.toString(), he);
@@ -94,6 +95,7 @@ public class LocationDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("updating locations entry"+location.getName());
 			hs.update(location);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception updating location=" + location.toString(), he);

@@ -23,6 +23,7 @@ public class PlaySessionCalculator {
 	}
 
 	public static List<PlaySession> getAvailableSessions(Timestamp curTime, Timestamp closeTime, List<PlaySession> currentSessions, OperatingHours opHours, Location location, Activity activity) throws InterruptedException {
+		LOG.info("getting available sessions for location:"+location.getName()+ " and activity:"+activity.getName());
 		List<PlaySession> availableSessions = new ArrayList<PlaySession>();
 		List<PlaySessionGap> gaps = getCurrentGaps(curTime, currentSessions, opHours);
 

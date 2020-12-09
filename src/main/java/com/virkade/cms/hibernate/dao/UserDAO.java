@@ -32,8 +32,10 @@ public class UserDAO {
 		try {
 			hs.beginTransaction();
 			if (update) {
+				LOG.info("updating user with username:"+user.getUsername());
 				hs.update(user);
 			} else {
+				LOG.info("saving user with username:"+user.getUsername());
 				hs.save(user);
 			}
 		} catch (HibernateException he) {
@@ -54,6 +56,7 @@ public class UserDAO {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
 			criteria.add(Restrictions.eq(ConstantsDAO.USER_NAME_FIELD, username));
+			LOG.debug("fetching user with username:"+user.getUsername());
 			user = (User) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting user by username=" + username, he);
@@ -73,6 +76,7 @@ public class UserDAO {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
 			criteria.add(Restrictions.eq(ConstantsDAO.USER_NAME_FIELD, username));
+			LOG.debug("fetching user with username:"+user.getUsername());
 			user = (User) criteria.uniqueResult();
 			if (user == null)
 				throw new HibernateException("No user found");
@@ -116,6 +120,7 @@ public class UserDAO {
 		User user = null;
 		try {
 			hs.beginTransaction();
+			LOG.debug("fetching user by id:"+user.getUserId());
 			user = hs.get(User.class, userId);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting user by userId=" + userId, he);
@@ -134,6 +139,7 @@ public class UserDAO {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(User.class);
 			criteria.add(Restrictions.eq(ConstantsDAO.EMAIL_ADDRESS_FIELD, emailAddress));
+			LOG.debug("fetching user with email:"+emailAddress);
 			users = criteria.list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting users by emailAddress=" + emailAddress, he);
@@ -150,6 +156,7 @@ public class UserDAO {
 		List<User> users = null;
 		try {
 			hs.beginTransaction();
+			LOG.debug("fetching all users");
 			users = hs.createCriteria(User.class).list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting all users", he);
@@ -216,7 +223,7 @@ public class UserDAO {
 			if (addresses != null) {
 				userCriteria.add(Restrictions.in(ConstantsDAO.ADDRESS, addresses));
 			}
-				
+			LOG.debug("searching for user with search filter:"+userSearchFilter.toString());
 			users = userCriteria.list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting users with search filters", he);

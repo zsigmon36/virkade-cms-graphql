@@ -293,7 +293,6 @@ type Query {
   getUserById(userId: Long!): User
   getUserSessions(username: String!, dateRequested: Date): [PlaySession]
   getUserByUsername(username: String!): User
-  getUserComments(username: String!): [Comment]
   getCountries: [Country]
   getAllStates: [State]
   getAllActivities: [Activity]
@@ -306,10 +305,6 @@ type Query {
   getAllUserSessions(dateRequested: Date, userId: Long!, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   getSessionById(sessionId: Long!): PlaySession
   searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
-  getTypeByCode(code: String!): Type
-  getLegalsByUser(user: InputUser!): [Legal] 
-  getPhonesByUser(user: InputUser!): [Phone]
-  getPhonesByUsername(username: String!): [Phone]
   checkSession: Boolean
 }
 

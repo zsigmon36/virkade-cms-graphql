@@ -38,9 +38,10 @@ public class PhoneDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating phone with number:"+phone.getNumber()+", country code"+phone.getCountryCode()+", for user:"+phone.getUsername());
 			hs.save(phone);
 		} catch (HibernateException he) {
-			LOG.error("Hibernate exception saving phone with phone number="+phone.getNumber()+" for Username="+phone.getUser().getUsername(), he);
+			LOG.error("Hibernate exception saving phone with phone number="+phone.getNumber()+" for Username="+phone.getUsername(), he);
 		}finally {
 			hs.getTransaction().commit();
 			hs.close();

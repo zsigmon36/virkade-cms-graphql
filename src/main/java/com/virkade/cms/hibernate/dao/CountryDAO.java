@@ -37,6 +37,7 @@ public class CountryDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating country entry"+country.getName());
 			hs.save(country);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating country=" + country.toString(), he);

@@ -38,6 +38,7 @@ public class CommentDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating comment entry type:"+comment.getType()+", for user:"+ comment.getUsername());
 			hs.save(comment);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception saving comment", he);

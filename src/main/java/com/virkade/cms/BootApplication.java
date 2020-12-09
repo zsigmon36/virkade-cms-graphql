@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
+import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -24,13 +25,15 @@ import com.virkade.cms.model.VirkadeModel;
 @SpringBootApplication
 public class BootApplication {
 
+	private static final Logger LOG = Logger.getLogger(BootApplication.class);
+	
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(BootApplication.class, args);
 		ConfigurableEnvironment env = ctx.getEnvironment();
 	}
 
 	public static void startWorkDay(Location location) {
-
+		LOG.info("starting the work day...");
 		if (location == null) {
 			location = LocationDAO.getDefault();
 		}
@@ -53,7 +56,11 @@ public class BootApplication {
 			opHours.setEndAt(new Timestamp(cal.getTimeInMillis()));
 			opHours.setLocation(location);
 
-			OperatingHoursDAO.create(opHours);
+			try {
+				OperatingHoursDAO.create(opHours);
+			} catch (Exception e) {
+				LOG.error(e);
+			}
 		}
 	}
 }

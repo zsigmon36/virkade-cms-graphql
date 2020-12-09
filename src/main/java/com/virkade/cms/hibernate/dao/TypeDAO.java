@@ -101,6 +101,7 @@ public class TypeDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating type with type code:"+type.getCode());
 			hs.save(type);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception saving type with type code="+type.getCode(), he);

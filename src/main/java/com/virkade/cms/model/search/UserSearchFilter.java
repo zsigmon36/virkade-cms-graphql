@@ -94,4 +94,10 @@ public class UserSearchFilter {
 		this.postalCode = postalCode;
 	}
 
+	@Override
+	public String toString() {
+		return "UserSearchFilter [fistName=" + fistName + ", lastName=" + lastName + ", emailAddress=" + emailAddress + ", username=" + username + ", street=" + street + ", state=" + state.getName() + ", city="
+				+ city + ", postalCode=" + postalCode + "]";
+	}
+
 }

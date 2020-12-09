@@ -22,6 +22,7 @@ public class StateDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating state with state name:"+state.getName());
 			hs.save(state);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating state=" + state.toString(), he);

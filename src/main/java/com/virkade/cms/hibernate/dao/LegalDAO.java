@@ -32,11 +32,15 @@ public class LegalDAO {
 		return legal;
 	}
 	
-	public static Legal create(Legal legal) {
+	public static Legal create(Legal legal) throws Exception {
+		if (legal.getUser() == null) {
+			throw new Exception("user must be selected and valid");
+		}
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating legal entry type"+legal.getType()+", for user:"+legal.getUser().getUsername());
 			hs.save(legal);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception saving legal", he);
@@ -47,11 +51,15 @@ public class LegalDAO {
 		return legal;
 	}
 	
-	public static Legal update(Legal legal) {
+	public static Legal update(Legal legal) throws Exception {
+		if (legal.getUser() == null) {
+			throw new Exception("user must be selected and valid");
+		}
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("updating legal entry id"+legal.getLegalDocId()+", for user:"+legal.getUser().getUsername());
 			hs.update(legal);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception updating legal", he);

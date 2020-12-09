@@ -1,5 +1,7 @@
 package com.virkade.cms.hibernate.dao;
 
+import java.util.Arrays;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -35,6 +37,7 @@ public class TransactionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating transaction with ref id:"+transaction.getRefId()+" and session ids:"+transaction.getSessionIds().toString());
 			hs.save(transaction);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating transaction=" + transaction.toString(), he);
@@ -50,6 +53,7 @@ public class TransactionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("updating transaction with trans id:"+transaction.getTransactionId()+" and session ids:"+transaction.getSessionIds().toString());
 			hs.update(transaction);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception updating transaction=" + transaction.toString(), he);

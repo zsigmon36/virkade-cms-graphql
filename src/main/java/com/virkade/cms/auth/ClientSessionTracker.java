@@ -97,7 +97,7 @@ public class ClientSessionTracker {
 				purgeSession(username, false);
 				return results;
 			}
-			LOG.info("active session found for userName=" + username + " the authToken on record is=" + activeSession);
+			LOG.debug("active session found for userName=" + username + " the authToken on record is=" + activeSession);
 			if (activeSession.getToken().equals(token)) {
 				results = true;
 			} else {
@@ -127,7 +127,7 @@ public class ClientSessionTracker {
 		}
 		AuthToken activeSessionToken = getActiveClientSessions().get(authData.getUsername());
 		if (activeSessionToken != null) {
-			LOG.info("active session found for userName=" + authData.getUsername());
+			LOG.debug("active session found for userName=" + authData.getUsername());
 			purgeSession(activeSessionToken.getUsername(), false);
 		} 
 		LOG.info("creating fresh session");
