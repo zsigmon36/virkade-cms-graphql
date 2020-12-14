@@ -63,8 +63,8 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		Calendar firstRefreshDate = Calendar.getInstance();
 		LOG.info("current date:"+firstRefreshDate.getTime().toString());
 		firstRefreshDate.set(Calendar.DAY_OF_MONTH, (firstRefreshDate.get(Calendar.DAY_OF_MONTH)+1));
-		firstRefreshDate.set(Calendar.HOUR, 0);
-		firstRefreshDate.set(Calendar.MINUTE, 0);
+		firstRefreshDate.set(Calendar.HOUR_OF_DAY, 0);
+		firstRefreshDate.set(Calendar.MINUTE, 1);
 		firstRefreshDate.set(Calendar.SECOND, 0);
 		firstRefreshDate.set(Calendar.MILLISECOND, 0);
 		LOG.info("roll over date:"+firstRefreshDate.getTime().toString());

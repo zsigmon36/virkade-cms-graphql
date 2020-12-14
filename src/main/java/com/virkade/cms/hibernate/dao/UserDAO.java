@@ -120,7 +120,7 @@ public class UserDAO {
 		User user = null;
 		try {
 			hs.beginTransaction();
-			LOG.debug("fetching user by id:"+user.getUserId());
+			LOG.debug("fetching user by id:"+userId);
 			user = hs.get(User.class, userId);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting user by userId=" + userId, he);

@@ -96,8 +96,16 @@ public class UserSearchFilter {
 
 	@Override
 	public String toString() {
-		return "UserSearchFilter [fistName=" + fistName + ", lastName=" + lastName + ", emailAddress=" + emailAddress + ", username=" + username + ", street=" + street + ", state=" + state.getName() + ", city="
-				+ city + ", postalCode=" + postalCode + "]";
+		String stateString = state == null? "empty" : state.getName();
+		return "UserSearchFilter [fistName=" + 
+				fistName + ", lastName=" + 
+				lastName + ", emailAddress=" + 
+				emailAddress + ", username=" + 
+				username + ", street=" + 
+				street + ", state=" + 
+				stateString + ", city=" + 
+				city + ", postalCode=" + 
+				postalCode + "]";
 	}
 
 }

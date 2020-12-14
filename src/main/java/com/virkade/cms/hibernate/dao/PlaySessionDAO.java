@@ -143,7 +143,6 @@ public class PlaySessionDAO {
 			Criteria criteria = hs.createCriteria(PlaySession.class);
 			if (dateRequested != null) {
 				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR, 0);
 				cal.set(Calendar.HOUR_OF_DAY, 0);
 				cal.set(Calendar.MINUTE, 0);
 				cal.set(Calendar.SECOND, 0);
@@ -182,7 +181,6 @@ public class PlaySessionDAO {
 			Criteria criteria = hs.createCriteria(PlaySession.class);
 			if (dateRequested != null) {
 				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR, 0);
 				cal.set(Calendar.HOUR_OF_DAY, 0);
 				cal.set(Calendar.MINUTE, 0);
 				cal.set(Calendar.SECOND, 0);
@@ -246,6 +244,7 @@ public class PlaySessionDAO {
 			if (dateRequested != null) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(dateRequested);
+				cal.clear(Calendar.HOUR_OF_DAY);
 				cal.clear(Calendar.HOUR);
 				cal.clear(Calendar.MINUTE);
 				cal.clear(Calendar.SECOND);

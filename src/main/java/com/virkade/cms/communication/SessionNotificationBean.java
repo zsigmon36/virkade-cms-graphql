@@ -55,6 +55,7 @@ public class SessionNotificationBean {
 	}
 	
 	private static void run(){
+		LOG.info("starting the notification sub-routine");
 		started = true;
 		if (threadExec == null) {
 			threadExec = Executors.newScheduledThreadPool(1);
