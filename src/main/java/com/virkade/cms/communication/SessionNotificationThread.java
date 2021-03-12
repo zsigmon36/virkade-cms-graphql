@@ -18,7 +18,7 @@ public class SessionNotificationThread implements Runnable {
 	
 	@Override
 	public void run() {
-		LOG.info("running session notification thread");
+		LOG.debug("running session notification thread");
 		List<PlaySession> removeWarn1 = new ArrayList<>();
 		List<PlaySession> removeWarn2 = new ArrayList<>();
 		List<PlaySession> removeStartCheck = new ArrayList<>();

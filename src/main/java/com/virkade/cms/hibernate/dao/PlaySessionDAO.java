@@ -83,7 +83,7 @@ public class PlaySessionDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
-			LOG.info("creating play session with start date:"+session.getStartDate() + " for username:"+session.getUsername() + "at location:"+session.getLocation().getName()+ " and activity:"+session.getActivity().getName());
+			LOG.info("creating play session with start date:"+session.getStartDate() + " for username:"+session.getUsername() + " at location:"+session.getLocation().getName()+ " and activity:"+session.getActivity().getName());
 			hs.save(session);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating PlaySession=" + session.toString(), he);
