@@ -95,5 +95,16 @@ public class ConstantsDAO {
 	public static final String ACTIVITYID_FIELD = "activityid";
 	public static final String LOCATIONID_FIELD = "locationid";
 	public static final String PAYED_FIELD = "payed";
+	
+	//documentDAO
+	public static final String DEFAULT_TC_TITLE = "tandc";
+	public static final String DEFAULT_LIAB_TITLE = "liabilitywaiver";
+	public static final float DEFAULT_DOC_VERSION = 1.0f;
+	public static final String DEFAULT_DOC_SEP = "-v";
+	public static final String DEFAULT_DOC_EXT = ".txt";
+	public static final String TITLE_FIELD = "title";
+	public static final String VERSION_FIELD = "version";
 
+	//legalDAO
+	public static final String EXPIRE_DATE = "expireDate";
 }

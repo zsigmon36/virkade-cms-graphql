@@ -7,7 +7,10 @@ public class InputLegal {
 	private long legalDocId;
 	private String username;
 	private String typeCode;
-	
+	private long docId;
+	private String pSig;
+	private String gSig;
+	private boolean minor;
 	private boolean agree;
 	private Timestamp activeDate;
 	private Timestamp expireDate;
@@ -49,6 +52,24 @@ public class InputLegal {
 	 */
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+	public long getDocId() {
+		return docId;
+	}
+	public void setDocId(long docId) {
+		this.docId = docId;
+	}
+	public String getpSig() {
+		return pSig;
+	}
+	public void setpSig(String pSig) {
+		this.pSig = pSig;
+	}
+	public String getgSig() {
+		return gSig;
+	}
+	public void setgSig(String gSig) {
+		this.gSig = gSig;
 	}
 	/**
 	 * @return the agree
@@ -98,14 +119,16 @@ public class InputLegal {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public boolean isMinor() {
+		return minor;
+	}
+	public void setMinor(boolean minor) {
+		this.minor = minor;
+	}
 	@Override
 	public String toString() {
-		return "Legal [legalDocId=" + legalDocId + ", username=" + username + ", typecode=" + typeCode + ", agree=" + agree + ", activeDate=" + activeDate 
-				+ ", expireDate=" + expireDate + ", enabled=" + enabled + "]";
+		return "InputLegal [legalDocId=" + legalDocId + ", username=" + username + ", typeCode=" + typeCode + ", docId=" + docId + ", pSig=" + pSig + ", gSig=" + gSig + ", minor=" + minor + ", agree="
+				+ agree + ", activeDate=" + activeDate + ", expireDate=" + expireDate + ", enabled=" + enabled + "]";
 	}
 	
 }

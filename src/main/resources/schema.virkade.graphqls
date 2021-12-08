@@ -35,13 +35,16 @@ type User {
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean
+	accountVerified: Boolean
 	playedBefore: Boolean
 	lastLogin: Date
 	reServices: Boolean
 	canContact: Boolean
 	liableAgree: Boolean
 	tcAgree: Boolean
+	minor: Boolean
+	ActiveTCLegal: Legal
+	ActiveLiabLegal: Legal
 	audit: Audit
 }
 
@@ -62,7 +65,7 @@ input InputUser {
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean
+	accountVerified: Boolean
 	playedBefore: Boolean
 	reServices: Boolean
 	canContact: Boolean
@@ -70,11 +73,34 @@ input InputUser {
 	tcAgree: Boolean
 }
 
+type Document {
+	docId: Long
+	type: Type
+	title: String
+	content: String
+	version: Float
+	enabled: Boolean
+	audit: Audit
+}
+
+type InputDocument {
+	docId: Long
+	typeCode: String
+	title: String
+	content: String
+	version: Float
+	enabled: Boolean
+}
+
 type Legal {
 	legalDocId: Long
 	user: User
 	type: Type
+	document: Document
+	pSig: String
+	gSig: String
 	agree: Boolean
+	minor: Boolean
 	activeDate: Date
 	expireDate: Date
 	enabled: Boolean
@@ -83,6 +109,10 @@ type Legal {
 input InputLegal {
 	username: String
 	typeCode: String
+	docId: Long
+	pSig: String
+	gSig: String
+	minor: Boolean
 	agree: Boolean
 	activeDate: Date
 	expireDate: Date
@@ -295,6 +325,7 @@ type Query {
   getUserByUsername(username: String!): User
   getCountries: [Country]
   getAllStates: [State]
+  getLatestDocumentByType(typeCode: String!): Document
   getAllActivities: [Activity]
   getAllLocations: [Location]
   getLocation(locationId: Long!): Location
@@ -312,7 +343,7 @@ type Mutation {
   createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
   updateUser(inputUser: InputUser!): User
   updateUserType(userId: Long!, typeCode: String!): User
-  signIn(authData: AuthData!): AuthToken
+  signIn(authData: AuthData!, validated: Boolean = true): AuthToken
   recoverySignIn(authData: AuthData!): Boolean
   signOut(username: String!): String
   addPhone(inputPhone: InputPhone!): Phone

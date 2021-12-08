@@ -59,8 +59,8 @@
 		<property name="birthday" type="java.sql.Date">
 			<column name="BIRTHDAY" />
 		</property>
-		<property name="emailVerified" type="boolean">
-			<column name="EMAILVERIFIED" />
+		<property name="accountVerified" type="boolean">
+			<column name="ACCOUNTVERIFIED" />
 		</property>
 		<property name="playedBefore" type="boolean">
 			<column name="PLAYEDBEFORE" />

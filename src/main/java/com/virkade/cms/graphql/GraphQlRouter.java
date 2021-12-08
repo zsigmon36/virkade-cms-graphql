@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.BootApplication;
 import com.virkade.cms.communication.EmailUtil;
+import com.virkade.cms.data.manipulator.LegalDocAuditJob;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.utilities.CMSSeeds;
@@ -44,10 +45,12 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultCountries();
 		CMSSeeds.createDefaultStates();
 		CMSSeeds.createDefaultAddress();
+		CMSSeeds.createDefaultDocs();
 		CMSSeeds.createDefaultUsers();
 		CMSSeeds.createDefaultLocation();
 		CMSSeeds.createDefaultActivity();
 		BootApplication.startWorkDay(LocationDAO.getDefault());
+		LegalDocAuditJob.startAudit();
 		
 		//start work day and start over each day at midnight
 		LOG.info("adding task to start new work day if going past midnight.");

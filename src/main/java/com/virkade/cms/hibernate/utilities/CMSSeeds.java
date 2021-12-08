@@ -1,31 +1,28 @@
 package com.virkade.cms.hibernate.utilities;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 
+import com.virkade.cms.DocUtil;
 import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.VirkadeEncryptor;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.AddressDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.CountryDAO;
+import com.virkade.cms.hibernate.dao.DocumentDAO;
 import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
-import com.virkade.cms.hibernate.dao.OperatingHoursDAO;
 import com.virkade.cms.hibernate.dao.PhoneDAO;
 import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.RegionDAO;
@@ -37,9 +34,9 @@ import com.virkade.cms.model.Activity;
 import com.virkade.cms.model.Address;
 import com.virkade.cms.model.Audit;
 import com.virkade.cms.model.Country;
+import com.virkade.cms.model.Document;
 import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
-import com.virkade.cms.model.OperatingHours;
 import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.Region;
@@ -52,7 +49,6 @@ import com.virkade.cms.model.VirkadeModel;
 public class CMSSeeds {
 
 	private static final Logger LOG = Logger.getLogger(CMSSeeds.class);
-
 	private CMSSeeds() {
 
 	}
@@ -301,6 +297,50 @@ public class CMSSeeds {
 			LocationDAO.create(location);
 		}
 	}
+	
+	public static void createDefaultDocs() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(ConstantsDAO.DEFAULT_TC_TITLE);
+		sb.append(ConstantsDAO.DEFAULT_DOC_SEP);
+		sb.append(ConstantsDAO.DEFAULT_DOC_VERSION);
+		
+		float tandcV = DocUtil.getTextFileVersion(sb.toString());
+		
+		sb.append(ConstantsDAO.DEFAULT_DOC_EXT);
+		
+		String tandcC = DocUtil.getTextFileContent(sb.toString());
+		if (DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_TC_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION) == null) {
+			Document doc = new Document();
+			doc.setTitle(ConstantsDAO.DEFAULT_TC_TITLE);
+			doc.setContent(tandcC);
+			doc.setVersion(tandcV);
+			doc.setEnabled(true);
+			doc.setType(TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS));
+			doc.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			doc.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			doc.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			doc.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			DocumentDAO.create(doc);
+		}
+		sb.replace(0, ConstantsDAO.DEFAULT_TC_TITLE.length(), ConstantsDAO.DEFAULT_LIAB_TITLE);
+		String liabC = DocUtil.getTextFileContent(sb.toString());
+		
+		sb.delete((sb.length()-(ConstantsDAO.DEFAULT_DOC_EXT).length()), sb.length());
+		float liabV = DocUtil.getTextFileVersion(sb.toString());
+		if (DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_LIAB_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION) == null) {
+			Document doc = new Document();
+			doc.setTitle(ConstantsDAO.DEFAULT_LIAB_TITLE);
+			doc.setContent(liabC);
+			doc.setVersion(liabV);
+			doc.setEnabled(true);
+			doc.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
+			doc.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			doc.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
+			doc.getAudit().setUpdatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			doc.getAudit().setUpdatedBy(ConstantsDAO.SYSTEM);
+			DocumentDAO.create(doc);
+		}
+	}
 
 	public static void createDefaultUsers() {
 		User user = new User();
@@ -319,6 +359,7 @@ public class CMSSeeds {
 			user.setUsername(ConstantsDAO.GUEST_USER_NAME);
 			user.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
 			user.setEmailAddress(ConstantsDAO.GUEST_EMAIL_ADDRESS);
+			user.setAccountVerified(true);
 			user.setPassword(VirkadeEncryptor.hashEncode("123456"));
 			user.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user.setType(TypeDAO.fetchByCode(ConstantsDAO.GUEST_CODE));
@@ -343,6 +384,10 @@ public class CMSSeeds {
 			legal.setActiveDate(now);
 			legal.setUser(user);
 			legal.setAgree(true);
+			Document tAndCDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_TC_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
+			legal.setDocument(DocumentDAO.fetchByDocId(tAndCDoc.getDocId()));
+			String pSig = DocUtil.getEncodedOwnerSig("Signature.png");
+			legal.setPSig(pSig);
 			legal.setEnabled(true);
 			legal.setExpireDate(expireDate);
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS));
@@ -356,6 +401,8 @@ public class CMSSeeds {
 				LOG.error(e);
 			}
 
+			Document liabDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_LIAB_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
+			legal.setDocument(DocumentDAO.fetchByDocId(liabDoc.getDocId()));
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
 			try {
 				LegalDAO.create(legal);
@@ -369,6 +416,7 @@ public class CMSSeeds {
 			user2.setUsername(ConstantsDAO.OWNER_USER_NAME);
 			user2.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
 			user2.setEmailAddress(ConstantsDAO.GUEST_EMAIL_ADDRESS);
+			user2.setAccountVerified(true);
 			user2.setPassword(VirkadeEncryptor.hashEncode(ConstantsDAO.DEFAULT_OWNER_PASSWORD));
 			user2.setStatus(StatusDAO.fetchByCode(ConstantsDAO.ACTIVE_CODE));
 			user2.setType(TypeDAO.fetchByCode(ConstantsDAO.ADMIN_CODE));
@@ -398,6 +446,10 @@ public class CMSSeeds {
 			legal.setActiveDate(now);
 			legal.setUser(user2);
 			legal.setAgree(true);
+			Document tAndCDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_TC_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
+			legal.setDocument(DocumentDAO.fetchByDocId(tAndCDoc.getDocId()));
+			String pSig = DocUtil.getEncodedOwnerSig("Signature.png");
+			legal.setPSig(pSig);
 			legal.setEnabled(true);
 			legal.setExpireDate(expireDate);
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.TERMS_CONDITIONS));
@@ -411,6 +463,8 @@ public class CMSSeeds {
 				LOG.error(e);
 			}
 
+			Document liabDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_LIAB_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
+			legal.setDocument(DocumentDAO.fetchByDocId(liabDoc.getDocId()));
 			legal.setType(TypeDAO.fetchByCode(ConstantsDAO.LIMITED_LIABLE));
 			try {
 				LegalDAO.create(legal);

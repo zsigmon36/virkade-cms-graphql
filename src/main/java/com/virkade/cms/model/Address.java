@@ -157,12 +157,12 @@ public class Address extends VirkadeModel {
 			address.setState(StateDAO.getById(inputAddress.getStateId()));
 		}
 		address.setAddressId(inputAddress.getAddressId());
-		address.setApt(inputAddress.getApt());
-		address.setCity(inputAddress.getCity());
+		address.setApt(inputAddress.getApt().toLowerCase());
+		address.setCity(inputAddress.getCity().toLowerCase());
 		address.setPostalCode(inputAddress.getPostalCode());
-		address.setStreet(inputAddress.getStreet());
+		address.setStreet(inputAddress.getStreet().toLowerCase());
 		address.setType(TypeDAO.getByCode(inputAddress.getTypeCode()));
-		address.setUnit(inputAddress.getUnit());
+		address.setUnit(inputAddress.getUnit().toLowerCase());
 		
 		return address;
 	}

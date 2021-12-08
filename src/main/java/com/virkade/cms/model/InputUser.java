@@ -22,7 +22,7 @@ public class InputUser {
 	private Date birthday;
 	private Boolean tcAgree;
 	private Boolean liableAgree;
-	private Boolean emailVerified;
+	private Boolean accountVerified;
 	private Boolean playedBefore;
 	private Boolean reServices;
 	private Boolean canContact;	
@@ -264,14 +264,14 @@ public class InputUser {
 	/**
 	 * @return the emailVerified
 	 */
-	public Boolean isEmailVerified() {
-		return emailVerified;
+	public Boolean isAccountVerified() {
+		return accountVerified;
 	}
 	/**
 	 * @param emailVerified the emailVerified to set
 	 */
-	public void setEmailVerified(Boolean emailVerified) {
-		this.emailVerified = emailVerified;
+	public void setAccountVerified(Boolean accountVerified) {
+		this.accountVerified = accountVerified;
 	}
 	/**
 	 * @return the playedBefore

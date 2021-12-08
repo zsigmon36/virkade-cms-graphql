@@ -121,7 +121,7 @@ public class ClientSessionTracker {
 		return authToken;
 	}
 
-	public static AuthToken clientSignIn(AuthData authData) throws Exception {
+	public static AuthToken clientSignIn(AuthData authData, boolean validated) throws Exception {
 		if (authData == null) {
 			throw new Exception("AuthData cannot be null for this request");
 		}
@@ -131,20 +131,22 @@ public class ClientSessionTracker {
 			purgeSession(activeSessionToken.getUsername(), false);
 		} 
 		LOG.info("creating fresh session");
-		activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword());		
+		activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword(), validated);		
 		if (activeSessionToken == null) {
 			throw new Exception("could not create the client auth session");
 		}
 		return activeSessionToken;
 	}
 
-	private static AuthToken createActiveSession(String username, String password) throws Exception {
+	private static AuthToken createActiveSession(String username, String password, boolean validated) throws Exception {
 		User user = new User();
 		user.setUsername(username);
 		AuthToken authToken = null;
 		user = UserDAO.fetch(user);
 		if (user==null) {
 			throw new Exception("no user found for username=" + username);
+		} else if (validated && !user.isAccountVerified()) {
+			throw new Exception("account is not yet verified, please check with support");
 		}
 		LOG.debug("Checking " + user.getUsername() + "'s encoded password in the database matches the client provided password");
 		if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {

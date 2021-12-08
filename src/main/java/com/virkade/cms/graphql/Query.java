@@ -10,22 +10,19 @@ import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
+import com.virkade.cms.hibernate.dao.DocumentDAO;
 import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.PlaySessionDAO;
 import com.virkade.cms.hibernate.dao.StateDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 import com.virkade.cms.model.Activity;
-import com.virkade.cms.model.Comment;
 import com.virkade.cms.model.Country;
+import com.virkade.cms.model.Document;
 import com.virkade.cms.model.InputAddress;
-import com.virkade.cms.model.InputUser;
-import com.virkade.cms.model.Legal;
 import com.virkade.cms.model.Location;
-import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.State;
-import com.virkade.cms.model.Type;
 import com.virkade.cms.model.User;
 import com.virkade.cms.model.search.UserSearchFilter;
 
@@ -80,6 +77,13 @@ public class Query implements GraphQLRootResolver {
 		//User curSessionUser = context.getAuthUser();
 		List<State> states = StateDAO.fetchAll();
 		return states;
+	}
+	
+	public Document getLatestDocumentByType(String typeCode, DataFetchingEnvironment env) {
+		//AuthContext context = env.getContext();
+		//User curSessionUser = context.getAuthUser();
+		Document doc = DocumentDAO.fetchLatestDocumentByType(typeCode);
+		return doc;
 	}
 	
 	public List<Activity> getAllActivities(DataFetchingEnvironment env) {

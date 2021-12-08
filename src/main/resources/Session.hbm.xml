@@ -9,15 +9,15 @@
 			<generator class="increment" />
 		</id>
 
-		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
+		<many-to-one class="com.virkade.cms.model.User" name="user" not-null="true" index="IDX_SESIN_USR_ID">
 			<column name="USERID" />
 		</many-to-one>
 		
-		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join" index="IDX_SESIN_LOC, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
+		<many-to-one class="com.virkade.cms.model.Location" name="location" not-null="true" fetch="join" index="IDX_SESIN_LOC, IDX_SESIN_PYD, IDX_SESIN_USR_ID">
 			<column name="LOCATIONID" />
 		</many-to-one>
 		
-		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join" index="IDX_SESIN_ACTVTY, IDX_SESIN_PYD, IDX_SESIN_STRTDTE, IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_USR_ID, IDX_SESIN_USR_ID_DTE">
+		<many-to-one class="com.virkade.cms.model.Activity" name="activity" not-null="true" fetch="join" index="IDX_SESIN_ACTVTY, IDX_SESIN_PYD, IDX_SESIN_USR_ID">
 			<column name="ACTIVITYID" />
 		</many-to-one>
 		
@@ -29,10 +29,10 @@
 			<column name="PAYED" />
 		</property>
 
-		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp" index="IDX_SESIN_STRTDTE, IDX_SESIN_STRTDTE_ENDDTE, IDX_SESIN_PYD, IDX_SESIN_USR_ID_DTE">
+		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp">
 			<column name="STARTDATE" />
 		</property>
-		<property generated="never" lazy="false" name="endDate" type="java.sql.Timestamp" index="IDX_SESIN_ENDDTE, IDX_SESIN_STRTDTE_ENDDTE,IDX_SESIN_PYD, IDX_SESIN_USR_ID_DTE">
+		<property generated="never" lazy="false" name="endDate" type="java.sql.Timestamp">
 			<column name="ENDDATE" />
 		</property>
 		<component name="audit" class="com.virkade.cms.model.Audit">

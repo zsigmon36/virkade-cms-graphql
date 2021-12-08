@@ -3,6 +3,8 @@ package com.virkade.cms.model;
 import java.sql.Timestamp;
 import java.util.SortedSet;
 
+import com.virkade.cms.hibernate.dao.DocumentDAO;
+import com.virkade.cms.hibernate.dao.LegalDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 
@@ -11,7 +13,10 @@ public class Legal extends VirkadeModel{
 	private long legalDocId;
 	private User user;
 	private Type type;
-	
+	private Document document;
+	private String pSig;
+	private String gSig;
+	private boolean minor;
 	private boolean agree;
 	private Timestamp activeDate;
 	private Timestamp expireDate;
@@ -105,6 +110,24 @@ public class Legal extends VirkadeModel{
 	public Type getType() {
 		return type;
 	}
+	public Document getDocument() {
+		return document;
+	}
+	public void setDocument(Document document) {
+		this.document = document;
+	}
+	public String getPSig() {
+		return pSig;
+	}
+	public void setPSig(String pSig2) {
+		this.pSig = pSig2;
+	}
+	public String getGSig() {
+		return gSig;
+	}
+	public void setGSig(String gSig) {
+		this.gSig = gSig;
+	}
 	/**
 	 * @return the agree
 	 */
@@ -117,15 +140,17 @@ public class Legal extends VirkadeModel{
 	public void setAgree(boolean agree) {
 		this.agree = agree;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public boolean isMinor() {
+		return minor;
+	}
+	public void setMinor(boolean minor) {
+		this.minor = minor;
+	}
 	@Override
 	public String toString() {
-		return "Legal [legalDocId=" + legalDocId + ", user=" + user + ", type=" + type + ", agree=" + agree + ", activeDate=" + activeDate 
-				+ ", expireDate=" + expireDate + ", enabled=" + enabled + ", audit=" + audit + "]";
+		return "Legal [legalDocId=" + legalDocId + ", user=" + user + ", type=" + type + ", doc=" + document + ", pSig=" + pSig + ", gSig=" + gSig + ", agree=" + agree + ", activeDate=" + activeDate
+				+ ", expireDate=" + expireDate + ", enabled=" + enabled + ", isMinor=" + minor + ", audit=" + audit + "]";
 	}
-	
 	/**
 	 * @return the attribute sorted list
 	 */
@@ -134,6 +159,10 @@ public class Legal extends VirkadeModel{
 		attributes.add("LegalDocId");
 		attributes.add("User");
 		attributes.add("Type");
+		attributes.add("DocId");
+		attributes.add("pSig");
+		attributes.add("gSig");
+		attributes.add("Minor");
 		attributes.add("Agree");
 		attributes.add("ActiveDate");
 		attributes.add("ExpireDate");
@@ -147,6 +176,10 @@ public class Legal extends VirkadeModel{
 		legal.setActiveDate(inputLegal.getActiveDate());
 		legal.setExpireDate(inputLegal.getExpireDate());
 		legal.setType(TypeDAO.getByCode(inputLegal.getTypeCode()));
+		legal.setDocument(DocumentDAO.fetchByDocId(inputLegal.getDocId()));
+		legal.setPSig(inputLegal.getpSig());
+		legal.setGSig(inputLegal.getgSig());
+		legal.setMinor(inputLegal.isMinor());
 		legal.setAgree(inputLegal.isAgree());
 		legal.setEnabled(inputLegal.isEnabled());
 		return legal;

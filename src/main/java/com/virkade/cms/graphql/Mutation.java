@@ -122,7 +122,7 @@ public class Mutation implements GraphQLRootResolver {
 		user.setAge(0);
 		user.setCanContact(false);
 		user.setCanContact(false);
-		user.setEmailVerified(false);
+		user.setAccountVerified(false);
 		user.setHeight(0);
 		user.setPlayedBefore(false);
 		user.setReServices(false);
@@ -210,7 +210,7 @@ public class Mutation implements GraphQLRootResolver {
 		if (convertedInputUser.isPlayedBefore() != null) {
 			userToUpdate.setPlayedBefore(convertedInputUser.isPlayedBefore());
 		}
-		userToUpdate.setEmailVerified(convertedInputUser.isEmailVerified());
+		userToUpdate.setAccountVerified(convertedInputUser.isAccountVerified());
 
 
 		boolean refreshLegals = false;
@@ -231,11 +231,9 @@ public class Mutation implements GraphQLRootResolver {
 				newLegal.setUsername(userToUpdate.getUsername());
 				addUserLegalDoc(newLegal, env);
 			} else {
-				List<Legal> tcLegal = userToUpdate.getActiveTCLegal();
-				for (Legal curLegal : tcLegal) {
-					curLegal.setAgree(inputUser.isTcAgree());
-					LegalDAO.update(curLegal);
-				}
+				Legal tcLegal = userToUpdate.getActiveTCLegal();
+				tcLegal.setAgree(inputUser.isTcAgree());
+				LegalDAO.update(tcLegal);
 			}
 			refreshLegals = true;
 		}
@@ -257,11 +255,9 @@ public class Mutation implements GraphQLRootResolver {
 				newLegal.setUsername(userToUpdate.getUsername());
 				addUserLegalDoc(newLegal, env);
 			} else {
-				List<Legal> liabLegal = userToUpdate.getActiveLiabLegal();
-				for (Legal curLegal : liabLegal) {
-					curLegal.setAgree(inputUser.isLiableAgree());
-					LegalDAO.update(curLegal);
-				}
+				Legal liabLegal = userToUpdate.getActiveLiabLegal();
+				liabLegal.setAgree(inputUser.isLiableAgree());
+				LegalDAO.update(liabLegal);
 			}
 			refreshLegals = true;
 
@@ -276,8 +272,8 @@ public class Mutation implements GraphQLRootResolver {
 		return UserDAO.createUpdate(userToUpdate, true);
 	}
 
-	public AuthToken signIn(AuthData authData) throws Exception {
-		AuthToken authToken = ClientSessionTracker.clientSignIn(authData);
+	public AuthToken signIn(AuthData authData, boolean validated) throws Exception {
+		AuthToken authToken = ClientSessionTracker.clientSignIn(authData, validated);
 		if (authToken != null && authToken.getToken().length() > 0) {
 			User user = UserDAO.getByUsername(authToken.getUsername());
 			user.setLastLogin(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -454,7 +450,7 @@ public class Mutation implements GraphQLRootResolver {
 
 		Legal convertedInputLegal = (Legal) VirkadeModel.convertObj(InputLegal.class.getName(), inputLegal);
 
-		Legal legal = LegalDAO.fetch(convertedInputLegal);
+		Legal legal = LegalDAO.fetchByUserAndType(convertedInputLegal.getUser(), convertedInputLegal.getType());
 		if (legal == null) {
 			Audit updatedAuditInfo = VirkadeModel.addAuditToModel(curSessionUser, null);
 			convertedInputLegal.setAudit(updatedAuditInfo);

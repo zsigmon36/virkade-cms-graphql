@@ -40,7 +40,7 @@ public class User extends VirkadeModel {
 	private int weight;
 	private float idp;
 	private Date birthday;
-	private Boolean emailVerified;
+	private Boolean accountVerified;
 	private Boolean playedBefore;
 	private Timestamp lastLogin;
 	private Boolean reServices;
@@ -171,30 +171,30 @@ public class User extends VirkadeModel {
 		return legals;
 	}
 	
-	public List<Legal> getActiveTCLegal() {
-		List<Legal> activeLegals = new ArrayList<Legal>();
+	public Legal getActiveTCLegal() {
+		Legal activeLegal = null;
 		Calendar cal = Calendar.getInstance();
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
 		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
 		for (Legal cur : curlegals) {
 			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
-				activeLegals.add(cur);
+				activeLegal = (activeLegal == null || cur.getExpireDate().after(activeLegal.getExpireDate())) ? cur : activeLegal;
 			}
 		}
-		return curlegals;
+		return activeLegal;
 	}
 	
-	public List<Legal> getActiveLiabLegal() {
-		List<Legal> activeLegals = new ArrayList<Legal>();
+	public Legal getActiveLiabLegal() {
+		Legal activeLegal = null;
 		Calendar cal = Calendar.getInstance();
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
 		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
 		for (Legal cur : curlegals) {
 			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
-				activeLegals.add(cur);
+				activeLegal = (activeLegal == null || cur.getExpireDate().after(activeLegal.getExpireDate())) ? cur : activeLegal;
 			}
 		}
-		return curlegals;
+		return activeLegal;
 	}
 
 	public void setLegals(List<Legal> legals) {
@@ -229,6 +229,16 @@ public class User extends VirkadeModel {
 			}
 		}
 		return tcAgree;
+	}
+	
+	public boolean isMinor() {
+		boolean isMinor = false;
+		List<Legal> legals = getActiveLegals();
+		for (Legal curLegal: legals) {
+			isMinor = curLegal.isMinor();
+			if (isMinor) break;
+		}
+		return isMinor;
 	}
 
 	/**
@@ -419,15 +429,15 @@ public class User extends VirkadeModel {
 	/**
 	 * @return the emailVerified
 	 */
-	public Boolean isEmailVerified() {
-		return emailVerified;
+	public Boolean isAccountVerified() {
+		return accountVerified;
 	}
 
 	/**
 	 * @param emailVerified the emailVerified to set
 	 */
-	public void setEmailVerified(Boolean emailVerified) {
-		this.emailVerified = emailVerified;
+	public void setAccountVerified(Boolean accountVerified) {
+		this.accountVerified = accountVerified;
 	}
 
 	/**
@@ -513,7 +523,7 @@ public class User extends VirkadeModel {
 		return "User [userId=" + userId + ", type=" + type + ", address=" + address + ", status=" + status + ", sessions=" + sessions + ", comments=" + comments + ", phoneNumbers=" + phoneNumbers
 				+ ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer
 				+ ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", birthday="
-				+ birthday + ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact
+				+ birthday + ", emailVerified=" + accountVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact
 				+ ", audit=" + audit + "]";
 	}
 
@@ -553,7 +563,7 @@ public class User extends VirkadeModel {
 		user.setAge(inputUser.getAge());
 		user.setCanContact(inputUser.isCanContact());
 		user.setEmailAddress(inputUser.getEmailAddress());
-		user.setEmailVerified(inputUser.isEmailVerified());
+		user.setAccountVerified(inputUser.isAccountVerified());
 		user.setFirstName(inputUser.getFirstName());
 		user.setGender(inputUser.getGender());
 		user.setHeight(inputUser.getHeight());

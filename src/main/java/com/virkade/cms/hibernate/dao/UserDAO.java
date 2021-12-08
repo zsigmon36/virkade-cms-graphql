@@ -233,4 +233,12 @@ public class UserDAO {
 		}
 		return users;
 	}
+
+	public static User fetchValidatedUser(User user) {
+		user = fetch(user);
+		if (user != null && user.isAccountVerified()) {
+			return user;
+		}
+		return null;
+	}
 }
