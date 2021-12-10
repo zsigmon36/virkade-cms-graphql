@@ -12,6 +12,7 @@ public class InputPlaySession {
 	private Timestamp endDate;
 	private boolean payed;
 	private String username;
+	private String displayName;
 
 	public InputPlaySession() {
 
@@ -79,5 +80,13 @@ public class InputPlaySession {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 }

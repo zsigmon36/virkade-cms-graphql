@@ -164,7 +164,7 @@ public class User extends VirkadeModel {
 		Calendar cal = Calendar.getInstance();
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
 		for (Legal cur : this.legals) {
-			if (cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+			if (cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now)) {
 				activeLegals.add(cur);
 			}
 		}
@@ -177,7 +177,7 @@ public class User extends VirkadeModel {
 		Timestamp now = new Timestamp(cal.getTimeInMillis());
 		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
 		for (Legal cur : curlegals) {
-			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now)) {
 				activeLegal = (activeLegal == null || cur.getExpireDate().after(activeLegal.getExpireDate())) ? cur : activeLegal;
 			}
 		}
@@ -203,32 +203,22 @@ public class User extends VirkadeModel {
 
 	//LIMITED_LIABLE = "LTD_LBLE"
 	public boolean isLiableAgree() {
-		boolean liableAgree = false;
-		Calendar cal = Calendar.getInstance();
-		Timestamp now = new Timestamp(cal.getTimeInMillis());
-		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
-		for (Legal cur : curlegals) {
-			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && 
-					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
-				liableAgree = true;
-			}
+		boolean isAgree = false;
+		Legal legal =getActiveLiabLegal();
+		if (legal != null) {
+			isAgree = legal.isAgree();
 		}
-		return liableAgree;
+		return isAgree;
 	}
 
 	//TERMS_CONDITIONS - TRMS_CNDTN
 	public boolean isTcAgree() {
-		boolean tcAgree = false;
-		Calendar cal = Calendar.getInstance();
-		Timestamp now = new Timestamp(cal.getTimeInMillis());
-		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
-		for (Legal cur : curlegals) {
-			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && 
-					cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
-				tcAgree = true;
-			}
+		boolean isAgree = false;
+		Legal legal = getActiveTCLegal();
+		if (legal != null) {
+			isAgree = legal.isAgree();
 		}
-		return tcAgree;
+		return isAgree;
 	}
 	
 	public boolean isMinor() {

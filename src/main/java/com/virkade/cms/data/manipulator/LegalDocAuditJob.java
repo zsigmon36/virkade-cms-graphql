@@ -1,5 +1,7 @@
 package com.virkade.cms.data.manipulator;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,14 +43,30 @@ public class LegalDocAuditJob {
 class LegalDocExpireThread implements Runnable {
 	private static final Logger LOG = Logger.getLogger(LegalDocExpireThread.class);
 	private static final int BATCH_SIZE = 1000;
+
 	@Override
 	public void run() {
-		List<Legal> legals = LegalDAO.fetchExpired(BATCH_SIZE);
-		for (Legal legal : legals) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, (cal.get(Calendar.YEAR)+5));
+		Timestamp deleteDate = new Timestamp(cal.getTimeInMillis());
+		
+		List<Legal> expiredLegals = LegalDAO.fetchEnabledExpired(BATCH_SIZE);
+		List<Legal> disabledLegals = LegalDAO.fetchDisabled(BATCH_SIZE);
+		for (Legal legal : expiredLegals) {
 			try {
-				LegalDAO.delete(legal);
+				legal.setEnabled(false);
+				LegalDAO.update(legal);
 			} catch (Exception e) {
-				LOG.error("error deleting expired legal document with id: "+legal.getLegalDocId());
+				LOG.error("error disabling expired legal document with id: "+legal.getLegalDocId());
+			}
+		}
+		for (Legal legal : disabledLegals) {
+			try {
+				if (legal.getExpireDate().after(deleteDate)) {
+					LegalDAO.delete(legal);
+				}
+			} catch (Exception e) {
+				LOG.error("error deleting disabled legal document with id: "+legal.getLegalDocId());
 			}
 		}
 		

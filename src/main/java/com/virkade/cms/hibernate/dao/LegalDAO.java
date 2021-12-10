@@ -10,6 +10,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
@@ -40,7 +41,7 @@ public class LegalDAO {
 		return legal;
 	}
 	
-	public static List<Legal> fetchExpired(int rows) {
+	public static List<Legal> fetchEnabledExpired(int rows) {
 		Timestamp ts = new Timestamp(new Date().getTime());
 		List<Legal> legals = new ArrayList<>();
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -48,7 +49,29 @@ public class LegalDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Legal.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.ENABLED_FIELD, true));
 			criteria.add(Restrictions.le(ConstantsDAO.EXPIRE_DATE, ts));
+			criteria.setMaxResults(rows);
+			legals = criteria.list();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception fetching legals", he);
+		}finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		return legals;
+	}
+	
+	public static List<Legal> fetchDisabled(int rows) {
+		Timestamp ts = new Timestamp(new Date().getTime());
+		List<Legal> legals = new ArrayList<>();
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(Legal.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.ENABLED_FIELD, false));
+			criteria.addOrder(Order.asc(ConstantsDAO.EXPIRE_DATE));
 			criteria.setMaxResults(rows);
 			legals = criteria.list();
 		} catch (HibernateException he) {

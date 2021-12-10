@@ -28,6 +28,10 @@
 		<property name="payed" type="boolean" index="IDX_SESIN_PYD">
 			<column name="PAYED" />
 		</property>
+		
+		<property name="displayName" type="java.lang.String" >
+			<column name="DISPLAYNAME" sql-type="varchar(75)" />
+		</property>
 
 		<property generated="never" lazy="false" name="startDate" type="java.sql.Timestamp">
 			<column name="STARTDATE" />

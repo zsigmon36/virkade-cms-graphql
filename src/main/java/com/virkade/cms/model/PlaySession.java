@@ -20,6 +20,7 @@ public class PlaySession extends VirkadeModel{
 	private long userId;
 	private String emailAddress;
 	private String username;
+	private String displayName;
 	private String firstName;
 	private String lastName;
 	private Audit audit;
@@ -122,6 +123,14 @@ public class PlaySession extends VirkadeModel{
 		return this.username;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	/**
 	 * @return the firstName
 	 */
@@ -210,6 +219,7 @@ public class PlaySession extends VirkadeModel{
 		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName(), true));
 		session.setPayed(inputPlaySession.isPayed());
 		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));
+		session.setDisplayName(inputPlaySession.getDisplayName());
 		session.setSessionId(inputPlaySession.getSessionId());
 		return session;
 	}

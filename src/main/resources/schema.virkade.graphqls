@@ -164,6 +164,7 @@ type PlaySession {
 	userId: Long
 	emailAddress: String
 	username: String
+	displayName: String
     firstName: String
     lastName: String
 	location: Location
@@ -184,6 +185,7 @@ input InputPlaySession {
 	endDate: Date!
 	payed: Boolean!
 	username: String!
+	displayName: String
 }
 
 type Activity {
