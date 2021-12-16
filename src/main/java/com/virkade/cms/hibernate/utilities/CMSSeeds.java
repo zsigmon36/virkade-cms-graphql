@@ -386,7 +386,7 @@ public class CMSSeeds {
 			legal.setAgree(true);
 			Document tAndCDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_TC_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
 			legal.setDocument(DocumentDAO.fetchByDocId(tAndCDoc.getDocId()));
-			String pSig = DocUtil.getEncodedOwnerSig("Signature.png");
+			String pSig = DocUtil.getEncodedOwnerSig();
 			legal.setPSig(pSig);
 			legal.setEnabled(true);
 			legal.setExpireDate(expireDate);
@@ -448,7 +448,7 @@ public class CMSSeeds {
 			legal.setAgree(true);
 			Document tAndCDoc = DocumentDAO.fetchByTitleAndVersion(ConstantsDAO.DEFAULT_TC_TITLE, ConstantsDAO.DEFAULT_DOC_VERSION);
 			legal.setDocument(DocumentDAO.fetchByDocId(tAndCDoc.getDocId()));
-			String pSig = DocUtil.getEncodedOwnerSig("Signature.png");
+			String pSig = DocUtil.getEncodedOwnerSig();
 			legal.setPSig(pSig);
 			legal.setEnabled(true);
 			legal.setExpireDate(expireDate);
