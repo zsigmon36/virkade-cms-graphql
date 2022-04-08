@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.data.manipulator.PlaySessionCalculator;
 import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.Activity;
@@ -64,11 +65,11 @@ public class PlaySessionDAO {
 		return playSession;
 	}
 	
-	public static synchronized PlaySession create(PlaySession session) throws Exception {
+	public static synchronized PlaySession create(PlaySession session, int playSessionLength, int playSessionMinGap) throws Exception {
 		if (session.getLocation() == null || session.getActivity() == null) {
 			throw new Exception("location and activity must be selected and valid");
 		}
-		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
+		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity(), playSessionLength, playSessionMinGap);
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
 			if (curAvailSession.getStartDate().equals(session.getStartDate()) && curAvailSession.getEndDate().equals(session.getEndDate())) {
@@ -94,11 +95,11 @@ public class PlaySessionDAO {
 		return session;
 	}
 	
-	public static PlaySession update(PlaySession session) throws Exception {
+	public static PlaySession update(PlaySession session, int playSessionLength, int playSessionMinGap) throws Exception {
 		if (session.getLocation() == null || session.getActivity() == null) {
 			throw new Exception("location and activity must be selected and valid");
 		}
-		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity());
+		List<PlaySession> possibleSessions = getAvailableSessions(null, session.getLocation(), session.getActivity(), playSessionLength, playSessionMinGap);
 		boolean isOpen = false;
 		for (PlaySession curAvailSession : possibleSessions) {
 			if (curAvailSession.getStartDate().equals(session.getStartDate()) && curAvailSession.getEndDate().equals(session.getEndDate())) {
@@ -209,8 +210,12 @@ public class PlaySessionDAO {
 
 	}
 	
-
 	public static List<PlaySession> getAvailableSessions(Timestamp dateRequested, Location location, Activity activity) {
+		return getAvailableSessions(dateRequested, location, activity, 0, 0);
+	}
+	
+
+	public static List<PlaySession> getAvailableSessions(Timestamp dateRequested, Location location, Activity activity, int playSessionLength, int playSessionMinGap) {
 		List<PlaySession> curSessions = null;
 		OperatingHours opHours = new OperatingHours();
 
@@ -224,7 +229,7 @@ public class PlaySessionDAO {
 		}
 		List<PlaySession> availableSessions = null;
 		try {
-			availableSessions = PlaySessionCalculator.getAvailableSessions(dateRequested, opHours.getEndAt(), curSessions, opHours, location, activity);
+			availableSessions = PlaySessionCalculator.getAvailableSessions(dateRequested, opHours.getEndAt(), curSessions, opHours, location, activity, playSessionLength, playSessionMinGap);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			throw new HibernateException("There was a thread interrupt and we could not get all the available sessions :(", e);

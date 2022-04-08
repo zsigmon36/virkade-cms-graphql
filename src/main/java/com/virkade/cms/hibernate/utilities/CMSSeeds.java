@@ -372,7 +372,7 @@ public class CMSSeeds {
 			Phone phone = new Phone();
 			phone.setUser(user);
 			phone.setCountryCode(1);
-			phone.setNumber("4795445445");
+			phone.setNumber("4792632216");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
 			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
@@ -429,7 +429,7 @@ public class CMSSeeds {
 			Phone phone = new Phone();
 			phone.setUser(user2);
 			phone.setCountryCode(1);
-			phone.setNumber("4795445445");
+			phone.setNumber("4792632216");
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
 			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
@@ -513,7 +513,7 @@ public class CMSSeeds {
 			session.setAudit(audit);
 			session.setPayed(false);
 			try {
-				PlaySessionDAO.create(session);
+				PlaySessionDAO.create(session, 0, 0);
 			} catch (Exception e) {
 				LOG.error(e);
 			}

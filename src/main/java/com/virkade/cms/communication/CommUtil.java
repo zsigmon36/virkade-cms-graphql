@@ -11,11 +11,11 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailUtil {
+public class CommUtil {
 
-	private static final Logger LOG = Logger.getLogger(EmailUtil.class);
+	private static final Logger LOG = Logger.getLogger(CommUtil.class);
 
-	private EmailUtil() {
+	private CommUtil() {
 	}
 
 	public static void sendSimpleMail(String to, String subject, String message) {
@@ -31,6 +31,21 @@ public class EmailUtil {
 					service.send(msg);
 				} catch (MessagingException | IOException e) {
 					LOG.error("Could not send the email for "+to, e);
+				}
+			}
+		};
+		emailThread.run();
+	}
+	
+	public static void sendSimpleSMS(String toPhoneNumber, String message) {
+
+		Runnable emailThread = new Runnable() {
+			public void run() {
+				try {
+					VirkadeSMSService service = new VirkadeSMSService();
+					service.send(toPhoneNumber, message);
+				} catch (Exception e) {
+					LOG.error("Could not send the SMS for "+toPhoneNumber, e);
 				}
 			}
 		};

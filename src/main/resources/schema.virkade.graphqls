@@ -4,6 +4,7 @@ type Transaction {
 	description: String
 	sessionIds: [Long]
 	refId: String
+	approvalCode: String
 	payment: Float
 	audit: Audit
 }
@@ -14,6 +15,7 @@ input InputTransaction {
 	serviceName: String!
 	description: String
 	refId: String!
+	approvalCode: String!
 	payment: Float!
 }
 
@@ -172,6 +174,7 @@ type PlaySession {
 	activity: Activity
 	startDate: Date
 	endDate: Date
+	length: Int
 	transaction: Transaction
 	audit: Audit
 }
@@ -182,6 +185,7 @@ input InputPlaySession {
  	locationName: String!
 	activityName: String!
 	startDate: Date!
+	length: Int!
 	endDate: Date!
 	payed: Boolean!
 	username: String!
@@ -332,6 +336,7 @@ type Query {
   getAllLocations: [Location]
   getLocation(locationId: Long!): Location
   getActivity(activityId: Long!): Activity
+  getDefaultAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
   getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
   getAllSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
@@ -354,7 +359,9 @@ type Mutation {
   setSecurityQA(username: String!, securityQ: String!, securityA: String!): Boolean
   addUserAddress(inputAddress: InputAddress!, userId: Long = 0): Address
   addUserLegalDoc(inputLegal: InputLegal!): Legal
+  addUserDefaultSession(inputPlaySession: InputPlaySession!): PlaySession
   addUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  updateUserDefaultSession(inputPlaySession: InputPlaySession!): PlaySession
   updateUserSession(inputPlaySession: InputPlaySession!): PlaySession
   deleteUserSession(sessionId: Long!): PlaySession
   addUpdateTransaction(inputTransaction: InputTransaction!): Transaction

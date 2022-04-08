@@ -7,7 +7,7 @@ import com.virkade.cms.hibernate.dao.LocationDAO;
 import com.virkade.cms.hibernate.dao.TransactionDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
 
-public class PlaySession extends VirkadeModel{
+public class PlaySession extends VirkadeModel {
 
 	private long sessionId;
 	private Transaction transaction;
@@ -16,6 +16,7 @@ public class PlaySession extends VirkadeModel{
 	private Activity activity;
 	private Timestamp startDate;
 	private Timestamp endDate;
+	private int length;
 	private boolean payed;
 	private long userId;
 	private String emailAddress;
@@ -37,8 +38,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param sessionId
-	 *            the sessionId to set
+	 * @param sessionId the sessionId to set
 	 */
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
@@ -60,8 +60,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param location
-	 *            the location to set
+	 * @param location the location to set
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
@@ -75,8 +74,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param activity
-	 *            the activity to set
+	 * @param activity the activity to set
 	 */
 	public void setActivity(Activity activity) {
 		this.activity = activity;
@@ -90,8 +88,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param user
-	 *            the user to set
+	 * @param user the user to set
 	 */
 	public void setUser(User user) {
 		this.user = user;
@@ -153,8 +150,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param startDate
-	 *            the startDate to set
+	 * @param startDate the startDate to set
 	 */
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
@@ -168,11 +164,28 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param endDate
-	 *            the endDate to set
+	 * @param endDate the endDate to set
 	 */
 	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @param the length ( if 0 then will calculate from the start and end time )
+	 */
+	public int getLength() {
+		int res = this.length;
+		if (res == 0) {
+			res = (int) ((this.endDate.getTime() - this.startDate.getTime()) / 1000 / 60);
+		}
+		return res;
+	}
+
+	/**
+	 * @param length the length to set
+	 */
+	private void setLength(int length) {
+		this.length = length;
 	}
 
 	public boolean isPayed() {
@@ -194,8 +207,7 @@ public class PlaySession extends VirkadeModel{
 	}
 
 	/**
-	 * @param audit
-	 *            the audit to set
+	 * @param audit the audit to set
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
@@ -203,10 +215,11 @@ public class PlaySession extends VirkadeModel{
 
 	@Override
 	public String toString() {
-		return "PlaySession [sessionId=" + sessionId + ", transactionId=" + transaction.getTransactionId() + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate=" + startDate + ", endDate=" + endDate + ", payed="
-				+ payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
+		return "PlaySession [sessionId=" + sessionId + ", transactionId=" + transaction.getTransactionId() + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", length=" + length + ", " + "payed=" + payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
 	}
-	
+
 	static PlaySession convertInput(InputPlaySession inputPlaySession) {
 		PlaySession session = new PlaySession();
 		Transaction transaction = TransactionDAO.fetchById(inputPlaySession.getTransactionId());
@@ -216,6 +229,7 @@ public class PlaySession extends VirkadeModel{
 		session.setActivity(activity);
 		session.setEndDate(inputPlaySession.getEndDate());
 		session.setStartDate(inputPlaySession.getStartDate());
+		session.setLength(inputPlaySession.getLength());
 		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName(), true));
 		session.setPayed(inputPlaySession.isPayed());
 		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));

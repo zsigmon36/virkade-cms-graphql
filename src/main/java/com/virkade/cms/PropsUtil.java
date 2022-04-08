@@ -6,9 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 public class PropsUtil {
 
@@ -18,17 +23,20 @@ public class PropsUtil {
 	public final static String MAIL_SMTP_USER = "mail.smtp.user";
 	public final static String MAIL_SMTP_PASSWORD = "mail.smtp.password";
 	public final static String MAIL_SMTP_FROM = "mail.smtp.from";
+	public static final String SMS_ACCOUNT_SID = "sms.account.sid";
+	public static final String SMS_AUTH_TOKEN = "sms.auth.token";
 	public final static String DEFAULT_CLOSE_TIME_FULL = "default.close.time";
-	public final static String DEFAULT_SESSION_LENGTH_IN_MINUTES = "default.session.length.min";
-	public final static String DEFAULT_SESSION_MINIMUM_GAP = "default.session.minimum.gap";
+	public final static String DEFAULT_SESSION_OPTIONS = "default.session.options";
 	public final static String DEFAULT_SESSION_BUFFER = "default.session.buffer";
 	public final static String PLAY_SESSION_SETUP_MIN = "session.setup.minutes";
 	public final static String CROSS_ORIGIN_HOSTS = "cross.origin.hosts";
+	public final static String SMS_PHONE_FROM = "sms.phone.from";
+	public final static String LENGTH_KEY = "length";
+	public final static String GAP_KEY = "gap";
 
 	private static int defaultClosingTimeHour = 0;
 	private static int defaultClosingTimeMin = 0;
-	private static int playSessionLength = 30;
-	private static int playSessionMinGap = 10;
+	private static JSONArray playSessionOptionsJsonArray = new JSONArray();
 	private static int defaultSessionBuffer = 1;
 	private static int playSessionSetupMin = 5;
 	private static String crossOriginHosts = "http://localhost:80";
@@ -49,8 +57,8 @@ public class PropsUtil {
 			LOG.error("could not load app config properties", e);
 		}
 		try {
-			LOG.info("getting state data resource: email.cfg.properties");
-			Path resource = Paths.get("config", "email.cfg.properties");
+			LOG.info("getting state data resource: comm.cfg.properties");
+			Path resource = Paths.get("config", "comm.cfg.properties");
 			InputStream propStream = null;
 			if (!Files.exists(resource)) {
 				LOG.warn("could not find external resource, looking in project");
@@ -60,23 +68,21 @@ public class PropsUtil {
 			}
 			props.load(propStream);
 		} catch (IOException e) {
-			LOG.error("could not load email config properties", e);
+			LOG.error("could not load comm config properties", e);
 		}
 		try {
 			String[] closingParts = String.valueOf(props.get(DEFAULT_CLOSE_TIME_FULL)).split(":");
-			String sessionLength = String.valueOf(props.get(DEFAULT_SESSION_LENGTH_IN_MINUTES));
-			String sessionMinGap = String.valueOf(props.get(DEFAULT_SESSION_MINIMUM_GAP));
 			String sessionBuffer = String.valueOf(props.get(DEFAULT_SESSION_BUFFER));
 			String sessionSetupMin = String.valueOf(props.get(PLAY_SESSION_SETUP_MIN));
 			String crossOriginHosts = String.valueOf(props.get(CROSS_ORIGIN_HOSTS));
+			String playSessionOptionsJsonString = String.valueOf(props.get(DEFAULT_SESSION_OPTIONS));
 			PropsUtil.defaultClosingTimeHour = Integer.valueOf(closingParts[0]);
 			PropsUtil.defaultClosingTimeMin = Integer.valueOf(closingParts[1]);
-			PropsUtil.playSessionLength = Integer.valueOf(sessionLength);
-			PropsUtil.playSessionMinGap = Integer.valueOf(sessionMinGap);
 			PropsUtil.defaultSessionBuffer = Integer.valueOf(sessionBuffer);
 			PropsUtil.playSessionSetupMin = Integer.valueOf(sessionSetupMin);
 			PropsUtil.crossOriginHosts = String.valueOf(crossOriginHosts);
-		} catch (RuntimeException e) {
+			PropsUtil.playSessionOptionsJsonArray = new JSONArray(playSessionOptionsJsonString);
+		} catch (RuntimeException | JSONException e) {
 			LOG.error("There was a problem seperating out the min time, session time, & closing hour/min, details may be inaccurate", e);
 		}
 
@@ -105,17 +111,26 @@ public class PropsUtil {
 	}
 
 	/**
-	 * @return the playSessionLength
+	 * @return the playSessionLengths
 	 */
-	public static int getPlaySessionLength() {
-		return playSessionLength;
+	public static JSONArray getPlaySessionOptionsJsonArray() {
+		return playSessionOptionsJsonArray;
 	}
 
-	/**
-	 * @return the playSessionMinGap
-	 */
-	public static int getPlaySessionMinGap() {
-		return playSessionMinGap;
+	public static JSONObject getFirstPlaySessionOptionJson() {
+		JSONObject jo = new JSONObject(); 
+		try {
+			if (playSessionOptionsJsonArray.getJSONObject(0) != null) {
+				jo = playSessionOptionsJsonArray.getJSONObject(0);
+
+			} else {
+				jo.put("length", 30);
+				jo.put("gap", 5);	
+			}
+		} catch (JSONException e) {
+			LOG.error("Exception getting the first play session option", e);
+		}
+		return jo;
 	}
 
 	/**
@@ -133,4 +148,14 @@ public class PropsUtil {
 		return crossOriginHosts;
 	}
 
+	public static int getPlaySessionGapFromLength(int length) throws JSONException {
+		int gap = 5;
+		for ( int i = 0; i < PropsUtil.getPlaySessionOptionsJsonArray().length(); i++ ) {
+			JSONObject curObj = PropsUtil.getPlaySessionOptionsJsonArray().getJSONObject(i);
+			if (length == curObj.getInt(PropsUtil.LENGTH_KEY)) {
+				gap = curObj.getInt(PropsUtil.GAP_KEY);
+			}
+		}
+		return gap;
+	}
 }

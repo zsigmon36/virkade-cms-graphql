@@ -9,6 +9,7 @@ public class InputTransaction {
 	private String serviceName;
 	private String description;
 	private String refId;
+	private String approvalCode;
 	private double payment;
 	
 	/**
@@ -58,6 +59,12 @@ public class InputTransaction {
 	 */
 	public void setRefId(String refId) {
 		this.refId = refId;
+	}
+	public String getApprovalCode() {
+		return approvalCode;
+	}
+	public void setApprovalCode(String approvalCode) {
+		this.approvalCode = approvalCode;
 	}
 	/**
 	 * @return the payment

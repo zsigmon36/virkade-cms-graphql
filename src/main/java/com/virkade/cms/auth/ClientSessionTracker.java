@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.virkade.cms.communication.EmailUtil;
+import com.virkade.cms.communication.CommUtil;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
+import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.User;
 
 public class ClientSessionTracker {
@@ -129,9 +131,9 @@ public class ClientSessionTracker {
 		if (activeSessionToken != null) {
 			LOG.debug("active session found for userName=" + authData.getUsername());
 			purgeSession(activeSessionToken.getUsername(), false);
-		} 
+		}
 		LOG.info("creating fresh session");
-		activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword(), validated);		
+		activeSessionToken = createActiveSession(authData.getUsername(), authData.getPassword(), validated);
 		if (activeSessionToken == null) {
 			throw new Exception("could not create the client auth session");
 		}
@@ -143,7 +145,7 @@ public class ClientSessionTracker {
 		user.setUsername(username);
 		AuthToken authToken = null;
 		user = UserDAO.fetch(user);
-		if (user==null) {
+		if (user == null) {
 			throw new Exception("no user found for username=" + username);
 		} else if (validated && !user.isAccountVerified()) {
 			throw new Exception("account is not yet verified, please check with support");
@@ -170,7 +172,14 @@ public class ClientSessionTracker {
 			String token = String.valueOf((int) (Math.random() * 1000000));
 			authToken = new AuthToken(username, token);
 			addNewSession(token, authToken, true);
-			EmailUtil.sendSimpleMail(user.getEmailAddress(), "Password Reset Passcode: " + token, "Enter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode: " + token);
+			CommUtil.sendSimpleMail(user.getEmailAddress(), "Password Reset Passcode: " + token,
+					"Enter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode: " + token);
+			for (Phone number : user.getPhoneNumbers()) {
+				if (number.getType().getCode().equals(ConstantsDAO.MOBILE_PHONE)) {
+					CommUtil.sendSimpleSMS(number.getCountryCode()+number.getNumber(), "Password Reset Passcode: " + token + " \nEnter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode" + token);
+				}
+			}
+
 			LOG.debug("recovery session created and added to system");
 		} else {
 			throw new Exception("Incorrect security answer given for userName=" + username);

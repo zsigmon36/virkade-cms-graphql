@@ -2,10 +2,15 @@ package com.virkade.cms.graphql;
 
 import java.nio.file.AccessDeniedException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.auth.PermissionType;
 import com.virkade.cms.hibernate.dao.ActivityDAO;
@@ -114,6 +119,10 @@ public class Query implements GraphQLRootResolver {
 		return activity;
 	}
 	
+	public List<PlaySession> getDefaultAvailableSessions(Timestamp dateRequested, Long locationId, Long activityId, DataFetchingEnvironment env) throws Exception {
+		return getAvailableSessions(dateRequested, locationId, activityId, env);
+	}
+	
 	public List<PlaySession> getAvailableSessions(Timestamp dateRequested, Long locationId, Long activityId, DataFetchingEnvironment env) throws Exception {
 		//AuthContext context = env.getContext();
 		//User curSessionUser = context.getAuthUser();
@@ -132,7 +141,11 @@ public class Query implements GraphQLRootResolver {
 		if (location == null || activity == null) {
 			throw new Exception("location or activity not found,  if you are looking for the default then pass null values for location and activity");
 		}
-		List<PlaySession> sessions = PlaySessionDAO.getAvailableSessions(dateRequested, location, activity);
+		List<PlaySession> sessions = new ArrayList<>();
+		for ( int i = 0; i < PropsUtil.getPlaySessionOptionsJsonArray().length(); i++ ) {
+			JSONObject curObj = PropsUtil.getPlaySessionOptionsJsonArray().getJSONObject(i);
+			 sessions.addAll(PlaySessionDAO.getAvailableSessions(dateRequested, location, activity, curObj.getInt(PropsUtil.LENGTH_KEY), curObj.getInt(PropsUtil.GAP_KEY)));
+		}
 		return sessions;
 	}
 	

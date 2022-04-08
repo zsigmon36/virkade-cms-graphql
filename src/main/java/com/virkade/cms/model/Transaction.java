@@ -13,6 +13,7 @@ public class Transaction extends VirkadeModel {
 	private String serviceName;
 	private String description;
 	private String refId;
+	private String approvalCode;
 	private double payment;
 	private Audit audit;
 
@@ -70,6 +71,14 @@ public class Transaction extends VirkadeModel {
 	 */
 	public void setRefId(String refId) {
 		this.refId = refId;
+	}
+
+	public String getApprovalCode() {
+		return approvalCode;
+	}
+
+	public void setApprovalCode(String approvalCode) {
+		this.approvalCode = approvalCode;
 	}
 
 	/**
@@ -139,6 +148,7 @@ public class Transaction extends VirkadeModel {
 		transaction.setDescription(inputTransaction.getDescription());
 		transaction.setPayment(inputTransaction.getPayment());
 		transaction.setRefId(inputTransaction.getRefId());
+		transaction.setApprovalCode(inputTransaction.getApprovalCode());
 		transaction.setServiceName(inputTransaction.getServiceName());
 		transaction.setTransactionId(inputTransaction.getTransactionId());
 		return transaction;

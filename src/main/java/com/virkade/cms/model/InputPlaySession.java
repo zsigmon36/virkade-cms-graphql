@@ -10,6 +10,7 @@ public class InputPlaySession {
 	private String activityName;
 	private Timestamp startDate;
 	private Timestamp endDate;
+	private int length;
 	private boolean payed;
 	private String username;
 	private String displayName;
@@ -64,6 +65,14 @@ public class InputPlaySession {
 
 	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 
 	public boolean isPayed() {

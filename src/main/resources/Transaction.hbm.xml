@@ -23,6 +23,9 @@
 		<property name="refId" type="java.lang.String" index="IDX_TRNSACTN_REFID">
 			<column name="REFID" sql-type="varchar(75)"/>
 		</property>
+		<property name="approvalCode" type="java.lang.String">
+			<column name="APPRVCODE" sql-type="varchar(75)"/>
+		</property>
 		<property name="payment" type="double">
 			<column name="PAYMENT" />
 		</property>

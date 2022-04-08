@@ -22,7 +22,7 @@ public class PlaySessionCalculator {
 		executor.setConcurrencyLimit(4);
 	}
 
-	public static List<PlaySession> getAvailableSessions(Timestamp curTime, Timestamp closeTime, List<PlaySession> currentSessions, OperatingHours opHours, Location location, Activity activity) throws InterruptedException {
+	public static List<PlaySession> getAvailableSessions(Timestamp curTime, Timestamp closeTime, List<PlaySession> currentSessions, OperatingHours opHours, Location location, Activity activity, int playSessionLength, int playSessionMinGap) throws InterruptedException {
 		LOG.info("getting available sessions for location:"+location.getName()+ " and activity:"+activity.getName());
 		List<PlaySession> availableSessions = new ArrayList<PlaySession>();
 		List<PlaySessionGap> gaps = getCurrentGaps(curTime, currentSessions, opHours);
@@ -31,7 +31,7 @@ public class PlaySessionCalculator {
 		List<Future<?>> futures = new ArrayList<Future<?>>();
 		for (PlaySessionGap gap : gaps) {
 			
-			PSGThread curThread = new PSGThread(gap, availableSessions, location, activity);
+			PSGThread curThread = new PSGThread(gap, availableSessions, location, activity, playSessionLength, playSessionMinGap);
 			Future<?> future = executor.submit(curThread);
 			futures.add(future);
 		}

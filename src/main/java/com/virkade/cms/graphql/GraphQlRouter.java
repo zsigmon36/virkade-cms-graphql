@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.BootApplication;
-import com.virkade.cms.communication.EmailUtil;
+import com.virkade.cms.communication.CommUtil;
 import com.virkade.cms.data.manipulator.LegalDocAuditJob;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
 import com.virkade.cms.hibernate.dao.LocationDAO;
@@ -51,40 +51,39 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 		CMSSeeds.createDefaultActivity();
 		BootApplication.startWorkDay(LocationDAO.getDefault());
 		LegalDocAuditJob.startAudit();
-		
+
 		//start work day and start over each day at midnight
 		LOG.info("adding task to start new work day if going past midnight.");
 		Timer timer = new Timer();
-		
+
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
 				BootApplication.startWorkDay(LocationDAO.getDefault());
 			}
 		};
-		
+
 		Calendar firstRefreshDate = Calendar.getInstance();
-		LOG.info("current date:"+firstRefreshDate.getTime().toString());
-		firstRefreshDate.set(Calendar.DAY_OF_MONTH, (firstRefreshDate.get(Calendar.DAY_OF_MONTH)+1));
+		LOG.info("current date:" + firstRefreshDate.getTime().toString());
+		firstRefreshDate.set(Calendar.DAY_OF_MONTH, (firstRefreshDate.get(Calendar.DAY_OF_MONTH) + 1));
 		firstRefreshDate.set(Calendar.HOUR_OF_DAY, 0);
 		firstRefreshDate.set(Calendar.MINUTE, 1);
 		firstRefreshDate.set(Calendar.SECOND, 0);
 		firstRefreshDate.set(Calendar.MILLISECOND, 0);
-		LOG.info("roll over date:"+firstRefreshDate.getTime().toString());
+		LOG.info("roll over date:" + firstRefreshDate.getTime().toString());
 		//one day
 		long period = 1000 * 60 * 60 * 24;
-		LOG.info("roll over every:"+period+" millis");
+		LOG.info("roll over every:" + period + " millis");
 		timer.schedule(task, new Date(firstRefreshDate.getTimeInMillis()), period);
 
 		// test
-		EmailUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting",
-				"this is a test message for the email utility");
+		CommUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting", "this is a test message for the email utility");
+		CommUtil.sendSimpleSMS("14792632216", "VirKade CMS System Starting \nthis is a test message for the email utility");
 
 	}
 
 	private static GraphQLSchema buildSchema() {
-		return SchemaParser.newParser().resolvers(new Query(), new Mutation()).scalars(Scalars.Date, Scalars.Long)
-				.file("schema.virkade.graphqls").build().makeExecutableSchema();
+		return SchemaParser.newParser().resolvers(new Query(), new Mutation()).scalars(Scalars.Date, Scalars.Long).file("schema.virkade.graphqls").build().makeExecutableSchema();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
@@ -94,15 +93,9 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 	}
 
 	@Override
-	protected GraphQLContext createContext(Optional<HttpServletRequest> request,
-			Optional<HttpServletResponse> response) {
-		String authToken = request.map(req -> req.getHeader("Authorization"))
-				.filter(id -> !id.isEmpty())
-				.map(id -> id.replace("Bearer ", ""))
-				.orElse(null);
-		String username = request.map(req -> req.getHeader("Username"))
-				.filter(id -> !id.isEmpty())
-				.orElse(null);
+	protected GraphQLContext createContext(Optional<HttpServletRequest> request, Optional<HttpServletResponse> response) {
+		String authToken = request.map(req -> req.getHeader("Authorization")).filter(id -> !id.isEmpty()).map(id -> id.replace("Bearer ", "")).orElse(null);
+		String username = request.map(req -> req.getHeader("Username")).filter(id -> !id.isEmpty()).orElse(null);
 
 		return new AuthContext(username, authToken, request, response);
 	}

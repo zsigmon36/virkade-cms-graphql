@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
+import com.virkade.cms.model.Phone;
 import com.virkade.cms.model.PlaySession;
 import com.virkade.cms.model.User;
 
@@ -26,7 +28,12 @@ public class SessionNotificationThread implements Runnable {
 		for (PlaySession curSession : SessionNotificationBean.firstWarningList) {
 			if (new Date().getTime() >= curSession.getStartDate().getTime() - firstInterval  ) {
 				LOG.info("sending first notfication email for sessionId:"+curSession.getSessionId()+" to email:"+curSession.getEmailAddress());
-				EmailUtil.sendSimpleMail(curSession.getEmailAddress(), "10 min warning", "less than 10 minutes until your play session begins");
+				CommUtil.sendSimpleMail(curSession.getEmailAddress(), "10 min warning", "less than 10 minutes until your play session begins");
+				for (Phone number : curSession.getUser().getPhoneNumbers()) {
+					if (number.getType().getCode().equals(ConstantsDAO.MOBILE_PHONE)) {
+						CommUtil.sendSimpleSMS(number.getCountryCode()+number.getNumber(), "10 min warning \nless than 10 minutes until your play session begins");
+					}
+				}
 				removeWarn1.add(curSession);
 			}
 		}
@@ -35,7 +42,12 @@ public class SessionNotificationThread implements Runnable {
 		for (PlaySession curSession : SessionNotificationBean.secondWarningList) {
 			if (new Date().getTime() >= curSession.getStartDate().getTime() - secondInterval) {
 				LOG.info("sending second notfication email for sessionId:"+curSession.getSessionId()+" to email:"+curSession.getEmailAddress());
-				EmailUtil.sendSimpleMail(curSession.getEmailAddress(), "5 min warning", "less than 5 minutes until your play session begins");
+				CommUtil.sendSimpleMail(curSession.getEmailAddress(), "5 min warning", "less than 5 minutes until your play session begins");
+				for (Phone number : curSession.getUser().getPhoneNumbers()) {
+					if (number.getType().getCode().equals(ConstantsDAO.MOBILE_PHONE)) {
+						CommUtil.sendSimpleSMS(number.getCountryCode()+number.getNumber(), "5 min warning \nless than 5 minutes until your play session begins");
+					}
+				}
 				removeWarn2.add(curSession);
 			}
 			

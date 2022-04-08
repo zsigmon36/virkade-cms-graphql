@@ -13,8 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.auth.AuthToken;
 import com.virkade.cms.auth.ClientSessionTracker;
@@ -489,19 +491,26 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		return false;
 	}
+	public PlaySession addUserDefaultSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
+		return addUserSession(inputPlaySession, env);
+	}
 
 	public PlaySession addUserSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
 		AuthContext context = env.getContext();
 		User curSessionUser = context.getAuthUser();
 
 		PlaySession convertedInputPlaySession = convertPlaySession(env, curSessionUser, inputPlaySession);
-
-		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession);
+		int gap = PropsUtil.getPlaySessionGapFromLength(convertedInputPlaySession.getLength());
+		PlaySession playSession = PlaySessionDAO.create(convertedInputPlaySession, convertedInputPlaySession.getLength(), gap);
 
 		if (playSession != null) {
 			SessionNotificationBean.addSessionNotification(playSession);
 		}
 		return playSession;
+	}
+	
+	public PlaySession updateUserDefaultSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
+		return updateUserSession(inputPlaySession, env);
 	}
 	
 	public PlaySession updateUserSession(InputPlaySession inputPlaySession, DataFetchingEnvironment env) throws Exception {
@@ -511,8 +520,8 @@ public class Mutation implements GraphQLRootResolver {
 			throw new Exception("Must have play session Id to update");
 		}
 		PlaySession convertedInputPlaySession = convertPlaySession(env, curSessionUser, inputPlaySession);
-
-		PlaySession playSession = PlaySessionDAO.update(convertedInputPlaySession);
+		int gap = PropsUtil.getPlaySessionGapFromLength(convertedInputPlaySession.getLength());
+		PlaySession playSession = PlaySessionDAO.update(convertedInputPlaySession, convertedInputPlaySession.getLength(), gap);
 
 		if (playSession != null && !SessionNotificationBean.existsSessionNotification(playSession)) {
 			SessionNotificationBean.addSessionNotification(playSession);
@@ -723,6 +732,9 @@ public class Mutation implements GraphQLRootResolver {
 		}
 		if (inputTransaction.getRefId() == null || inputTransaction.getRefId() == "" || inputTransaction.getRefId().length() < 4) {
 			missingData.add("reference id must be a valid identifier");
+		}
+		if (inputTransaction.getApprovalCode() == null || inputTransaction.getApprovalCode() == "" || inputTransaction.getApprovalCode().length() < 4) {
+			missingData.add("activation code must be a valid identifier");
 		}
 		if (inputTransaction.getServiceName() == null || inputTransaction.getServiceName().length() < 3) {
 			missingData.add("must be a valid payment type");
