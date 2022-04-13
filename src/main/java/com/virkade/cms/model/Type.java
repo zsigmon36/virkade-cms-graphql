@@ -1,6 +1,6 @@
 package com.virkade.cms.model;
 
-public class Type {
+public class Type extends VirkadeModel{
 
 	private long typeId;
 	

@@ -5,10 +5,10 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.User" table="USER">
 		<id name="userId" type="long">
-			<column name="USERID" />
+			<column name="USERID" index="IDX_USR_ID"/>
 			<generator class="increment" />
 		</id>
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_USR_TYP, IDX_USRNME_TYP, IDX_USRNME_STTS_TYP, IDX_EMAIL_TYP, IDX_EMAIL_STTS_TYP">
 			<column name="TYPEID" />
 		</many-to-one>
 
@@ -16,14 +16,14 @@
 			<column name="ADDRESSID" />
 		</many-to-one>
 
-		<many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join">
+		<many-to-one name="status" class="com.virkade.cms.model.Status" not-null="true" fetch="join" index="IDX_USR_STTS, IDX_USRNME_STTUS, IDX_USRNME_STTS_TYP, IDX_EMAIL_STTUS, IDX_EMAIL_STTS_TYP">
 			<column name="STATUSID" />
 		</many-to-one>
 
-		<property name="emailAddress" type="java.lang.String" not-null="true">
+		<property name="emailAddress" type="java.lang.String" not-null="true" index="IDX_EMAIL, IDX_EMAIL_TYP, IDX_EMAIL_STTUS, IDX_EMAIL_STTS_TYP">
 			<column name="EMAILADDRESS" />
 		</property>
-		<property name="userName" type="java.lang.String" not-null="true" unique="true">
+		<property name="username" type="java.lang.String" not-null="true" unique="true" index="IDX_USRNME, IDX_USRNME_STTUS, IDX_USRNME_TYP, IDX_USRNME_STTS_TYP">
 			<column name="USERNAME" sql-type="varchar(75)" />
 		</property>
 		<property name="password" type="java.lang.String" not-null="true">
@@ -56,13 +56,16 @@
 		<property name="idp" type="float">
 			<column name="IDP" />
 		</property>
-		<property name="emailVerified" type="boolean">
-			<column name="EMAILVERIFIED" />
+		<property name="birthday" type="java.sql.Date">
+			<column name="BIRTHDAY" />
+		</property>
+		<property name="accountVerified" type="boolean">
+			<column name="ACCOUNTVERIFIED" />
 		</property>
 		<property name="playedBefore" type="boolean">
 			<column name="PLAYEDBEFORE" />
 		</property>
-		<property name="lastLogin" type="java.util.Date">
+		<property name="lastLogin" type="java.sql.Timestamp">
 			<column name="LASTLOGIN" />
 		</property>
 		<property name="reServices" type="boolean">
@@ -72,11 +75,11 @@
 			<column name="CANCONTACT" />
 		</property>
 		
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
@@ -87,17 +90,25 @@
 			</property>
 		</component>
 
-		<list name="sessions" table="SESSION" inverse="true" cascade="save-update" fetch="join">
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update" order-by="startDate">
 			<key column="USERID" />
-			<list-index column="SESSIONID" />
 			<one-to-many class="com.virkade.cms.model.PlaySession" />
-		</list>
-
-		<list name="comments" table="COMMENT" inverse="true" cascade="save-update" fetch="join">
+		</bag>
+		
+		<bag name="phoneNumbers" table="PHONE" lazy="false" cascade="save-update">
 			<key column="USERID" />
-			<list-index column="COMMENTID" />
+			<one-to-many class="com.virkade.cms.model.Phone" />
+		</bag>
+		
+		<bag name="legals" table="LEGAL" lazy="false" cascade="save-update">
+			<key column="USERID" />
+			<one-to-many class="com.virkade.cms.model.Legal" />
+		</bag>
+
+		<bag name="comments" table="COMMENT" lazy="false" cascade="save-update">
+			<key column="USERID" />
 			<one-to-many class="com.virkade.cms.model.Comment" />
-		</list>
+		</bag>
 
 	</class>
 </hibernate-mapping>

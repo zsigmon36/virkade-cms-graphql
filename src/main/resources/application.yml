@@ -7,13 +7,17 @@ server:
  
 logging:
   level:
-    root: ERROR
+    root: INFO
     org.springframework: INFO
-    com.virkade: DEBUG
-    org.hibernate: ERROR
-  file: virkade-cms-app.log
+    com.virkade: INFO
+    org.hibernate: WARN
+  file: logs/virkade-cms-app.log
    
 security:
   basic:
     enabled: false
+
+    
+    
+#Port: 465 (SSL required) or 587 (TLS required)   
     

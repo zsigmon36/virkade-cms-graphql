@@ -1,21 +1,23 @@
 package com.virkade.cms.model;
 
+import com.virkade.cms.PropsUtil;
+
 public class InputPhone {
-	private String userName;
+	private String username;
 	private String typeCode;
-	private int number;
-	private int countryCode;
+	private String number;
+	private int countryCode = PropsUtil.DEFAULT_PHONE_CC;
 	/**
 	 * @return the userName
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	/**
 	 * @return the typeCode
@@ -32,13 +34,13 @@ public class InputPhone {
 	/**
 	 * @return the number
 	 */
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 	/**
 	 * @param number the number to set
 	 */
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 	/**
@@ -51,6 +53,8 @@ public class InputPhone {
 	 * @param countryCode the countryCode to set
 	 */
 	public void setCountryCode(int countryCode) {
-		this.countryCode = countryCode;
+		if (countryCode != 0) {
+			this.countryCode = countryCode;
+		}
 	}
 }

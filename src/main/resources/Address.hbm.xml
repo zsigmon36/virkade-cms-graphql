@@ -5,39 +5,39 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Address" table="ADDRESS">
 		<id name="addressId" type="long">
-			<column name="ADDRESSID" />
+			<column name="ADDRESSID" index="IDX_ADDRSSID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="state" class="com.virkade.cms.model.State" not-null="true" fetch="join">
+		<many-to-one name="state" class="com.virkade.cms.model.State" not-null="true" fetch="join" index="IDX_ADDRSS_STATEID, IDX_ADDRSS_STATEID_TYP">
 			<column name="STATEID" />
 		</many-to-one>
 
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_ADDRSS_TYP, IDX_ADDRSS_STATEID_TYP, IDX_FLL_ADRSS_TYP, IDX_PSTL_CDE_TYP">
 			<column name="TYPEID" />
 		</many-to-one>
 
-		<property name="street" type="java.lang.String">
+		<property name="street" type="java.lang.String" index="IDX_FLL_ADRSS, IDX_FLL_ADRSS_TYP">
 			<column name="STREET" sql-type="varchar(100)"/>
 		</property>
-		<property name="unit" type="java.lang.String">
+		<property name="unit" type="java.lang.String" index="IDX_FLL_ADRSS, IDX_FLL_ADRSS_TYP">
 			<column name="UNIT" sql-type="varchar(5)"/>
 		</property>
-		<property name="apt" type="java.lang.String">
+		<property name="apt" type="java.lang.String" index="IDX_FLL_ADRSS, IDX_FLL_ADRSS_TYP">
 			<column name="APT" sql-type="varchar(5)"/>
 		</property>
-		<property name="city" type="java.lang.String">
+		<property name="city" type="java.lang.String" index="IDX_FLL_ADRSS, IDX_FLL_ADRSS_TYP">
 			<column name="CITY" sql-type="varchar(75)"/>
 		</property>
-		<property name="postalCode" type="int">
+		<property name="postalCode" type="java.lang.String" index="IDX_PSTL_CDE, IDX_PSTL_CDE_TYP">
 			<column name="POSTALCODE" />
 		</property>
 		
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

@@ -5,7 +5,7 @@ public class State {
 	private long stateId;
 	private Country country;
 	private String name;
-	private String description;
+	private String abbreviation;
 	private String stateCode;
 	private Audit audit;
 
@@ -55,18 +55,18 @@ public class State {
 	}
 
 	/**
-	 * @return the description
+	 * @return the abbreviation
 	 */
-	public String getDescription() {
-		return description;
+	public String getAbbreviation() {
+		return abbreviation;
 	}
 
 	/**
-	 * @param description
-	 *            the description to set
+	 * @param abbreviation
+	 *            the abbreviation to set
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setAbbreviation(String abbreviation) {
+		this.abbreviation = abbreviation;
 	}
 
 	/**
@@ -100,5 +100,13 @@ public class State {
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "State [stateId=" + stateId + ", country=" + country + ", name=" + name + ", abbreviation=" + abbreviation + ", stateCode=" + stateCode + ", audit=" + audit + "]";
 	}
 }

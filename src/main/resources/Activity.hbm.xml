@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 22, 2018 11:04:25 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+	<class name="com.virkade.cms.model.Activity" table="ACTIVITY">
+		<id name="activityId" type="long">
+			<column name="ACTIVITYID" index="IDX_ACTVTY_ID"/>
+			<generator class="increment" />
+		</id>
+		<bag name="sessions" table="SESSION" lazy="false" cascade="save-update">
+			<key column="ACTIVITYID" />
+			<one-to-many class="com.virkade.cms.model.PlaySession" />
+		</bag>
+		<property generated="never" lazy="false" name="name" type="java.lang.String" unique="true" index="IDX_ACTVTY_NME, IDX_ACTVTY_NME_ENBLE">
+			<column name="NAME" sql-type="varchar(75)" />
+		</property>
+		<property generated="never" lazy="false" name="description" type="java.lang.String">
+			<column name="DESCRIPTION" sql-type="varchar(150)" />
+		</property>
+		<property generated="never" lazy="false" name="webSite" type="java.lang.String">
+			<column name="WEBSITE" sql-type="varchar(75)" />
+		</property>
+		<property generated="never" lazy="false" name="supportContact" type="java.lang.String">
+			<column name="SUPPORT_CONTACT" sql-type="varchar(75)" />
+		</property>
+		<property generated="never" lazy="false" name="costpm" type="double">
+			<column name="COSTPM" />
+		</property>
+		<property generated="never" lazy="false" name="setupMin" type="int">
+			<column name="SETUP_MIN" />
+		</property>
+		<property generated="never" lazy="false" name="creator" type="java.lang.String">
+			<column name="CREATOR" sql-type="varchar(75)" />
+		</property>
+		<property generated="never" lazy="false" name="enabled" type="boolean" index="IDX_ACTVTY_NME_ENBLE">
+			<column name="ENABLED" />
+		</property>
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property generated="never" lazy="false" name="createdAt" type="java.sql.Timestamp">
+				<column name="CREATEDAT" />
+			</property>
+			<property generated="never" lazy="false" name="updatedAt" type="java.sql.Timestamp">
+				<column name="UPDATEDAT" />
+			</property>
+			<property generated="never" lazy="false" name="createdBy" type="java.lang.String">
+				<column name="CREATEDBY" sql-type="varchar(75)" />
+			</property>
+			<property generated="never" lazy="false" name="updatedBy" type="java.lang.String">
+				<column name="UPDATEDBY" sql-type="varchar(75)" />
+			</property>
+		</component>
+	</class>
+</hibernate-mapping>

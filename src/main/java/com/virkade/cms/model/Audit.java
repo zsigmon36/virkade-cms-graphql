@@ -1,34 +1,34 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Audit{
-	private Date createdAt;
-	private Date updatedAt;
+	private Timestamp createdAt;
+	private Timestamp updatedAt;
 	private String createdBy;
 	private String updatedBy;
 	/**
 	 * @return the createdAt
 	 */
-	public Date getCreatedAt() {
+	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
 	/**
 	 * @param createdAt the createdAt to set
 	 */
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
 	/**
 	 * @return the updatedAt
 	 */
-	public Date getUpdatedAt() {
+	public Timestamp getUpdatedAt() {
 		return updatedAt;
 	}
 	/**
 	 * @param updatedAt the updatedAt to set
 	 */
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 	/**

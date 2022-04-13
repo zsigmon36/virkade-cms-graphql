@@ -5,34 +5,37 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Location" table="LOCATION">
 		<id name="locationId" type="long">
-			<column name="LOCATIONID" />
+			<column name="LOCATIONID" index="IDX_LOC_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join">
+		<many-to-one name="address" class="com.virkade.cms.model.Address" not-null="true" fetch="join" index="IDX_LOC_ADDRSS_ID">
 			<column name="ADDRESSID" />
 		</many-to-one>
 
-		<property name="name" type="java.lang.String">
+		<property name="taxRate" type="float">
+			<column name="TAX_RATE" />
+		</property>
+		<property name="name" type="java.lang.String" unique="true" index="IDX_LOC_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
-		<property name="phoneNum" type="long">
+		<property name="phoneNum" type="java.lang.String">
 			<column name="PHONENUM" />
 		</property>
 		<property name="manager" type="java.lang.String">
 			<column name="MANAGER" sql-type="varchar(75)"/>
 		</property>
-		<property name="enabled" type="boolean">
+		<property name="enabled" type="boolean" index="IDX_LOC_ENBLE, IDX_LOC_NME, IDX_LOC_ADDRSS_ID">
 			<column name="ENABLED" />
 		</property>
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

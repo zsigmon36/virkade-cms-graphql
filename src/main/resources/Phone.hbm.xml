@@ -5,29 +5,29 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Phone" table="PHONE">
 		<id name="phoneId" type="long">
-			<column name="PHONEID" />
+			<column name="PHONEID" index="IDX_PNE_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
-			<column name="USERID" />
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" index="IDX_PHN_USR_ID, IDX_PHN_USR_ID_TYP">
+			<column name="USERID"></column>
 		</many-to-one>
-
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_PHN_TYP, IDX_PHN_NMBR_TYP, IDX_PHN_USR_ID_TYP">
 			<column name="TYPEID" />
 		</many-to-one>
 		
-		<property name="number" type="long">
+		<property name="number" type="java.lang.String" index="IDX_PHN_NMBR, IDX_PHN_NMBR_TYP">
 			<column name="NUMBER" />
 		</property>
 		<property name="countryCode" type="int">
 			<column name="COUNTRYCODE" />
 		</property>
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

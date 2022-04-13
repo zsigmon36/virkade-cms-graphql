@@ -1,6 +1,14 @@
 package com.virkade.cms.model;
 
-public class Address {
+import java.util.SortedSet;
+
+import org.apache.log4j.Logger;
+
+import com.virkade.cms.hibernate.dao.StateDAO;
+import com.virkade.cms.hibernate.dao.TypeDAO;
+
+public class Address extends VirkadeModel {
+	
 	private long addressId;
 	private State state;
 	private Type type;
@@ -8,7 +16,7 @@ public class Address {
 	private String unit;
 	private String apt;
 	private String city;
-	private int postalCode;
+	private String postalCode;
 	private Audit audit;
 	
 	/**
@@ -98,13 +106,13 @@ public class Address {
 	/**
 	 * @return the postalCode
 	 */
-	public int getPostalCode() {
+	public String getPostalCode() {
 		return postalCode;
 	}
 	/**
 	 * @param postalCode the postalCode to set
 	 */
-	public void setPostalCode(int postalCode) {
+	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
 	/**
@@ -123,5 +131,46 @@ public class Address {
 		this.audit = audit;
 	}
 	
+	/**
+	 * @return the attribute sorted list
+	 */
+	public SortedSet<String> getUserAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
+		attributes.add("AddressId");
+		attributes.add("State");
+		attributes.add("Type");
+		attributes.add("Street");
+		attributes.add("Unit");
+		attributes.add("Apt");
+		attributes.add("City");
+		attributes.add("PostalCode");
+		
+		return attributes;
+	}
 	
+	static Address convertInput(InputAddress inputAddress) throws Exception {
+		Address address = new Address();
+		
+		if (inputAddress.getStateCode() != null && inputAddress.getStateCode() != "") {
+			address.setState(StateDAO.getByCode(inputAddress.getStateCode()));
+		} else if (inputAddress.getStateId() > 0) {
+			address.setState(StateDAO.getById(inputAddress.getStateId()));
+		}
+		address.setAddressId(inputAddress.getAddressId());
+		address.setApt(inputAddress.getApt().toLowerCase());
+		address.setCity(inputAddress.getCity().toLowerCase());
+		address.setPostalCode(inputAddress.getPostalCode());
+		address.setStreet(inputAddress.getStreet().toLowerCase());
+		address.setType(TypeDAO.getByCode(inputAddress.getTypeCode()));
+		address.setUnit(inputAddress.getUnit().toLowerCase());
+		
+		return address;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Address [addressId=" + addressId + ", state=" + state + ", type=" + type + ", street=" + street + ", unit=" + unit + ", apt=" + apt + ", city=" + city + ", postalCode=" + postalCode + ", audit=" + audit + "]";
+	}
 }

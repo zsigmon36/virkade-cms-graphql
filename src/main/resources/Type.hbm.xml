@@ -5,23 +5,23 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Type" table="TYPE">
 		<id name="typeId" type="long">
-			<column name="TYPEID" />
+			<column name="TYPEID" index="IDX_TYP_ID"/>
 			<generator class="increment" />
 		</id>
-		<property name="name" type="java.lang.String">
+		<property name="name" type="java.lang.String" index="IDX_TYP_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="text"/>
 		</property>
-		<property name="code" type="java.lang.String">
+		<property name="code" type="java.lang.String" index="IDX_TYP_CDE">
 			<column name="CODE" sql-type="varchar(25)"/>
 		</property>
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

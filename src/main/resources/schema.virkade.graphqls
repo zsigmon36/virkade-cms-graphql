@@ -1,34 +1,62 @@
+type Transaction {
+	transactionId: Long
+	serviceName: String
+	description: String
+	sessionIds: [Long]
+	refId: String
+	approvalCode: String
+	payment: Float
+	audit: Audit
+}
+
+input InputTransaction {
+	transactionId: Long
+	sessionIds: [Long]!
+	serviceName: String!
+	description: String
+	refId: String!
+	approvalCode: String!
+	payment: Float!
+}
+
 type User {
-	userId: Long
-    type: Type!
+	userId: Long!
+    type: Type
 	address: Address
-	status: Status!
-	emailAddress: String!
+	status: Status
+	emailAddress: String
 	sessions: [PlaySession]
 	comments: [Comment]
-	userName: String!
+	phoneNumbers: [Phone]
+	username: String!
 	securityQuestion: String
-    firstName: String!
-    lastName: String!
+    firstName: String
+    lastName: String
 	gender: String
 	age: Long
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean!
-	playedBefore: Boolean!
+	accountVerified: Boolean
+	playedBefore: Boolean
 	lastLogin: Date
-	reServices: Boolean!
-	canContact: Boolean!
+	reServices: Boolean
+	canContact: Boolean
+	liableAgree: Boolean
+	tcAgree: Boolean
+	minor: Boolean
+	ActiveTCLegal: Legal
+	ActiveLiabLegal: Legal
 	audit: Audit
 }
 
 input InputUser {
+	userId: Long
     typeCode: String
 	addressId: Long
 	statusId: Long
 	emailAddress: String
-	userName: String!
+	username: String
 	password: String
 	securityQuestion: String
 	securityAnswer: String
@@ -39,21 +67,58 @@ input InputUser {
 	height: Long
 	weight: Long
 	idp: Float
-	emailVerified: Boolean!
-	playedBefore: Boolean!
-	reServices: Boolean!
-	canContact: Boolean!
+	accountVerified: Boolean
+	playedBefore: Boolean
+	reServices: Boolean
+	canContact: Boolean
+	liableAgree: Boolean
+	tcAgree: Boolean
+}
+
+type Document {
+	docId: Long
+	type: Type
+	title: String
+	content: String
+	version: Float
+	enabled: Boolean
+	audit: Audit
+}
+
+type InputDocument {
+	docId: Long
+	typeCode: String
+	title: String
+	content: String
+	version: Float
+	enabled: Boolean
 }
 
 type Legal {
 	legalDocId: Long
 	user: User
 	type: Type
+	document: Document
+	pSig: String
+	gSig: String
 	agree: Boolean
+	minor: Boolean
 	activeDate: Date
 	expireDate: Date
 	enabled: Boolean
 	audit: Audit
+}
+input InputLegal {
+	username: String
+	typeCode: String
+	docId: Long
+	pSig: String
+	gSig: String
+	minor: Boolean
+	agree: Boolean
+	activeDate: Date
+	expireDate: Date
+	enabled: Boolean
 }
 
 type Status {
@@ -66,50 +131,76 @@ type Status {
 
 type Comment {
 	commentId: Long
-	user: User
+	userId: Long
+	username: String
 	type: Type
 	commentContent: String
 	audit: Audit
 }
 
 input InputComment {
-	userName: String!
+	username: String!
 	typeCode: String!
 	commentContent: String!
 }
 
 type Phone {
 	phoneId: Long
-	user: User
+	userId: Long
+	username: String
 	type: Type
-	number: Int
+	number: String
 	countryCode: Int
 	audit: Audit
 }
 
 input InputPhone {
-	userName: String!
+	username: String!
 	typeCode: String!
-	number: Int!
-	countryCode: Int!
+	number: String!
+	countryCode: Int
 }
 
 type PlaySession {
-	user: User
+	sessionId: Long
+	userId: Long
+	emailAddress: String
+	username: String
+	displayName: String
+    firstName: String
+    lastName: String
 	location: Location
-	games: [Game]
+	payed: Boolean
+	activity: Activity
 	startDate: Date
 	endDate: Date
+	length: Int
+	transaction: Transaction
 	audit: Audit
 }
-type Game {
-	gameId: Long
+
+input InputPlaySession {
+	sessionId: Long
+	transactionId: Long
+ 	locationName: String!
+	activityName: String!
+	startDate: Date!
+	length: Int!
+	endDate: Date!
+	payed: Boolean!
+	username: String!
+	displayName: String
+}
+
+type Activity {
+	activityId: Long
 	name: String
 	description: String
 	webSite: String
-	cost: Float
-	sessions: [PlaySession]
+	supportContact : String
 	creator: String
+	costpm: Float
+	setupMin: Int
 	enabled: Boolean
 	audit: Audit
 }
@@ -117,9 +208,10 @@ type Game {
 type Location {
 	locationId: Long
 	address: Address
+	taxRate: Float
 	name: String
 	description: String
-	phoneNum : Int
+	phoneNum : String
 	manager: String
 	enabled: Boolean
 	audit: Audit
@@ -133,8 +225,48 @@ type Address {
 	unit: String
 	apt: String
 	city: String
-	postalCode: Long
+	postalCode: String
 	audit: Audit
+}
+
+input InputAddress {
+	addressId: Long
+	stateId: Long
+	stateCode: String
+	typeCode: String
+	street: String
+	unit: String
+	apt: String
+	city: String
+	postalCode: String
+}
+
+input InputLocation {
+	locationId: Long
+	taxRate: Float
+	name: String
+	description: String
+	phoneNum : String
+	manager: String
+	stateId: Long
+	street: String
+	unit: String
+	apt: String
+	city: String
+	postalCode: String
+	enabled: Boolean
+}
+
+input InputActivity {
+	activityId: Long
+	name: String
+	description: String
+	webSite: String
+	supportContact : String
+	creator: String
+	costpm: Float
+	setupMin: Int
+	enabled: Boolean
 }
 
 type Region {
@@ -159,7 +291,7 @@ type State {
 	stateId: Long
 	country: Country
 	name: String
-	description: String
+	abbreviation: String
 	stateCode: String
 	audit: Audit
 }
@@ -180,14 +312,14 @@ type Audit {
 }
 
 input AuthData {
-	userName: String!
-	password: String!
+	username: String!
+	password: String
 	securityQuestion: String
 	securityAnswer: String
 }
 
 type AuthToken {
-	userName: String!
+	username: String!
 	token: String!
 	createdDate: Date!
 }
@@ -195,28 +327,47 @@ type AuthToken {
 type Query {
   getUsersByEmailAddress(emailAddress: String!): [User]
   getUserById(userId: Long!): User
-  getUserSessions(userName: String!): [PlaySession]
-  getUserByUserName(userName: String!): User
-  getUserComments(userName: String!): [Comment]
+  getUserSessions(username: String!, dateRequested: Date): [PlaySession]
+  getUserByUsername(username: String!): User
   getCountries: [Country]
-  getStates: [State]
-  getTypeByCode(code: String!): Type
-  getLegalsByUser(user: InputUser!): [Legal] 
-  getPhonesByUser(user: InputUser!): [Phone]
-  getPhonesByUserName(userName: String!): [Phone]
+  getAllStates: [State]
+  getLatestDocumentByType(typeCode: String!): Document
+  getAllActivities: [Activity]
+  getAllLocations: [Location]
+  getLocation(locationId: Long!): Location
+  getActivity(activityId: Long!): Activity
+  getDefaultAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
+  getAvailableSessions(dateRequested: Date, locationId: Long, activityId: Long): [PlaySession]
+  getPendingSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
+  getAllSessions(dateRequested: Date, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
+  getAllUserSessions(dateRequested: Date, userId: Long!, locationId: Long, activityId: Long, payed: Boolean): [PlaySession]
+  getSessionById(sessionId: Long!): PlaySession
+  searchUsers(firstName: String, lastName: String, emailAddress: String, username: String, inputAddress: InputAddress, count: Int=50, offset: Int=0): [User]
+  checkSession: Boolean
 }
 
 type Mutation {
   createNewUser(emailAddress: String!,	authData: AuthData!, firstName: String!, lastName: String!): User
   updateUser(inputUser: InputUser!): User
-  signIn(authData: AuthData!): AuthToken
-  signOut: String
+  updateUserType(userId: Long!, typeCode: String!): User
+  signIn(authData: AuthData!, validated: Boolean = true): AuthToken
+  recoverySignIn(authData: AuthData!): Boolean
+  signOut(username: String!): String
   addPhone(inputPhone: InputPhone!): Phone
   addComment(inputComment: InputComment!): Comment
-  addSession(userName: String!): PlaySession
-  addLegal(userName: String!): Legal
-  setPassword(userName: String!, newPassword: String!): String
-  setSecurityQA(userName: String!, securityQ: String!, securityA: String!): String
+  setNewPassword(username: String!, passCode: String!, password: String!): Boolean
+  setSecurityQA(username: String!, securityQ: String!, securityA: String!): Boolean
+  addUserAddress(inputAddress: InputAddress!, userId: Long = 0): Address
+  addUserLegalDoc(inputLegal: InputLegal!): Legal
+  addUserDefaultSession(inputPlaySession: InputPlaySession!): PlaySession
+  addUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  updateUserDefaultSession(inputPlaySession: InputPlaySession!): PlaySession
+  updateUserSession(inputPlaySession: InputPlaySession!): PlaySession
+  deleteUserSession(sessionId: Long!): PlaySession
+  addUpdateTransaction(inputTransaction: InputTransaction!): Transaction
+  deleteAllSessions(dateRequested: Date, locationName: String, activityName: String): Boolean
+  addUpdateLocation(inputLocation: InputLocation!): Location
+  addUpdateActivity(inputActivity: InputActivity!): Activity
 }
 
 schema {

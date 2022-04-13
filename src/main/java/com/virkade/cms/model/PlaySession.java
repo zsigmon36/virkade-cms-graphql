@@ -1,29 +1,33 @@
 package com.virkade.cms.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
 
-public class PlaySession {
+import com.virkade.cms.hibernate.dao.ActivityDAO;
+import com.virkade.cms.hibernate.dao.LocationDAO;
+import com.virkade.cms.hibernate.dao.TransactionDAO;
+import com.virkade.cms.hibernate.dao.UserDAO;
+
+public class PlaySession extends VirkadeModel {
 
 	private long sessionId;
+	private Transaction transaction;
 	private User user;
 	private Location location;
-	private List<Game> games = new ArrayList<>();
-	private Date startDate;
-	private Date endDate;
+	private Activity activity;
+	private Timestamp startDate;
+	private Timestamp endDate;
+	private int length;
+	private boolean payed;
+	private long userId;
+	private String emailAddress;
+	private String username;
+	private String displayName;
+	private String firstName;
+	private String lastName;
 	private Audit audit;
 
 	public PlaySession() {
 
-	}
-
-	public PlaySession(User user, Location location, List<Game> games, Date startDate, Date endDate) {
-		this.user = user;
-		this.location = location;
-		this.games = (games != null) ? games : new ArrayList<>();
-		this.startDate = startDate;
-		this.endDate = endDate;
 	}
 
 	/**
@@ -34,11 +38,18 @@ public class PlaySession {
 	}
 
 	/**
-	 * @param sessionId
-	 *            the sessionId to set
+	 * @param sessionId the sessionId to set
 	 */
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public Transaction getTransaction() {
+		return transaction;
+	}
+
+	public void setTransaction(Transaction transaction) {
+		this.transaction = transaction;
 	}
 
 	/**
@@ -49,26 +60,24 @@ public class PlaySession {
 	}
 
 	/**
-	 * @param location
-	 *            the location to set
+	 * @param location the location to set
 	 */
 	public void setLocation(Location location) {
 		this.location = location;
 	}
 
 	/**
-	 * @return the games
+	 * @return the activity
 	 */
-	public List<Game> getGames() {
-		return games;
+	public Activity getActivity() {
+		return activity;
 	}
 
 	/**
-	 * @param games
-	 *            the games to set
+	 * @param activity the activity to set
 	 */
-	public void setGames(List<Game> games) {
-		this.games = games;
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
 	/**
@@ -79,41 +88,112 @@ public class PlaySession {
 	}
 
 	/**
-	 * @param user
-	 *            the user to set
+	 * @param user the user to set
 	 */
 	public void setUser(User user) {
 		this.user = user;
+		this.userId = user.getUserId();
+		this.emailAddress = user.getEmailAddress();
+		this.username = user.getUsername();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public long getUserId() {
+		return this.userId;
+	}
+
+	/**
+	 * @return the emailAddress
+	 */
+	public String getEmailAddress() {
+		return this.emailAddress;
+	}
+
+	/**
+	 * @return the Username
+	 */
+	public String getUsername() {
+		return this.username;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return this.lastName;
 	}
 
 	/**
 	 * @return the startDate
 	 */
-	public Date getStartDate() {
+	public Timestamp getStartDate() {
 		return startDate;
 	}
 
 	/**
-	 * @param startDate
-	 *            the startDate to set
+	 * @param startDate the startDate to set
 	 */
-	public void setStartDate(Date startDate) {
+	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
 	 * @return the endDate
 	 */
-	public Date getEndDate() {
+	public Timestamp getEndDate() {
 		return endDate;
 	}
 
 	/**
-	 * @param endDate
-	 *            the endDate to set
+	 * @param endDate the endDate to set
 	 */
-	public void setEndDate(Date endDate) {
+	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @param the length ( if 0 then will calculate from the start and end time )
+	 */
+	public int getLength() {
+		int res = this.length;
+		if (res == 0) {
+			res = (int) ((this.endDate.getTime() - this.startDate.getTime()) / 1000 / 60);
+		}
+		return res;
+	}
+
+	/**
+	 * @param length the length to set
+	 */
+	private void setLength(int length) {
+		this.length = length;
+	}
+
+	public boolean isPayed() {
+		return payed;
+	}
+
+	public void setPayed(boolean payed) {
+		this.payed = payed;
 	}
 
 	/**
@@ -127,11 +207,35 @@ public class PlaySession {
 	}
 
 	/**
-	 * @param audit
-	 *            the audit to set
+	 * @param audit the audit to set
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
+	}
+
+	@Override
+	public String toString() {
+		return "PlaySession [sessionId=" + sessionId + ", transactionId=" + transaction.getTransactionId() + ", user=" + user + ", location=" + location + ", activity=" + activity + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", length=" + length + ", " + "payed=" + payed + ", userId=" + userId + ", emailAddress=" + emailAddress + ", username=" + username
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", audit=" + audit + "]";
+	}
+
+	static PlaySession convertInput(InputPlaySession inputPlaySession) {
+		PlaySession session = new PlaySession();
+		Transaction transaction = TransactionDAO.fetchById(inputPlaySession.getTransactionId());
+		session.setTransaction(transaction);
+		session.setSessionId(inputPlaySession.getSessionId());
+		Activity activity = ActivityDAO.fetchByName(inputPlaySession.getActivityName());
+		session.setActivity(activity);
+		session.setEndDate(inputPlaySession.getEndDate());
+		session.setStartDate(inputPlaySession.getStartDate());
+		session.setLength(inputPlaySession.getLength());
+		session.setLocation(LocationDAO.fetchByName(inputPlaySession.getLocationName(), true));
+		session.setPayed(inputPlaySession.isPayed());
+		session.setUser(UserDAO.getByUsername(inputPlaySession.getUsername()));
+		session.setDisplayName(inputPlaySession.getDisplayName());
+		session.setSessionId(inputPlaySession.getSessionId());
+		return session;
 	}
 
 }

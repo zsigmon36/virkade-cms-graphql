@@ -14,14 +14,8 @@ import com.virkade.cms.hibernate.utilities.HibernateUtilities;
 import com.virkade.cms.model.Type;
 
 public class TypeDAO {
-	public static final String ADMIN_CODE = "ADMN";
-	public static final String PROSPECT_CODE = "PRSP";
-	public static final String CUSTOMER_CODE = "CSTMR";
-	public static final String GUEST_CODE = "GST";
-	public static final String TYPE_CODE = "code";
-	public static final String TYPE_NAME = "name";
+
 	private static final Logger LOG = Logger.getLogger(TypeDAO.class);
-	public static final String PHYSICAL_ADDRESS = "PHYSCL_ADRS";
 	
 	private TypeDAO() {
 		
@@ -34,13 +28,34 @@ public class TypeDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Type.class);
-			criteria.add(Restrictions.eq(TYPE_NAME, typeName));
+			criteria.add(Restrictions.eq(ConstantsDAO.NAME_FIELD, typeName));
 			type = criteria.list();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting types by type name="+typeName, he);
 		}finally {
 			hs.getTransaction().commit();
 			hs.close();
+		}
+		return type;
+	}
+	
+	public static Type getByCode(String code) {
+		SessionFactory hsf = HibernateUtilities.getSessionFactory();
+		Session hs = hsf.openSession();
+		Type type = new Type();
+		try {
+			hs.beginTransaction();
+			Criteria criteria = hs.createCriteria(Type.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.CODE_FIELD, code));
+			type = (Type) criteria.uniqueResult();
+		} catch (HibernateException he) {
+			LOG.error("Hibernate exception getting type by type code="+code, he);
+		}finally {
+			hs.getTransaction().commit();
+			hs.close();
+		}
+		if (type == null) {
+			throw new HibernateException("No type found by type code="+code);
 		}
 		return type;
 	}
@@ -52,7 +67,7 @@ public class TypeDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Type.class);
-			criteria.add(Restrictions.eq(TYPE_CODE, code));
+			criteria.add(Restrictions.eq(ConstantsDAO.CODE_FIELD, code));
 			type = (Type) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting type by type code="+code, he);
@@ -69,7 +84,9 @@ public class TypeDAO {
 		Type type = new Type();
 		try {
 			hs.beginTransaction();
-			hs.get(Type.class.getName(), typeId);
+			Criteria criteria = hs.createCriteria(Type.class);
+			criteria.add(Restrictions.eq(ConstantsDAO.TYPEID_FIELD, typeId));
+			type = (Type) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting type by type by Id="+typeId, he);
 		}finally {
@@ -84,6 +101,7 @@ public class TypeDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating type with type code:"+type.getCode());
 			hs.save(type);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception saving type with type code="+type.getCode(), he);

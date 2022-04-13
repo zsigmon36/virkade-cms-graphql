@@ -5,15 +5,15 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.News" table="NEWS">
 		<id name="newsId" type="long">
-			<column name="NEWSID" />
+			<column name="NEWSID" index="IDX_NWS_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_NWS_TPE_ID">
 			<column name="TYPEID" />
 		</many-to-one>
 
-		<property name="name" type="java.lang.String">
+		<property name="name" type="java.lang.String" index="IDX_NWS_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
@@ -22,21 +22,21 @@
 		<property name="content" type="java.lang.String">
 			<column name="CONTENT" sql-type="varchar(8000)"/>
 		</property>
-		<property name="activeDate" type="java.util.Date">
+		<property name="activeDate" type="java.sql.Timestamp" index="IDX_NWS_ACVEDTE_EXPRDTE, IDX_NWS_TPE_ID, IDX_NWS_NME">
 			<column name="ACTIVEDATE" />
 		</property>
-		<property name="expireDate" type="java.util.Date">
+		<property name="expireDate" type="java.sql.Timestamp" index="IDX_NWS_ACVEDTE_EXPRDTE, IDX_NWS_TPE_ID, IDX_NWS_NME">
 			<column name="EXPIREDATE" />
 		</property>
-		<property name="enabled" type="boolean">
+		<property name="enabled" type="boolean" index="IDX_NWS_ENBLE, IDX_NWS_ACVEDTE_EXPRDTE, IDX_NWS_TPE_ID, IDX_NWS_NME">
 			<column name="ENABLED" />
 		</property>
 		
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

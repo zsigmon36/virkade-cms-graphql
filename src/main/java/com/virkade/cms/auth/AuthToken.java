@@ -1,19 +1,20 @@
 package com.virkade.cms.auth;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class AuthToken {
 	private String token;
-	private String userName;
-	private Date createdDate;
+	private String username;
+	private Timestamp createdDate;
 
 	public AuthToken() {
 	}
 	
-	public AuthToken(String userName, String authToken) {
-		this.userName = userName;
+	public AuthToken(String username, String authToken) {
+		this.username = username;
 		this.token = authToken;
-		this.createdDate = new Date();
+		this.createdDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
 	}
 
 	/**
@@ -33,28 +34,33 @@ public class AuthToken {
 	/**
 	 * @return the userName
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
 	 * @return the createdDate
 	 */
-	public Date getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
 
 	/**
 	 * @param createdDate the createdDate to set
 	 */
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
+	}
+	
+	@Override
+	public String toString() {
+		return "{username : "+getUsername()+", token : "+getToken()+", createdDate : "+getCreatedDate()+"}";
 	}
 }

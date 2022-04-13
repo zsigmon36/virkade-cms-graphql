@@ -5,35 +5,49 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Legal" table="LEGAL">
 		<id name="legalDocId" type="long">
-			<column name="LEGALDOCID" />
+			<column name="LEGALDOCID" index="IDX_LGL_ID"/>
 			<generator class="increment" />
 		</id>
 
-		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join">
+		<many-to-one name="user" class="com.virkade.cms.model.User" not-null="true" fetch="join" index="IDX_LGL_USR_ID">
 			<column name="USERID" />
 		</many-to-one>
 
-		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join">
+		<many-to-one name="type" class="com.virkade.cms.model.Type" not-null="true" fetch="join" index="IDX_LGL_USR_ID">
 			<column name="TYPEID" />
 		</many-to-one>
+		
+		<many-to-one name="Document" class="com.virkade.cms.model.Document" not-null="true" fetch="join" index="IDX_LGL_DOC_ID, IDX_LGL_USR_ID">
+			<column name="DOCID" />
+		</many-to-one>
 
-		<property name="agree" type="boolean">
+		<property name="agree" type="boolean" index="IDX_LGL_USR_ID">
 			<column name="AGREE" />
 		</property>
-		<property name="activeDate" type="java.util.Date">
+		<property name="minor" type="boolean">
+			<column name="MINOR" />
+		</property>
+		
+		<property name="activeDate" type="java.sql.Timestamp">
 			<column name="ACTIVEDATE" />
 		</property>
-		<property name="expireDate" type="java.util.Date">
+		<property name="expireDate" type="java.sql.Timestamp">
 			<column name="EXPIREDATE" />
 		</property>
-		<property name="enabled" type="boolean">
+		<property name="enabled" type="boolean" index="IDX_LGL_ENBLE, IDX_LGL_ID, IDX_LGL_USR_ID">
 			<column name="ENABLED" />
 		</property>
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<property name="PSig" type="java.lang.String">
+			<column name="PSIG" sql-type="VARCHAR" />
+		</property>
+		<property name="GSig" type="java.lang.String">
+			<column name="GSIG" sql-type="VARCHAR"  />
+		</property>
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">

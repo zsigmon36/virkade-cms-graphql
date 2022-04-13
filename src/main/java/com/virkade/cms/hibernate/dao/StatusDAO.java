@@ -13,12 +13,6 @@ import com.virkade.cms.model.Status;
 public class StatusDAO {
 
 	private static final Logger LOG = Logger.getLogger(StatusDAO.class);
-
-	public static final String STATUS_CODE = "code";
-	public static final String ACTIVE_CODE = "ACTV";
-	public static final String INACTIVE_CODE = "INACTV";
-	public static final String ACTIVE_NAME = "Active";
-	public static final String INACTIVE_NAME = "InActive";
 	
 	public static Status fetchById(long statusId) {
 		SessionFactory hsf = HibernateUtilities.getSessionFactory();
@@ -41,6 +35,7 @@ public class StatusDAO {
 		Session hs = hsf.openSession();
 		try {
 			hs.beginTransaction();
+			LOG.info("creating status with status code:"+status.getCode());
 			hs.save(status);
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception creating Status with statusCode=" + status.getCode(), he);
@@ -58,7 +53,7 @@ public class StatusDAO {
 		try {
 			hs.beginTransaction();
 			Criteria criteria = hs.createCriteria(Status.class);
-			criteria.add(Restrictions.eq(STATUS_CODE, code));
+			criteria.add(Restrictions.eq(ConstantsDAO.CODE_FIELD, code));
 			status = (Status) criteria.uniqueResult();
 		} catch (HibernateException he) {
 			LOG.error("Hibernate exception getting Status by statusCode=" + code, he);

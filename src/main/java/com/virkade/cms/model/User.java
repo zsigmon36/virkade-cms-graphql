@@ -1,29 +1,23 @@
 package com.virkade.cms.model;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.InvalidKeyException;
-import java.util.Date;
-import java.util.Iterator;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 
-import org.apache.log4j.Logger;
-
 import com.virkade.cms.auth.AuthData;
 import com.virkade.cms.hibernate.dao.AddressDAO;
+import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.StatusDAO;
 import com.virkade.cms.hibernate.dao.TypeDAO;
 
-public class User {
-	private static final Logger LOG = Logger.getLogger(User.class);
-	private static final String GET = "get";
-	private static final String SET = "set";
-	private static final String IS = "is";
+public class User extends VirkadeModel {
 
 	private long userId;
 	private Type type;
@@ -31,8 +25,10 @@ public class User {
 	private Status status;
 	private List<PlaySession> sessions;
 	private List<Comment> comments;
+	private List<Phone> phoneNumbers;
+	private List<Legal> legals;
 	private String emailAddress;
-	private String userName;
+	private String username;
 	private String password;
 	private String securityQuestion;
 	private String securityAnswer;
@@ -43,18 +39,19 @@ public class User {
 	private int height;
 	private int weight;
 	private float idp;
-	private boolean emailVerified;
-	private boolean playedBefore;
-	private Date lastLogin;
-	private boolean reServices;
-	private boolean canContact;
+	private Date birthday;
+	private Boolean accountVerified;
+	private Boolean playedBefore;
+	private Timestamp lastLogin;
+	private Boolean reServices;
+	private Boolean canContact;
 	private Audit audit;
 
 	public User() {
 	}
 
 	public User(AuthData authData) {
-		this.userName = authData.getUserName();
+		this.username = authData.getUsername();
 		this.password = authData.getPassword();
 		this.securityQuestion = authData.getPassword();
 		this.securityAnswer = authData.getSecurityAnswer();
@@ -68,8 +65,7 @@ public class User {
 	}
 
 	/**
-	 * @param userId
-	 *            the userId to set
+	 * @param userId the userId to set
 	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
@@ -83,23 +79,21 @@ public class User {
 	}
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * @param type the type to set
 	 */
 	public void setType(Type type) {
 		this.type = type;
 	}
 
 	/**
-	 * @return the addressId
+	 * @return the address
 	 */
 	public Address getAddress() {
 		return address;
 	}
 
 	/**
-	 * @param addressId
-	 *            the addressId to set
+	 * @param address the address to set
 	 */
 	public void setAddress(Address address) {
 		this.address = address;
@@ -113,8 +107,7 @@ public class User {
 	}
 
 	/**
-	 * @param status
-	 *            the status to set
+	 * @param status the status to set
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
@@ -128,8 +121,7 @@ public class User {
 	}
 
 	/**
-	 * @param session
-	 *            the session to set
+	 * @param session the session to set
 	 */
 	public void setSessions(List<PlaySession> sessions) {
 		this.sessions = sessions;
@@ -143,11 +135,100 @@ public class User {
 	}
 
 	/**
-	 * @param comments
-	 *            the comments to set
+	 * @param comments the comments to set
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	/**
+	 * @return the phoneNumbers
+	 */
+	public List<Phone> getPhoneNumbers() {
+		return phoneNumbers;
+	}
+
+	/**
+	 * @param phoneNumbers the phoneNumbers to set
+	 */
+	public void setPhoneNumbers(List<Phone> phoneNumbers) {
+		this.phoneNumbers = phoneNumbers;
+	}
+
+	public List<Legal> getLegals() {
+		return legals;
+	}
+	
+	public List<Legal> getActiveLegals() {
+		List<Legal> activeLegals = new ArrayList<Legal>();
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		for (Legal cur : this.legals) {
+			if (cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now)) {
+				activeLegals.add(cur);
+			}
+		}
+		return legals;
+	}
+	
+	public Legal getActiveTCLegal() {
+		Legal activeLegal = null;
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.TERMS_CONDITIONS) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now)) {
+				activeLegal = (activeLegal == null || cur.getExpireDate().after(activeLegal.getExpireDate())) ? cur : activeLegal;
+			}
+		}
+		return activeLegal;
+	}
+	
+	public Legal getActiveLiabLegal() {
+		Legal activeLegal = null;
+		Calendar cal = Calendar.getInstance();
+		Timestamp now = new Timestamp(cal.getTimeInMillis());
+		List<Legal> curlegals = this.legals == null? new ArrayList<Legal>() : this.legals;
+		for (Legal cur : curlegals) {
+			if (cur.getType().getCode().equals(ConstantsDAO.LIMITED_LIABLE) && cur.isEnabled() && cur.isAgree() && cur.getActiveDate().before(now) && cur.getExpireDate().after(now)) {
+				activeLegal = (activeLegal == null || cur.getExpireDate().after(activeLegal.getExpireDate())) ? cur : activeLegal;
+			}
+		}
+		return activeLegal;
+	}
+
+	public void setLegals(List<Legal> legals) {
+		this.legals = legals;
+	}
+
+	//LIMITED_LIABLE = "LTD_LBLE"
+	public boolean isLiableAgree() {
+		boolean isAgree = false;
+		Legal legal =getActiveLiabLegal();
+		if (legal != null) {
+			isAgree = legal.isAgree();
+		}
+		return isAgree;
+	}
+
+	//TERMS_CONDITIONS - TRMS_CNDTN
+	public boolean isTcAgree() {
+		boolean isAgree = false;
+		Legal legal = getActiveTCLegal();
+		if (legal != null) {
+			isAgree = legal.isAgree();
+		}
+		return isAgree;
+	}
+	
+	public boolean isMinor() {
+		boolean isMinor = false;
+		List<Legal> legals = getActiveLegals();
+		for (Legal curLegal: legals) {
+			isMinor = curLegal.isMinor();
+			if (isMinor) break;
+		}
+		return isMinor;
 	}
 
 	/**
@@ -158,26 +239,24 @@ public class User {
 	}
 
 	/**
-	 * @param emailAddress
-	 *            the emailAddress to set
+	 * @param emailAddress the emailAddress to set
 	 */
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 
 	/**
-	 * @return the userName
+	 * @return the username
 	 */
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
-	 * @param userName
-	 *            the userName to set
+	 * @param username the username to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -188,8 +267,7 @@ public class User {
 	}
 
 	/**
-	 * @param password
-	 *            the password to set
+	 * @param password the password to set
 	 * @throws BadPaddingException
 	 * @throws IllegalBlockSizeException
 	 * @throws InvalidKeyException
@@ -206,8 +284,7 @@ public class User {
 	}
 
 	/**
-	 * @param securityQuestion
-	 *            the securityQuestion to set
+	 * @param securityQuestion the securityQuestion to set
 	 */
 	public void setSecurityQuestion(String securityQuestion) {
 		this.securityQuestion = securityQuestion;
@@ -221,8 +298,7 @@ public class User {
 	}
 
 	/**
-	 * @param securityAnswer
-	 *            the securityAnswer to set
+	 * @param securityAnswer the securityAnswer to set
 	 */
 	public void setSecurityAnswer(String securityAnswer) {
 		this.securityAnswer = securityAnswer;
@@ -236,8 +312,7 @@ public class User {
 	}
 
 	/**
-	 * @param firstName
-	 *            the firstName to set
+	 * @param firstName the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -251,8 +326,7 @@ public class User {
 	}
 
 	/**
-	 * @param lastName
-	 *            the lastName to set
+	 * @param lastName the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -266,8 +340,7 @@ public class User {
 	}
 
 	/**
-	 * @param gender
-	 *            the gender to set
+	 * @param gender the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
@@ -281,8 +354,7 @@ public class User {
 	}
 
 	/**
-	 * @param age
-	 *            the age to set
+	 * @param age the age to set
 	 */
 	public void setAge(int age) {
 		this.age = age;
@@ -296,8 +368,7 @@ public class User {
 	}
 
 	/**
-	 * @param height
-	 *            the height to set
+	 * @param height the height to set
 	 */
 	public void setHeight(int height) {
 		this.height = height;
@@ -311,8 +382,7 @@ public class User {
 	}
 
 	/**
-	 * @param weight
-	 *            the weight to set
+	 * @param weight the weight to set
 	 */
 	public void setWeight(int weight) {
 		this.weight = weight;
@@ -326,85 +396,93 @@ public class User {
 	}
 
 	/**
-	 * @param idp
-	 *            the idp to set
+	 * @param idp the idp to set
 	 */
 	public void setIdp(float idp) {
 		this.idp = idp;
 	}
 
 	/**
-	 * @return the emailVerified
+	 * @return the birthday
 	 */
-	public boolean isEmailVerified() {
-		return emailVerified;
+	public Date getBirthday() {
+		return birthday;
 	}
 
 	/**
-	 * @param emailVerified
-	 *            the emailVerified to set
+	 * @param birthday the birthday to set
 	 */
-	public void setEmailVerified(boolean emailVerified) {
-		this.emailVerified = emailVerified;
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	/**
+	 * @return the emailVerified
+	 */
+	public Boolean isAccountVerified() {
+		return accountVerified;
+	}
+
+	/**
+	 * @param emailVerified the emailVerified to set
+	 */
+	public void setAccountVerified(Boolean accountVerified) {
+		this.accountVerified = accountVerified;
 	}
 
 	/**
 	 * @return the playedBefore
 	 */
-	public boolean isPlayedBefore() {
+	public Boolean isPlayedBefore() {
 		return playedBefore;
 	}
 
 	/**
-	 * @param playedBefore
-	 *            the playedBefore to set
+	 * @param playedBefore the playedBefore to set
 	 */
-	public void setPlayedBefore(boolean playedBefore) {
+	public void setPlayedBefore(Boolean playedBefore) {
 		this.playedBefore = playedBefore;
 	}
 
 	/**
 	 * @return the lastLogin
 	 */
-	public Date getLastLogin() {
+	public Timestamp getLastLogin() {
 		return lastLogin;
 	}
 
 	/**
-	 * @param lastLogin
-	 *            the lastLogin to set
+	 * @param lastLogin the lastLogin to set
 	 */
-	public void setLastLogin(Date lastLogin) {
+	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
 	/**
 	 * @return the reServices
 	 */
-	public boolean isReServices() {
+	public Boolean isReServices() {
 		return reServices;
 	}
 
 	/**
-	 * @param reServices
-	 *            the reServices to set
+	 * @param reServices the reServices to set
 	 */
-	public void setReServices(boolean reServices) {
+	public void setReServices(Boolean reServices) {
 		this.reServices = reServices;
 	}
 
 	/**
 	 * @return the canContact
 	 */
-	public boolean canContact() {
+	public Boolean canContact() {
 		return canContact;
 	}
 
 	/**
-	 * @param canContact
-	 *            the canContact to set
+	 * @param canContact the canContact to set
 	 */
-	public void setCanContact(boolean canContact) {
+	public void setCanContact(Boolean canContact) {
 		this.canContact = canContact;
 	}
 
@@ -419,8 +497,7 @@ public class User {
 	}
 
 	/**
-	 * @param audit
-	 *            the audit to set
+	 * @param audit the audit to set
 	 */
 	public void setAudit(Audit audit) {
 		this.audit = audit;
@@ -433,26 +510,25 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", type=" + type.toString() + ", address=" + address.toString() + ", status=" + status.toString() 
-		+ ", emailAddress=" + emailAddress + ", userName=" + userName + ", password=" + password + ", firstName=" + firstName + ", lastName=" 
-				+ lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp
-				+ ", emailVerified=" + emailVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices 
-				+ ", canContact=" + canContact + ", createdAt=" + audit.getCreatedAt() + ", updatedAt=" + audit.getUpdatedAt() + ", createdBy=" 
-				+ audit.getCreatedBy() + ", updatedBy=" + audit.getUpdatedBy() + "]";
+		return "User [userId=" + userId + ", type=" + type + ", address=" + address + ", status=" + status + ", sessions=" + sessions + ", comments=" + comments + ", phoneNumbers=" + phoneNumbers
+				+ ", emailAddress=" + emailAddress + ", username=" + username + ", password=" + password + ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender + ", age=" + age + ", height=" + height + ", weight=" + weight + ", idp=" + idp + ", birthday="
+				+ birthday + ", emailVerified=" + accountVerified + ", playedBefore=" + playedBefore + ", lastLogin=" + lastLogin + ", reServices=" + reServices + ", canContact=" + canContact
+				+ ", audit=" + audit + "]";
 	}
-	
+
 	/**
 	 * @return the attribute sorted list
 	 */
-	public static SortedSet<String> getUserAttributeList() {
-		SortedSet<String> attributes = new TreeSet<String>();
+	public SortedSet<String> getAttributeList() {
+		SortedSet<String> attributes = super.getAttributeList();
 		attributes.add("UserId");
 		attributes.add("Type");
 		attributes.add("Address");
 		attributes.add("StatusId");
 		attributes.add("Session");
 		attributes.add("EmailAddress");
-		attributes.add("UserName");
+		attributes.add("Username");
 		attributes.add("Password");
 		attributes.add("SecurityQuestion");
 		attributes.add("SecurityAnswer");
@@ -468,76 +544,32 @@ public class User {
 		attributes.add("LastLogin");
 		attributes.add("ReServices");
 		attributes.add("CanContact");
-		attributes.add("Audit");
 		return attributes;
 	}
 
-	/**
-	 * @return a converted object
-	 * @throws ClassNotFoundException
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws InvalidKeyException
-	 */
-	public static User convertObjToUser(String className, Object objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if (className.equalsIgnoreCase(InputUser.class.getName())) {
-			return convertInputUserToUser((InputUser) objToConvert);
-		}
+	static User convertInput(InputUser inputUser) {
 		User user = new User();
-		SortedSet<String> attributeList = getUserAttributeList();
-		Class<?> objToConvertClazz = Class.forName(className);
-		Class<?> userClazz = Class.forName(user.getClass().getName());
-		Method[] objToConvertMethods = objToConvertClazz.getDeclaredMethods();
-		Method[] userObjMethods = userClazz.getDeclaredMethods();
-		Iterator<String> attributeIterator = attributeList.iterator();
-		int iterationNumber = 1;
-		while (attributeIterator.hasNext()) {
-			if (iterationNumber >= 100) {
-				LOG.warn("interation max of 100 reached, exiting loop for performance reasons");
-				break;
-			}
-			String currentAttribute = attributeIterator.next();
-			for (Method curObjToConvertMethod : objToConvertMethods) {
-				if (curObjToConvertMethod.getName().contains(currentAttribute) && (curObjToConvertMethod.getName().contains(GET) || curObjToConvertMethod.getName().contains(IS)) && curObjToConvertMethod.invoke(objToConvert) != null) {
-					for (Method curUserMethod : userObjMethods) {
-						if (curUserMethod.getName().contains(currentAttribute) && curUserMethod.getName().contains(SET)) {
-							curUserMethod.invoke(user, (curObjToConvertMethod.invoke(objToConvert)));
-						}
-					}
-				}
-			}
-			iterationNumber++;
-		}
+		user.setAddress(AddressDAO.fetchById(inputUser.getAddressId()));
+		user.setAge(inputUser.getAge());
+		user.setCanContact(inputUser.isCanContact());
+		user.setEmailAddress(inputUser.getEmailAddress());
+		user.setAccountVerified(inputUser.isAccountVerified());
+		user.setFirstName(inputUser.getFirstName());
+		user.setGender(inputUser.getGender());
+		user.setHeight(inputUser.getHeight());
+		user.setIdp(inputUser.getIdp());
+		user.setBirthday(inputUser.getBirthday());
+		user.setLastName(inputUser.getLastName());
+		user.setPassword(inputUser.getPassword());
+		user.setSecurityQuestion(inputUser.getSecurityQuestion());
+		user.setSecurityAnswer(inputUser.getSecurityAnswer());
+		user.setPlayedBefore(inputUser.isPlayedBefore());
+		user.setReServices(inputUser.isReServices());
+		user.setStatus(StatusDAO.fetchById(inputUser.getStatusId()));
+		user.setType(TypeDAO.getByCode(inputUser.getTypeCode()));
+		user.setUsername(inputUser.getUsername());
+		user.setWeight(inputUser.getWeight());
 		return user;
 	}
-
-	private static User convertInputUserToUser(InputUser objToConvert) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-		User user = new User();
-		user.setAddress(AddressDAO.fetchById(objToConvert.getAddressId()));
-		user.setAge(objToConvert.getAge());
-		user.setCanContact(objToConvert.isCanContact());
-		user.setEmailAddress(objToConvert.getEmailAddress());
-		user.setEmailVerified(objToConvert.isEmailVerified());
-		user.setFirstName(objToConvert.getFirstName());
-		user.setGender(objToConvert.getGender());
-		user.setHeight(objToConvert.getHeight());
-		user.setIdp(objToConvert.getIdp());
-		user.setLastName(objToConvert.getLastName());
-		user.setPassword(objToConvert.getPassword());
-		user.setSecurityQuestion(objToConvert.getSecurityQuestion());
-		user.setSecurityAnswer(objToConvert.getSecurityAnswer());
-		user.setPlayedBefore(objToConvert.isPlayedBefore());
-		user.setReServices(objToConvert.isReServices());
-		user.setStatus(StatusDAO.fetchById(objToConvert.getStatusId()));
-		user.setType(TypeDAO.fetchByCode(objToConvert.getTypeCode()));
-		user.setUserName(objToConvert.getUserName());
-		user.setWeight(objToConvert.getWeight());
-		return user;
-	}
-
 
 }

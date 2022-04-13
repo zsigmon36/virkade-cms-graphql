@@ -1,6 +1,6 @@
 package com.virkade.cms.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class News {
 	
@@ -10,8 +10,8 @@ public class News {
 	private String name;
 	private String description;
 	private String content;
-	private Date activeDate;
-	private Date expireDate;
+	private Timestamp activeDate;
+	private Timestamp expireDate;
 	private boolean enabled;
 	private Audit audit;
 	
@@ -78,25 +78,25 @@ public class News {
 	/**
 	 * @return the activeDate
 	 */
-	public Date getActiveDate() {
+	public Timestamp getActiveDate() {
 		return activeDate;
 	}
 	/**
 	 * @param activeDate the activeDate to set
 	 */
-	public void setActiveDate(Date activeDate) {
+	public void setActiveDate(Timestamp activeDate) {
 		this.activeDate = activeDate;
 	}
 	/**
 	 * @return the expireDate
 	 */
-	public Date getExpireDate() {
+	public Timestamp getExpireDate() {
 		return expireDate;
 	}
 	/**
 	 * @param expireDate the expireDate to set
 	 */
-	public void setExpireDate(Date expireDate) {
+	public void setExpireDate(Timestamp expireDate) {
 		this.expireDate = expireDate;
 	}
 	/**

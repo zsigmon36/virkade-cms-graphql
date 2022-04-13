@@ -5,7 +5,7 @@
 <hibernate-mapping>
 	<class name="com.virkade.cms.model.Country" table="COUNTRY">
 		<id name="countryId" type="long">
-			<column name="COUNTRYID" />
+			<column name="COUNTRYID" index="IDX_CNTRY_ID"/>
 			<generator class="increment" />
 		</id>
 		
@@ -13,24 +13,24 @@
 			<column name="REGIONID" />
 		</many-to-one>
 		
-		<property name="name" type="java.lang.String">
+		<property name="name" type="java.lang.String" index="IDX_CNTRY_NME">
 			<column name="NAME" sql-type="varchar(75)"/>
 		</property>
 		<property name="description" type="java.lang.String">
 			<column name="DESCRIPTION" sql-type="varchar(150)"/>
 		</property>
-		<property name="a2" type="java.lang.String">
+		<property name="a2" type="java.lang.String" index="IDX_CNTRY_A2">
 			<column name="A2" sql-type="varchar(2)"/>
 		</property>
 		<property name="a3" type="java.lang.String">
 			<column name="A3" sql-type="varchar(3)"/>
 		</property>
 
-		<component name="audit">
-			<property name="createdAt" type="java.util.Date">
+		<component name="audit" class="com.virkade.cms.model.Audit">
+			<property name="createdAt" type="java.sql.Timestamp">
 				<column name="CREATEDAT" />
 			</property>
-			<property name="updatedAt" type="java.util.Date">
+			<property name="updatedAt" type="java.sql.Timestamp">
 				<column name="UPDATEDAT" />
 			</property>
 			<property name="createdBy" type="java.lang.String">
