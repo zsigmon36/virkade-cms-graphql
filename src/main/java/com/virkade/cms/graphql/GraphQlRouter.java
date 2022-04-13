@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.virkade.cms.BootApplication;
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.communication.CommUtil;
 import com.virkade.cms.data.manipulator.LegalDocAuditJob;
 import com.virkade.cms.graphql.error.CustomGraphQLErrorHandler;
@@ -78,7 +79,7 @@ public class GraphQlRouter extends SimpleGraphQLServlet {
 
 		// test
 		CommUtil.sendSimpleMail("sigmonbus36@gmail.com", "VirKade CMS System Starting", "this is a test message for the email utility");
-		CommUtil.sendSimpleSMS("14792632216", "VirKade CMS System Starting \nthis is a test message for the email utility");
+		CommUtil.sendSimpleSMS(PropsUtil.DEFAULT_PHONE_CC+PropsUtil.getAdminMobileNum(), "VirKade CMS System Starting \nthis is a test message for the sms utility");
 
 	}
 

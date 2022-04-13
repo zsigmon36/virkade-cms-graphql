@@ -19,12 +19,13 @@ public class PropsUtil {
 
 	private static final Logger LOG = Logger.getLogger(PropsUtil.class);
 	private static Properties props = new Properties();
-
+	
 	public final static String MAIL_SMTP_USER = "mail.smtp.user";
 	public final static String MAIL_SMTP_PASSWORD = "mail.smtp.password";
 	public final static String MAIL_SMTP_FROM = "mail.smtp.from";
 	public static final String SMS_ACCOUNT_SID = "sms.account.sid";
 	public static final String SMS_AUTH_TOKEN = "sms.auth.token";
+	public static final String ADMIN_MOBILE_NUM = "admin.mobile.num";
 	public final static String DEFAULT_CLOSE_TIME_FULL = "default.close.time";
 	public final static String DEFAULT_SESSION_OPTIONS = "default.session.options";
 	public final static String DEFAULT_SESSION_BUFFER = "default.session.buffer";
@@ -33,7 +34,9 @@ public class PropsUtil {
 	public final static String SMS_PHONE_FROM = "sms.phone.from";
 	public final static String LENGTH_KEY = "length";
 	public final static String GAP_KEY = "gap";
-
+	public final static int DEFAULT_PHONE_CC = 1;
+	
+	private static String adminMobileNum = "4792632216";
 	private static int defaultClosingTimeHour = 0;
 	private static int defaultClosingTimeMin = 0;
 	private static JSONArray playSessionOptionsJsonArray = new JSONArray();
@@ -76,6 +79,10 @@ public class PropsUtil {
 			String sessionSetupMin = String.valueOf(props.get(PLAY_SESSION_SETUP_MIN));
 			String crossOriginHosts = String.valueOf(props.get(CROSS_ORIGIN_HOSTS));
 			String playSessionOptionsJsonString = String.valueOf(props.get(DEFAULT_SESSION_OPTIONS));
+			Object adminNumberProp = props.get(ADMIN_MOBILE_NUM);
+			if (adminNumberProp != null && !adminNumberProp.equals("")) {
+				adminMobileNum = String.valueOf(adminNumberProp);
+			}
 			PropsUtil.defaultClosingTimeHour = Integer.valueOf(closingParts[0]);
 			PropsUtil.defaultClosingTimeMin = Integer.valueOf(closingParts[1]);
 			PropsUtil.defaultSessionBuffer = Integer.valueOf(sessionBuffer);
@@ -101,6 +108,14 @@ public class PropsUtil {
 	 */
 	public static int getDefaultClosingTimeHour() {
 		return defaultClosingTimeHour;
+	}
+
+	public static String getAdminMobileNum() {
+		return adminMobileNum;
+	}
+
+	public static void setAdminMobileNum(String adminMobileNum) {
+		PropsUtil.adminMobileNum = adminMobileNum;
 	}
 
 	/**

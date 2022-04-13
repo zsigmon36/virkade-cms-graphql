@@ -40,7 +40,7 @@ public class BootApplication {
 		if (OperatingHoursDAO.getTodayOperation(location) == null) {
 			OperatingHours opHours = new OperatingHours();
 			Calendar cal = Calendar.getInstance();
-			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
+			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_UNAME);
 			Audit audit = VirkadeModel.addAuditToModel(user, null);
 
 			opHours.setAudit(audit);

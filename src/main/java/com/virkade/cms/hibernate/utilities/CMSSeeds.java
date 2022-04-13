@@ -288,7 +288,7 @@ public class CMSSeeds {
 			location.setTaxRate(0.095f);
 			location.setDescription("the first VirKade");
 			location.setManager("Zachary Sigmon");
-			location.setPhoneNum("4792632216");
+			location.setPhoneNum(PropsUtil.getAdminMobileNum());
 			location.setEnabled(Boolean.TRUE);
 			location.getAudit().setCreatedAt(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			location.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
@@ -371,8 +371,8 @@ public class CMSSeeds {
 
 			Phone phone = new Phone();
 			phone.setUser(user);
-			phone.setCountryCode(1);
-			phone.setNumber("4792632216");
+			phone.setCountryCode(PropsUtil.DEFAULT_PHONE_CC);
+			phone.setNumber(PropsUtil.getAdminMobileNum());
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
 			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
@@ -410,10 +410,10 @@ public class CMSSeeds {
 				LOG.error(e);
 			}
 		}
-		if (UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME) == null) {
-			user2.setFirstName(ConstantsDAO.OWNER_USER_NAME);
-			user2.setLastName(ConstantsDAO.OWNER_USER_NAME);
-			user2.setUsername(ConstantsDAO.OWNER_USER_NAME);
+		if (UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_UNAME) == null) {
+			user2.setFirstName(ConstantsDAO.OWNER_USER_FNAME);
+			user2.setLastName(ConstantsDAO.OWNER_USER_LNAME);
+			user2.setUsername(ConstantsDAO.OWNER_USER_UNAME);
 			user2.setAddress(AddressDAO.fetchById(AddressDAO.ORIGINAL_LOCATION_ID));
 			user2.setEmailAddress(ConstantsDAO.GUEST_EMAIL_ADDRESS);
 			user2.setAccountVerified(true);
@@ -428,8 +428,8 @@ public class CMSSeeds {
 
 			Phone phone = new Phone();
 			phone.setUser(user2);
-			phone.setCountryCode(1);
-			phone.setNumber("4792632216");
+			phone.setCountryCode(PropsUtil.DEFAULT_PHONE_CC);
+			phone.setNumber(PropsUtil.getAdminMobileNum());
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.MOBILE_PHONE));
 			phone.getAudit().setCreatedAt(now);
 			phone.getAudit().setCreatedBy(ConstantsDAO.SYSTEM);
@@ -438,7 +438,7 @@ public class CMSSeeds {
 			PhoneDAO.create(phone);
 
 			phone.setUser(user2);
-			phone.setNumber("4792632216");
+			phone.setNumber(PropsUtil.getAdminMobileNum());
 			phone.setType(TypeDAO.fetchByCode(ConstantsDAO.HOME_PHONE));
 			PhoneDAO.create(phone);
 
@@ -507,7 +507,7 @@ public class CMSSeeds {
 			}
 			long randomSelection = (Math.round(Math.random() * (allSessionsAvail.size() - 1)));
 			PlaySession session = allSessionsAvail.get((int) randomSelection);
-			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_NAME);
+			User user = UserDAO.fetchByUsername(ConstantsDAO.OWNER_USER_UNAME);
 			session.setUser(user);
 			Audit audit = VirkadeModel.addAuditToModel(user, session.getAudit());
 			session.setAudit(audit);

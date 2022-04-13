@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.access.AuthorizationServiceException;
 
+import com.virkade.cms.PropsUtil;
 import com.virkade.cms.communication.CommUtil;
 import com.virkade.cms.hibernate.dao.ConstantsDAO;
 import com.virkade.cms.hibernate.dao.UserDAO;
@@ -148,7 +150,8 @@ public class ClientSessionTracker {
 		if (user == null) {
 			throw new Exception("no user found for username=" + username);
 		} else if (validated && !user.isAccountVerified()) {
-			throw new Exception("account is not yet verified, please check with support");
+			CommUtil.sendSimpleSMS(PropsUtil.DEFAULT_PHONE_CC + PropsUtil.getAdminMobileNum(), "user needs to be verified: \nusername=" + user.getUsername() + ", email=" + user.getEmailAddress());
+			throw new AuthorizationServiceException("account is not yet verified, please check with support CODE:ACCV");
 		}
 		LOG.debug("Checking " + user.getUsername() + "'s encoded password in the database matches the client provided password");
 		if (VirkadeEncryptor.isMatch(user.getPassword(), password)) {
@@ -176,7 +179,8 @@ public class ClientSessionTracker {
 					"Enter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode: " + token);
 			for (Phone number : user.getPhoneNumbers()) {
 				if (number.getType().getCode().equals(ConstantsDAO.MOBILE_PHONE)) {
-					CommUtil.sendSimpleSMS(number.getCountryCode()+number.getNumber(), "Password Reset Passcode: " + token + " \nEnter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode" + token);
+					CommUtil.sendSimpleSMS(number.getCountryCode() + number.getNumber(),
+							"Password Reset Passcode: " + token + " \nEnter this passcode with the new password in the client form \nPasscode will expire in 3 minutes \nPasscode" + token);
 				}
 			}
 

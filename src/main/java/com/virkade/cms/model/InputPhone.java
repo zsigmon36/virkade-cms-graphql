@@ -1,10 +1,12 @@
 package com.virkade.cms.model;
 
+import com.virkade.cms.PropsUtil;
+
 public class InputPhone {
 	private String username;
 	private String typeCode;
 	private String number;
-	private int countryCode;
+	private int countryCode = PropsUtil.DEFAULT_PHONE_CC;
 	/**
 	 * @return the userName
 	 */
@@ -51,6 +53,8 @@ public class InputPhone {
 	 * @param countryCode the countryCode to set
 	 */
 	public void setCountryCode(int countryCode) {
-		this.countryCode = countryCode;
+		if (countryCode != 0) {
+			this.countryCode = countryCode;
+		}
 	}
 }
