@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 
 import com.virkade.cms.PropsUtil;
 
-public class VirkadeEmailService {
+public class SMTPEmailServiceImpl implements EmailService{
 	
 	private Session session;
 	private MimeMessage message;
@@ -25,9 +25,9 @@ public class VirkadeEmailService {
 		return session;
 	}
 
-	public VirkadeEmailService() throws IOException, MessagingException{
+	public SMTPEmailServiceImpl() throws IOException, MessagingException{
 		if (auth == null) {
-			auth = getAuth(String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_USER)), String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_PASSWORD)));
+			auth = getAuth();
 		}
 		Session session = Session.getInstance(PropsUtil.getProps(), auth);
 		this.session = session;
@@ -37,7 +37,7 @@ public class VirkadeEmailService {
 		this.message = msg;
 	}
 	
-	public MimeMessage getJavaMailMessage() {
+	public MimeMessage getBaseJavaMailMessage() {
 	    return this.message;
 	}
 
@@ -45,7 +45,9 @@ public class VirkadeEmailService {
 		Transport.send(msg);
 	}
 	
-	private static Authenticator getAuth(String user, String password) {
+	private static Authenticator getAuth() {
+		String user = String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_USER));
+		String password = String.valueOf(PropsUtil.get(PropsUtil.MAIL_SMTP_PASSWORD));
 		return new Authenticator() {
 			//override the getPasswordAuthentication method
 			protected PasswordAuthentication getPasswordAuthentication() {

@@ -1,6 +1,7 @@
 package com.virkade.cms.communication;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -23,13 +24,13 @@ public class CommUtil {
 		Runnable emailThread = new Runnable() {
 			public void run() {
 				try {
-					VirkadeEmailService service = new VirkadeEmailService();
-					MimeMessage msg = service.getJavaMailMessage();
+					EmailService service = new GmailEmailServiceImpl();
+					MimeMessage msg = service.getBaseJavaMailMessage();
 					msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 					msg.setSubject(subject);
 					msg.setText(message);
 					service.send(msg);
-				} catch (MessagingException | IOException e) {
+				} catch (MessagingException | IOException | GeneralSecurityException e) {
 					LOG.error("Could not send the email for "+to, e);
 				}
 			}

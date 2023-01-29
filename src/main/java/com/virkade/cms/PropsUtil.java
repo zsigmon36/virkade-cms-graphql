@@ -35,6 +35,7 @@ public class PropsUtil {
 	public final static String LENGTH_KEY = "length";
 	public final static String GAP_KEY = "gap";
 	public final static int DEFAULT_PHONE_CC = 1;
+	public final static String GOOGLE_SECRET_JSON_FILENAME = "google_client_secret.json";
 	
 	private static String adminMobileNum = "4792632216";
 	private static int defaultClosingTimeHour = 0;
@@ -101,6 +102,26 @@ public class PropsUtil {
 
 	public static Properties getProps() {
 		return props;
+	}
+	public static InputStream getDefaultGoogleSecret(){
+		return getInputStream(GOOGLE_SECRET_JSON_FILENAME);
+	}
+
+	public static InputStream getInputStream(String fileName){
+		InputStream stream = null;
+		try {
+			LOG.info("getting file resource "+fileName);
+			Path resource = Paths.get("config", fileName);
+			if (!Files.exists(resource)) {
+				LOG.warn("could not find external resource, looking in project");
+				stream = PropsUtil.class.getClassLoader().getResourceAsStream(resource.toString());
+			} else {
+				stream = Files.newInputStream(resource, StandardOpenOption.READ);
+			}
+		} catch (IOException e) {
+			LOG.error("could not load comm config properties", e);
+		}
+		return stream;
 	}
 
 	/**
