@@ -13,8 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-
 import com.coxautodev.graphql.tools.GraphQLRootResolver;
 import com.virkade.cms.PropsUtil;
 import com.virkade.cms.auth.AuthData;

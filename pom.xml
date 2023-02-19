@@ -82,6 +82,11 @@
 			<artifactId>google-api-services-gmail</artifactId>
 			<version>v1-rev20220404-2.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>4.0.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

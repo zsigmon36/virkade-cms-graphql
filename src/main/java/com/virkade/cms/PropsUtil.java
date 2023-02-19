@@ -1,13 +1,14 @@
 package com.virkade.cms;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ public class PropsUtil {
 	public final static String MAIL_SMTP_FROM = "mail.smtp.from";
 	public static final String SMS_ACCOUNT_SID = "sms.account.sid";
 	public static final String SMS_AUTH_TOKEN = "sms.auth.token";
+	public static final String EMAIL_API_KEY = "email.api.key";
 	public static final String ADMIN_MOBILE_NUM = "admin.mobile.num";
 	public final static String DEFAULT_CLOSE_TIME_FULL = "default.close.time";
 	public final static String DEFAULT_SESSION_OPTIONS = "default.session.options";
@@ -35,8 +37,7 @@ public class PropsUtil {
 	public final static String LENGTH_KEY = "length";
 	public final static String GAP_KEY = "gap";
 	public final static int DEFAULT_PHONE_CC = 1;
-	public final static String GOOGLE_SECRET_JSON_FILENAME = "google_client_secret.json";
-	
+
 	private static String adminMobileNum = "4792632216";
 	private static int defaultClosingTimeHour = 0;
 	private static int defaultClosingTimeMin = 0;
@@ -90,6 +91,7 @@ public class PropsUtil {
 			PropsUtil.playSessionSetupMin = Integer.valueOf(sessionSetupMin);
 			PropsUtil.crossOriginHosts = String.valueOf(crossOriginHosts);
 			PropsUtil.playSessionOptionsJsonArray = new JSONArray(playSessionOptionsJsonString);
+			PropsUtil.playSessionOptionsJsonArray = new JSONArray(playSessionOptionsJsonString);
 		} catch (RuntimeException | JSONException e) {
 			LOG.error("There was a problem seperating out the min time, session time, & closing hour/min, details may be inaccurate", e);
 		}
@@ -100,28 +102,30 @@ public class PropsUtil {
 		return props.get(key);
 	}
 
+	public static String getString(String key) {
+		return String.valueOf(props.get(key));
+	}
+
 	public static Properties getProps() {
 		return props;
 	}
-	public static InputStream getDefaultGoogleSecret(){
-		return getInputStream(GOOGLE_SECRET_JSON_FILENAME);
-	}
 
-	public static InputStream getInputStream(String fileName){
-		InputStream stream = null;
+	public static File getInputStream(String fileName){
+		File file = null;
 		try {
 			LOG.info("getting file resource "+fileName);
 			Path resource = Paths.get("config", fileName);
 			if (!Files.exists(resource)) {
 				LOG.warn("could not find external resource, looking in project");
-				stream = PropsUtil.class.getClassLoader().getResourceAsStream(resource.toString());
+				URL url = PropsUtil.class.getClassLoader().getResource(resource.toString());
+				file = new File(url.toURI());
 			} else {
-				stream = Files.newInputStream(resource, StandardOpenOption.READ);
+				file = resource.toFile();
 			}
-		} catch (IOException e) {
+		} catch (URISyntaxException e) {
 			LOG.error("could not load comm config properties", e);
 		}
-		return stream;
+		return file;
 	}
 
 	/**
