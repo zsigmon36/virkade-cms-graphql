@@ -26,6 +26,7 @@ public class PropsUtil {
 	public final static String MAIL_SMTP_FROM = "mail.smtp.from";
 	public static final String SMS_ACCOUNT_SID = "sms.account.sid";
 	public static final String SMS_AUTH_TOKEN = "sms.auth.token";
+	public static final String SMS_MSG_SERVICE_SID = "sms.service.sid";
 	public static final String EMAIL_API_KEY = "email.api.key";
 	public static final String ADMIN_MOBILE_NUM = "admin.mobile.num";
 	public final static String DEFAULT_CLOSE_TIME_FULL = "default.close.time";
